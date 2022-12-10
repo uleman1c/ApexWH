@@ -136,6 +136,12 @@ public class HttpClient {
 
     }
 
+    public RequestHandle postBinary(Context context, String url, HttpEntity entity, ResponseHandlerInterface responseHandler) {
+
+        return client.post(context, serverUrl + url, entity, entity.getContentType().toString(), responseHandler);
+
+    }
+
     public void showMessageOnFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
 
         String message = error.getLocalizedMessage() + ", status code " + String.valueOf(statusCode) + ": " + getResponseString(responseBody);

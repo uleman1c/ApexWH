@@ -23,11 +23,13 @@ public class DocumentDataAdapter extends RecyclerView.Adapter<DocumentDataAdapte
 
     class DocumentItemViewHolder extends RecyclerView.ViewHolder {
 
+        private TextView tvNumberDate;
         private TextView tvDescription;
 
         public DocumentItemViewHolder(View itemView) {
             super(itemView);
 
+            tvNumberDate = (TextView) itemView.findViewById(R.id.tvNumberDate);
             tvDescription = (TextView) itemView.findViewById(R.id.tvDescription);
 
             itemView.setOnClickListener(new View.OnClickListener() {
@@ -65,6 +67,7 @@ public class DocumentDataAdapter extends RecyclerView.Adapter<DocumentDataAdapte
     public void onBindViewHolder(@NonNull DocumentItemViewHolder holder, int position) {
         Document document = documents.get(position);
 
+        holder.tvNumberDate.setText(document.name + " № " + document.number + " от " + document.date);
         holder.tvDescription.setText(document.description);
 
     }
@@ -74,12 +77,5 @@ public class DocumentDataAdapter extends RecyclerView.Adapter<DocumentDataAdapte
         return documents.size();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
-        final TextView tvDescription;
-        ViewHolder(View view){
-            super(view);
-            tvDescription = (TextView) view.findViewById(R.id.tvDescription);
-        }
-    }
 }
 

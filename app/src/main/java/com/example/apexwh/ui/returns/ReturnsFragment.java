@@ -137,7 +137,7 @@ public class ReturnsFragment extends Fragment {
 
         HttpClient httpClient = new HttpClient(getContext());
 
-        httpClient.request_get("/hs/dta/obj?request=getReturns&warehouseId=" + warehouseId + "&filter=" + filter, new HttpRequestInterface() {
+        httpClient.request_get("/hs/dta/obj?request=getReturnsToAccept&warehouseId=" + warehouseId + "&filter=" + filter, new HttpRequestInterface() {
             @Override
             public void setProgressVisibility(int visibility) {
 
@@ -156,7 +156,7 @@ public class ReturnsFragment extends Fragment {
 
                     JSONObject jsonObjectItem = JsonProcs.getItemJSONArray(jsonArrayResponses, 0);
 
-                    JSONArray jsonArrayObjects = JsonProcs.getJsonArrayFromJsonObject(jsonObjectItem, "Returns");
+                    JSONArray jsonArrayObjects = JsonProcs.getJsonArrayFromJsonObject(jsonObjectItem, "ReturnsToAccept");
 
                     for (int j = 0; j < jsonArrayObjects.length(); j++) {
 

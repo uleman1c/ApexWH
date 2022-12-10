@@ -9,6 +9,10 @@
             android:icon="@drawable/ic_menu_camera"
             android:title="@string/menu_home" />
         <item
+            android:id="@+id/nav_settings"
+            android:icon="@drawable/ic_menu_slideshow"
+            android:title="Настройки" />
+        <item
             android:id="@+id/nav_returns"
             android:icon="@drawable/ic_menu_slideshow"
             android:title="Возвраты" />

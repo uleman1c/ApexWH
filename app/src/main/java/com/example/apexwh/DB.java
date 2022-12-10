@@ -620,6 +620,20 @@ public class DB {
 
     }
 
+    public static Boolean isSettingsExist(Context mCtx){
+
+        DB db = new DB(mCtx);
+
+        db.open();
+
+        String warehouseId = db.getConstant("warehouseId");
+
+        db.close();
+
+
+        return warehouseId != null;
+
+    }
 
 }
 

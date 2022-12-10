@@ -20,6 +20,7 @@ public class DocumentDataAdapter extends RecyclerView.Adapter<DocumentDataAdapte
     private LayoutInflater inflater;
     private ArrayList<Document> documents;
     private OnDocumentItemClickListener onDocumentItemClickListener;
+    private OnDocumentItemLongClickListener onDocumentItemLongClickListener;
 
     class DocumentItemViewHolder extends RecyclerView.ViewHolder {
 
@@ -39,6 +40,15 @@ public class DocumentDataAdapter extends RecyclerView.Adapter<DocumentDataAdapte
                     onDocumentItemClickListener.onDocumentItemClick(document);
                 }
             });
+
+            itemView.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View view) {
+                    Document document = documents.get(getLayoutPosition());
+                    onDocumentItemLongClickListener.onDocumentLongItemClick(document);
+                    return false;
+                }
+            });
         }
 
     }
@@ -52,8 +62,16 @@ public class DocumentDataAdapter extends RecyclerView.Adapter<DocumentDataAdapte
         void onDocumentItemClick(Document document);
     }
 
+    public interface OnDocumentItemLongClickListener {
+        void onDocumentLongItemClick(Document document);
+    }
+
     public void setOnDocumentItemClickListener(OnDocumentItemClickListener onDocumentItemClickListener) {
         this.onDocumentItemClickListener = onDocumentItemClickListener;
+    }
+
+    public void setOnDocumentItemLongClickListener(OnDocumentItemLongClickListener onDocumentItemLongClickListener) {
+        this.onDocumentItemLongClickListener = onDocumentItemLongClickListener;
     }
 
     @Override

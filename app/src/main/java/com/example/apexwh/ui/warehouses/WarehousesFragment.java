@@ -57,7 +57,16 @@ public class WarehousesFragment extends Fragment {
                              @Nullable Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_warehouses, container, false);
 
-        mode = getArguments().getString("mode");
+        Bundle args = getArguments();
+
+        if (args != null) {
+
+            mode = args.getString("mode");
+
+        } else {
+
+            mode = "";
+        }
 
         progressBar = root.findViewById(R.id.progressBar);
 

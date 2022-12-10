@@ -73,18 +73,17 @@ public class ReturnsFragment extends Fragment {
             @Override
             public void onDocumentItemClick(Document document) {
 
-//                if (mode.equals("selectWarehouseSetting")) {
-//
-//                    Bundle bundle = new Bundle();
-//                    bundle.putString("ref", document.ref);
-//                    bundle.putString("description", document.description);
-//                    bundle.putString("mode", mode);
-//
-//                    Navigation.findNavController(getActivity(), R.id.nav_host_fragment_content_main).popBackStack();
-//                    Navigation.findNavController(getActivity(), R.id.nav_host_fragment_content_main).popBackStack();
-//                    Navigation.findNavController(getActivity(), R.id.nav_host_fragment_content_main).navigate(R.id.nav_settings, bundle);
-//                    Navigation.findNavController(getActivity(), R.id.nav_host_fragment_content_main).clearBackStack(R.id.nav_warehouses);
-//                }
+                Bundle bundle = new Bundle();
+                bundle.putString("ref", document.ref);
+                bundle.putString("name", document.name);
+                bundle.putString("nameStr", document.nameStr);
+                bundle.putString("number", document.number);
+                bundle.putString("date", document.date);
+                bundle.putString("description", document.description);
+                bundle.putString("mode", "return");
+
+                Navigation.findNavController(getActivity(), R.id.nav_host_fragment_content_main).navigate(R.id.nav_products, bundle);
+
             }
 
         });

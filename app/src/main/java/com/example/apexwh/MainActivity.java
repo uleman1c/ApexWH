@@ -1,6 +1,10 @@
 package com.example.apexwh;
 
+import android.Manifest;
+import android.app.Activity;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.view.WindowManager;
@@ -8,6 +12,7 @@ import android.view.WindowManager;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.navigation.NavigationView;
 
+import androidx.core.app.ActivityCompat;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -21,6 +26,9 @@ public class MainActivity extends AppCompatActivity {
 
     private AppBarConfiguration mAppBarConfiguration;
     private ActivityMainBinding binding;
+
+    private static final int RC_HANDLE_CAMERA_PERM = 2;
+    private static final int REQUEST = 112;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,7 +60,77 @@ public class MainActivity extends AppCompatActivity {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
+
+        int rc = ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA);
+        int rc2 = ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        if (rc == PackageManager.PERMISSION_GRANTED &&
+            rc2 == PackageManager.PERMISSION_GRANTED) {
+            //createCameraSource(autoFocus, useFlash);
+        } else {
+            requestCameraPermission();
+            requestExternalStoragePermission();
+        }
+
     }
+
+    private void requestCameraPermission() {
+//        Log.w(TAG, "Camera permission is not granted. Requesting permission");
+
+        final String[] permissions = new String[]{Manifest.permission.CAMERA};
+
+        if (!ActivityCompat.shouldShowRequestPermissionRationale(this,
+                Manifest.permission.CAMERA)) {
+            ActivityCompat.requestPermissions(this, permissions, RC_HANDLE_CAMERA_PERM);
+            return;
+        }
+
+//        final Activity thisActivity = this;
+//
+//        View.OnClickListener listener = new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                ActivityCompat.requestPermissions(thisActivity, permissions,
+//                        RC_HANDLE_CAMERA_PERM);
+//            }
+//        };
+
+//        findViewById(R.id.topLayout).setOnClickListener(listener);
+//        Snackbar.make(mGraphicOverlay, R.string.permission_camera_rationale,
+//                        Snackbar.LENGTH_INDEFINITE)
+//                .setAction(R.string.ok, listener)
+//                .show();
+    }
+
+    private void requestExternalStoragePermission() {
+//        Log.w(TAG, "Camera permission is not granted. Requesting permission");
+
+        final String[] permissions = new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE};
+
+        if (!ActivityCompat.shouldShowRequestPermissionRationale(this,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+            ActivityCompat.requestPermissions(this, permissions, REQUEST);
+            return;
+        }
+
+//        final Activity thisActivity = this;
+//
+//        View.OnClickListener listener = new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                ActivityCompat.requestPermissions(thisActivity, permissions,
+//                        RC_HANDLE_CAMERA_PERM);
+//            }
+//        };
+
+//        findViewById(R.id.topLayout).setOnClickListener(listener);
+//        Snackbar.make(mGraphicOverlay, R.string.permission_camera_rationale,
+//                        Snackbar.LENGTH_INDEFINITE)
+//                .setAction(R.string.ok, listener)
+//                .show();
+    }
+
+
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

@@ -1,5 +1,6 @@
 package com.example.apexwh.ui.returns;
 
+import androidx.core.content.FileProvider;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.content.Context;
@@ -102,7 +103,14 @@ public class ReturnsFragment extends Fragment {
             public void onDocumentLongItemClick(Document document) {
 
                 File file = new File(Environment.getExternalStorageDirectory(), UUID.randomUUID().toString() + ".jpg");
-                outputFileUri = Uri.fromFile(file);
+
+                outputFileUri = FileProvider.getUriForFile(
+                        getContext(),
+                        "com.example.apexwh.fileprovider",
+                        file);
+
+//                File file = new File(Environment.getExternalStorageDirectory(), UUID.randomUUID().toString() + ".jpg");
+//                outputFileUri = Uri.fromFile(file);
 
                 Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 

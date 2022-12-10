@@ -17,7 +17,7 @@ import com.example.apexwh.HttpClient;
 import com.example.apexwh.HttpRequestInterface;
 import com.example.apexwh.JsonProcs;
 import com.example.apexwh.R;
-import com.example.apexwh.Return;
+import com.example.apexwh.objects.Return;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -40,7 +40,7 @@ public class ReturnsFragment extends Fragment {
                              @Nullable Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_returns, container, false);
 
-        progressBar= root.findViewById(R.id.progressBar);
+        progressBar = root.findViewById(R.id.progressBar);
 
         returns = new ArrayList<>();
 

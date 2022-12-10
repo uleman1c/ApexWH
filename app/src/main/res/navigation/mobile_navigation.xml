@@ -37,4 +37,9 @@
         android:name="com.example.apexwh.ui.settings.SettingsFragment"
         android:label="Настройки"
         tools:layout="@layout/fragment_settings" />
+    <fragment
+        android:id="@+id/nav_warehouses"
+        android:name="com.example.apexwh.ui.warehouses.WarehousesFragment"
+        android:label="Склады"
+        tools:layout="@layout/fragment_warehouses" />
 </navigation>

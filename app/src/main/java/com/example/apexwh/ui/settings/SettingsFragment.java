@@ -7,11 +7,15 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.Navigation;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.TextView;
 
+import com.example.apexwh.DB;
 import com.example.apexwh.R;
 
 public class SettingsFragment extends Fragment {
@@ -25,7 +29,47 @@ public class SettingsFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_settings, container, false);
+        View root = inflater.inflate(R.layout.fragment_settings, container, false);
+
+        Bundle arguments = getArguments();
+
+        if (arguments != null){
+
+            String mode = arguments.getString("mode");
+            if (mode.equals("selectWarehouseSetting")){
+
+                DB db = new DB(getContext());
+                db.open();
+
+                db.updateConstant("warehouseId", arguments.getString("ref"));
+                db.updateConstant("warehouseDescription", arguments.getString("description"));
+
+                db.close();
+            }
+
+        }
+
+        Bundle settings = DB.getSettings(getContext());
+
+        TextView tvWarehouse = root.findViewById(R.id.tvWarehouse);
+        String warehouseDescription = settings.getString("warehouseDescription");
+        tvWarehouse.setText("Склад: " + (warehouseDescription ==  null ? "" : warehouseDescription));
+
+        root.findViewById(R.id.btnSelectWarehouse).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                Bundle bundle = new Bundle();
+                bundle.putString("mode", "selectWarehouseSetting");
+
+                Navigation.findNavController(getActivity(), R.id.nav_host_fragment_content_main).navigate(R.id.nav_warehouses, bundle);
+
+            }
+        });
+
+
+
+        return root;
     }
 
     @Override

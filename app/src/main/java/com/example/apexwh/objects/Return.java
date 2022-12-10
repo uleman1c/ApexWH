@@ -1,4 +1,6 @@
-package com.example.apexwh;
+package com.example.apexwh.objects;
+
+import com.example.apexwh.JsonProcs;
 
 import org.json.JSONObject;
 

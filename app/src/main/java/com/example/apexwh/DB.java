@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.os.Bundle;
 import android.os.Environment;
 import android.widget.Toast;
 
@@ -632,6 +633,24 @@ public class DB {
 
 
         return warehouseId != null;
+
+    }
+
+    public static Bundle getSettings(Context mCtx){
+
+        Bundle result = new Bundle();
+
+        DB db = new DB(mCtx);
+
+        db.open();
+
+        result.putString("warehouseId", db.getConstant("warehouseId"));
+        result.putString("warehouseDescription", db.getConstant("warehouseDescription"));
+
+        db.close();
+
+
+        return result;
 
     }
 

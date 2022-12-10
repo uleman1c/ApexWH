@@ -1,4 +1,4 @@
-package com.example.apexwh.ui.returns;
+package com.example.apexwh.ui.warehouses;
 
 import androidx.lifecycle.ViewModelProvider;
 
@@ -18,73 +18,68 @@ import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 
-import com.example.apexwh.DB;
 import com.example.apexwh.HttpClient;
 import com.example.apexwh.HttpRequestInterface;
 import com.example.apexwh.JsonProcs;
 import com.example.apexwh.R;
-import com.example.apexwh.objects.Document;
 import com.example.apexwh.objects.Reference;
 import com.example.apexwh.objects.Return;
 import com.example.apexwh.objects.Warehouse;
-import com.example.apexwh.ui.adapters.DocumentDataAdapter;
 import com.example.apexwh.ui.adapters.ReferenceDataAdapter;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.List;
 
-public class ReturnsFragment extends Fragment {
+public class WarehousesFragment extends Fragment {
 
-    private ReturnsViewModel mViewModel;
+    private WarehousesViewModel mViewModel;
 
-    public static ReturnsFragment newInstance() {
-        return new ReturnsFragment();
+    public static WarehousesFragment newInstance() {
+        return new WarehousesFragment();
     }
 
     private ProgressBar progressBar;
-    private ArrayList<Document> returns;
+    private ArrayList<Reference> warehouses;
 
-    private DocumentDataAdapter adapter;
+    private ReferenceDataAdapter adapter;
     private RecyclerView recyclerView;
     private EditText etFilter;
     private InputMethodManager imm;
 
-    private String warehouseId;
+    private String mode;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        View root = inflater.inflate(R.layout.fragment_returns, container, false);
+        View root = inflater.inflate(R.layout.fragment_warehouses, container, false);
 
-        Bundle settings = DB.getSettings(getContext());
-
-        warehouseId = settings.getString("warehouseId");
+        mode = getArguments().getString("mode");
 
         progressBar = root.findViewById(R.id.progressBar);
 
-        returns = new ArrayList<>();
+        warehouses = new ArrayList<>();
 
-        adapter = new DocumentDataAdapter(getContext(), returns);
-        adapter.setOnDocumentItemClickListener(new DocumentDataAdapter.OnDocumentItemClickListener() {
+        adapter = new ReferenceDataAdapter(getContext(), warehouses);
+        adapter.setOnReferenceItemClickListener(new ReferenceDataAdapter.OnReferenceItemClickListener() {
             @Override
-            public void onDocumentItemClick(Document document) {
+            public void onReferenceItemClick(Reference reference) {
 
-//                if (mode.equals("selectWarehouseSetting")) {
-//
-//                    Bundle bundle = new Bundle();
-//                    bundle.putString("ref", document.ref);
-//                    bundle.putString("description", document.description);
-//                    bundle.putString("mode", mode);
-//
-//                    Navigation.findNavController(getActivity(), R.id.nav_host_fragment_content_main).popBackStack();
-//                    Navigation.findNavController(getActivity(), R.id.nav_host_fragment_content_main).popBackStack();
-//                    Navigation.findNavController(getActivity(), R.id.nav_host_fragment_content_main).navigate(R.id.nav_settings, bundle);
-//                    Navigation.findNavController(getActivity(), R.id.nav_host_fragment_content_main).clearBackStack(R.id.nav_warehouses);
-//                }
+                if (mode.equals("selectWarehouseSetting")) {
+
+                    Bundle bundle = new Bundle();
+                    bundle.putString("ref", reference.ref);
+                    bundle.putString("description", reference.description);
+                    bundle.putString("mode", mode);
+
+                    Navigation.findNavController(getActivity(), R.id.nav_host_fragment_content_main).popBackStack();
+                    Navigation.findNavController(getActivity(), R.id.nav_host_fragment_content_main).popBackStack();
+                    Navigation.findNavController(getActivity(), R.id.nav_host_fragment_content_main).navigate(R.id.nav_settings, bundle);
+                    Navigation.findNavController(getActivity(), R.id.nav_host_fragment_content_main).clearBackStack(R.id.nav_warehouses);
+                }
             }
 
         });
@@ -128,16 +123,17 @@ public class ReturnsFragment extends Fragment {
 
         updateList(etFilter.getText().toString());
 
+
         return root;
     }
 
     private void updateList(String filter) {
 
-        returns.clear();
+        warehouses.clear();
 
         HttpClient httpClient = new HttpClient(getContext());
 
-        httpClient.request_get("/hs/dta/obj?request=getReturnsToAccept&warehouseId=" + warehouseId + "&filter=" + filter, new HttpRequestInterface() {
+        httpClient.request_get("/hs/dta/obj?request=getWarehouses&filter=" + filter, new HttpRequestInterface() {
             @Override
             public void setProgressVisibility(int visibility) {
 
@@ -156,13 +152,13 @@ public class ReturnsFragment extends Fragment {
 
                     JSONObject jsonObjectItem = JsonProcs.getItemJSONArray(jsonArrayResponses, 0);
 
-                    JSONArray jsonArrayObjects = JsonProcs.getJsonArrayFromJsonObject(jsonObjectItem, "ReturnsToAccept");
+                    JSONArray jsonArrayObjects = JsonProcs.getJsonArrayFromJsonObject(jsonObjectItem, "Warehouses");
 
                     for (int j = 0; j < jsonArrayObjects.length(); j++) {
 
                         JSONObject objectItem = JsonProcs.getItemJSONArray(jsonArrayObjects, j);
 
-                        returns.add(Document.DocumentFromJson(objectItem));
+                        warehouses.add(Warehouse.WarehouseFromJson(objectItem));
 
                     }
 
@@ -173,17 +169,12 @@ public class ReturnsFragment extends Fragment {
             }
 
         });
-
     }
-
-
-
-
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        mViewModel = new ViewModelProvider(this).get(ReturnsViewModel.class);
+        mViewModel = new ViewModelProvider(this).get(WarehousesViewModel.class);
         // TODO: Use the ViewModel
     }
 

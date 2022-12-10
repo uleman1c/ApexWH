@@ -32,4 +32,14 @@
         android:name="com.example.apexwh.ui.Inventarizations.InventarizationsFragment"
         android:label="Инвентаризации"
         tools:layout="@layout/fragment_inventarizations" />
+    <fragment
+        android:id="@+id/nav_settings"
+        android:name="com.example.apexwh.ui.settings.SettingsFragment"
+        android:label="Настройки"
+        tools:layout="@layout/fragment_settings" />
+    <fragment
+        android:id="@+id/nav_warehouses"
+        android:name="com.example.apexwh.ui.warehouses.WarehousesFragment"
+        android:label="Склады"
+        tools:layout="@layout/fragment_warehouses" />
 </navigation>

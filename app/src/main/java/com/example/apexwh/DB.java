@@ -17,6 +17,7 @@ import org.json.JSONArray;
 import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.UUID;
 
 import cz.msebera.android.httpclient.Header;
 import cz.msebera.android.httpclient.entity.mime.HttpMultipartMode;
@@ -575,12 +576,6 @@ public class DB {
                     + "shtrih_code text "
                     + ");");
 
-            db.execSQL("create table refs ("
-                    + "_id integer primary key autoincrement,"
-                    + "internal text, "
-                    + "external text "
-                    + ");");
-
             db.execSQL("create table requestsToSend ("
                     + "_id integer primary key autoincrement,"
                     + "method text, "
@@ -606,6 +601,26 @@ public class DB {
                 }
         }
     }
+
+    public static void onStart(Context mCtx){
+
+        DB db = new DB(mCtx);
+
+        db.open();
+
+        String appId = db.getConstant("appId");
+        if (appId == null) {
+
+            appId = UUID.randomUUID().toString();
+            db.updateConstant("appId", appId);
+
+        }
+
+        db.close();
+
+    }
+
+
 }
 
 

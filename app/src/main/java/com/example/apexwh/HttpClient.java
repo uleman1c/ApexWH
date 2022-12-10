@@ -72,31 +72,16 @@ public class HttpClient {
 
         requestParams = new JSONObject();
 
-//        DB db = new DB(mCtx);
-//
-//        db.open();
-//
-//        String prog_id = db.getConstant("prog_id");
-//        if (prog_id == null) {
-//
-//            prog_id = UUID.randomUUID().toString();
-//            db.updateConstant("prog_id", prog_id);
-//
-//        }
-//
-//        String base_name = db.getConstant("base_name");
-//        String user = db.getConstant("user");
-//        String pwd = db.getConstant("pwd");
-//
-//        db.close();
-//
-//        addParam("prog_id", prog_id);
-//        addParam("version", Ctx.getResources().getString(R.string.version));
-//
-//        setServerUrl(base_name, mCtx.getString(R.string.hs_wms));
+        DB db = new DB(mCtx);
 
+        db.open();
+
+        String appId = db.getConstant("appId");
+
+        db.close();
 
         client.addHeader("Authorization", "Basic " + Base64.getEncoder().encodeToString((Connections.user + ":" + Connections.password).getBytes(StandardCharsets.UTF_8)));
+        client.addHeader("appId", appId);
 
     }
 

@@ -38,7 +38,7 @@ public class ProductsFragment extends Fragment {
     }
 
     private ProgressBar progressBar;
-    private String ref;
+    private String ref, name;
 
     private ArrayList<DocumentLine> lines;
 
@@ -53,8 +53,9 @@ public class ProductsFragment extends Fragment {
         Bundle args = getArguments();
 
         ref = args.getString("ref");
+        name = args.getString("name");
 
-        ((TextView) root.findViewById(R.id.tvHeader)).setText(args.getString("name") + " № " + args.getString("number") + " от " + args.getString("date"));
+        ((TextView) root.findViewById(R.id.tvHeader)).setText(args.getString("nameStr") + " № " + args.getString("number") + " от " + args.getString("date"));
 
         progressBar = root.findViewById(R.id.progressBar);
 
@@ -82,7 +83,7 @@ public class ProductsFragment extends Fragment {
 
         HttpClient httpClient = new HttpClient(getContext());
 
-        httpClient.request_get("/hs/dta/obj?request=getLinesToAccept&orderId=" + ref, new HttpRequestInterface() {
+        httpClient.request_get("/hs/dta/obj?request=getLinesToAccept&name=" + name + "&id=" + ref, new HttpRequestInterface() {
             @Override
             public void setProgressVisibility(int visibility) {
 
@@ -101,7 +102,7 @@ public class ProductsFragment extends Fragment {
 
                     JSONObject jsonObjectItem = JsonProcs.getItemJSONArray(jsonArrayResponses, 0);
 
-                    JSONArray jsonArrayObjects = JsonProcs.getJsonArrayFromJsonObject(jsonObjectItem, "ReturnsToAccept");
+                    JSONArray jsonArrayObjects = JsonProcs.getJsonArrayFromJsonObject(jsonObjectItem, "LinesToAccept");
 
                     for (int j = 0; j < jsonArrayObjects.length(); j++) {
 

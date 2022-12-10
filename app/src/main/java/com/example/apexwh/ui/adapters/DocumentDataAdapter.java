@@ -67,7 +67,7 @@ public class DocumentDataAdapter extends RecyclerView.Adapter<DocumentDataAdapte
     public void onBindViewHolder(@NonNull DocumentItemViewHolder holder, int position) {
         Document document = documents.get(position);
 
-        holder.tvNumberDate.setText(document.name + " № " + document.number + " от " + document.date);
+        holder.tvNumberDate.setText(document.nameStr + " № " + document.number + " от " + document.date);
         holder.tvDescription.setText(document.description);
 
     }

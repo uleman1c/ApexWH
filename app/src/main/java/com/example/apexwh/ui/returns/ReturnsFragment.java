@@ -76,6 +76,7 @@ public class ReturnsFragment extends Fragment {
                 Bundle bundle = new Bundle();
                 bundle.putString("ref", document.ref);
                 bundle.putString("name", document.name);
+                bundle.putString("nameStr", document.nameStr);
                 bundle.putString("number", document.number);
                 bundle.putString("date", document.date);
                 bundle.putString("description", document.description);

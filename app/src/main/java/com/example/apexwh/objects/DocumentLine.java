@@ -2,16 +2,20 @@ package com.example.apexwh.objects;
 
 import com.example.apexwh.JsonProcs;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
+
+import java.util.ArrayList;
 
 public class DocumentLine {
 
-    public String productRef, productName, characterRef, characterName, seriesRef, seriesName, shtrihCode, shtrihCodeAdd;
+    public String productRef, productName, characterRef, characterName, seriesRef, seriesName;
+    public ArrayList<String> shtrihCodes;
     public Integer quantity, scanned, lineNumber;
 
 
     public DocumentLine(String productRef, String productName, String characterRef, String characterName, String seriesRef, String seriesName,
-                        Integer quantity, Integer scanned, String shtrihCode, Integer lineNumber, String shtrihCodeAdd) {
+                        Integer quantity, Integer scanned, ArrayList<String> shtrihCodes, Integer lineNumber) {
         this.productRef = productRef;
         this.productName = productName;
         this.characterRef = characterRef;
@@ -20,27 +24,40 @@ public class DocumentLine {
         this.seriesName = seriesName;
         this.quantity = quantity;
         this.scanned = scanned;
-        this.shtrihCode = shtrihCode;
-        this.shtrihCodeAdd = shtrihCodeAdd;
+        this.shtrihCodes = shtrihCodes;
         this.lineNumber = lineNumber;
     }
 
     public static DocumentLine DocumentLineFromJson(JSONObject task_item){
 
-        String productRef = JsonProcs.getStringFromJSON(task_item, "ProductRef");
-        String productName = JsonProcs.getStringFromJSON(task_item, "ProductName");
-        String characterRef = JsonProcs.getStringFromJSON(task_item, "CharacterRef");
-        String characterName = JsonProcs.getStringFromJSON(task_item, "CharacterName");
-        String seriesRef = JsonProcs.getStringFromJSON(task_item, "SeriesRef");
-        String seriesName = JsonProcs.getStringFromJSON(task_item, "SeriesName");
-        Integer quantity = JsonProcs.getIntegerFromJSON(task_item, "Quantity");
-        Integer scanned = JsonProcs.getIntegerFromJSON(task_item, "Scanned");
-        String shtrihCode = JsonProcs.getStringFromJSON(task_item, "ShtrihCode");
-        String shtrihCodeAdd = JsonProcs.getStringFromJSON(task_item, "ShtrihCodeAdd");
-        Integer lineNumber = JsonProcs.getIntegerFromJSON(task_item, "LineNumber");
+        String productRef = JsonProcs.getStringFromJSON(task_item, "productRef");
+        String productName = JsonProcs.getStringFromJSON(task_item, "productName");
+        String characterRef = JsonProcs.getStringFromJSON(task_item, "characterRef");
+        String characterName = JsonProcs.getStringFromJSON(task_item, "characterName");
+        String seriesRef = JsonProcs.getStringFromJSON(task_item, "seriesRef");
+        String seriesName = JsonProcs.getStringFromJSON(task_item, "seriesName");
+        Integer quantity = JsonProcs.getIntegerFromJSON(task_item, "quantity");
+        Integer scanned = JsonProcs.getIntegerFromJSON(task_item, "scanned");
+
+        JSONArray jsShtrihCodes = JsonProcs.getJsonArrayFromJsonObject(task_item, "shtrihCodes");
+
+        ArrayList<String> shtrihCodes = new ArrayList<>();
+
+        for (int j = 0; j < jsShtrihCodes.length(); j++) {
+
+            JSONObject objectItem = JsonProcs.getItemJSONArray(jsShtrihCodes, j);
+
+            shtrihCodes.add(JsonProcs.getStringFromJSON(objectItem, "shtrihCode"));
+
+        }
+
+
+
+
+        Integer lineNumber = JsonProcs.getIntegerFromJSON(task_item, "lineNumber");
 
         return new DocumentLine(productRef, productName, characterRef, characterName, seriesRef,  seriesName,
-                quantity, scanned, shtrihCode, lineNumber, shtrihCodeAdd);
+                quantity, scanned, shtrihCodes, lineNumber);
 
     }
 

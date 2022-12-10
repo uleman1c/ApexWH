@@ -23,14 +23,16 @@ public class DocumentLineAdapter extends RecyclerView.Adapter<DocumentLineAdapte
 
     class DocumentLineItemViewHolder extends RecyclerView.ViewHolder {
 
-        private TextView tvNumberDate;
-        private TextView tvDescription;
+        private TextView tvProduct;
+        private TextView tvShtrihCodes;
+        private TextView tvScanned;
 
         public DocumentLineItemViewHolder(View itemView) {
             super(itemView);
 
-            tvNumberDate = (TextView) itemView.findViewById(R.id.tvNumberDate);
-            tvDescription = (TextView) itemView.findViewById(R.id.tvDescription);
+            tvProduct = (TextView) itemView.findViewById(R.id.tvProduct);
+            tvShtrihCodes = (TextView) itemView.findViewById(R.id.tvShtrihCodes);
+            tvScanned = (TextView) itemView.findViewById(R.id.tvScanned);
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -58,8 +60,8 @@ public class DocumentLineAdapter extends RecyclerView.Adapter<DocumentLineAdapte
 
     @Override
     public DocumentLineItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        View view = inflater.inflate(R.layout.document_line_list_item, parent, false);
 
-        View view = inflater.inflate(R.layout.document_list_item, parent, false);
         return new DocumentLineItemViewHolder(view);
     }
 
@@ -67,9 +69,20 @@ public class DocumentLineAdapter extends RecyclerView.Adapter<DocumentLineAdapte
     public void onBindViewHolder(@NonNull DocumentLineItemViewHolder holder, int position) {
         DocumentLine documentLine = documentLines.get(position);
 
-        holder.tvNumberDate.setText(documentLine.productName);
-        holder.tvDescription.setText(documentLine.characterName);
+        holder.tvProduct.setText(documentLine.productName
+                + (documentLine.characterName.isEmpty() || documentLine.characterName.equals("Основная характеристика") ? "" : ", " + documentLine.characterName));
 
+        String allSK = "";
+
+        for (String curSK:   documentLine.shtrihCodes          ) {
+
+            allSK = allSK + (allSK.isEmpty() ? "" : ", ") + curSK;
+
+        }
+
+        holder.tvShtrihCodes.setText(allSK);
+
+        holder.tvScanned.setText(documentLine.scanned.toString() + " из " + documentLine.quantity.toString());
     }
 
     @Override

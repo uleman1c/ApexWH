@@ -2,22 +2,35 @@ package com.example.apexwh.ui.returns;
 
 import androidx.lifecycle.ViewModelProvider;
 
+import android.content.Context;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.Navigation;
+import androidx.recyclerview.widget.RecyclerView;
 
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
+import com.example.apexwh.DB;
 import com.example.apexwh.HttpClient;
 import com.example.apexwh.HttpRequestInterface;
 import com.example.apexwh.JsonProcs;
 import com.example.apexwh.R;
+import com.example.apexwh.objects.Document;
+import com.example.apexwh.objects.Reference;
 import com.example.apexwh.objects.Return;
+import com.example.apexwh.objects.Warehouse;
+import com.example.apexwh.ui.adapters.DocumentDataAdapter;
+import com.example.apexwh.ui.adapters.ReferenceDataAdapter;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -33,20 +46,98 @@ public class ReturnsFragment extends Fragment {
     }
 
     private ProgressBar progressBar;
-    private ArrayList<Return> returns;
+    private ArrayList<Document> returns;
+
+    private DocumentDataAdapter adapter;
+    private RecyclerView recyclerView;
+    private EditText etFilter;
+    private InputMethodManager imm;
+
+    private String warehouseId;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_returns, container, false);
 
+        Bundle settings = DB.getSettings(getContext());
+
+        warehouseId = settings.getString("warehouseId");
+
         progressBar = root.findViewById(R.id.progressBar);
 
         returns = new ArrayList<>();
 
+        adapter = new DocumentDataAdapter(getContext(), returns);
+        adapter.setOnDocumentItemClickListener(new DocumentDataAdapter.OnDocumentItemClickListener() {
+            @Override
+            public void onDocumentItemClick(Document document) {
+
+//                if (mode.equals("selectWarehouseSetting")) {
+//
+//                    Bundle bundle = new Bundle();
+//                    bundle.putString("ref", document.ref);
+//                    bundle.putString("description", document.description);
+//                    bundle.putString("mode", mode);
+//
+//                    Navigation.findNavController(getActivity(), R.id.nav_host_fragment_content_main).popBackStack();
+//                    Navigation.findNavController(getActivity(), R.id.nav_host_fragment_content_main).popBackStack();
+//                    Navigation.findNavController(getActivity(), R.id.nav_host_fragment_content_main).navigate(R.id.nav_settings, bundle);
+//                    Navigation.findNavController(getActivity(), R.id.nav_host_fragment_content_main).clearBackStack(R.id.nav_warehouses);
+//                }
+            }
+
+        });
+
+        recyclerView = root.findViewById(R.id.list);
+        recyclerView.setAdapter(adapter);
+
+        imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+
+        etFilter = root.findViewById(R.id.etFilter);
+        etFilter.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View view, int keyCode, KeyEvent keyEvent) {
+
+                if (keyEvent.getAction() == KeyEvent.ACTION_DOWN &&
+                        (keyCode == KeyEvent.KEYCODE_ENTER)) {
+
+                    String strCatName = etFilter.getText().toString();
+
+                    imm.hideSoftInputFromWindow(etFilter.getWindowToken(), 0);
+
+                    updateList(strCatName);
+
+                    return true;
+                }
+
+                return false;
+            }
+        });
+
+        root.findViewById(R.id.btnClear).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                etFilter.setText("");
+                updateList(etFilter.getText().toString());
+
+            }
+        });
+
+
+        updateList(etFilter.getText().toString());
+
+        return root;
+    }
+
+    private void updateList(String filter) {
+
+        returns.clear();
+
         HttpClient httpClient = new HttpClient(getContext());
 
-        httpClient.request_get("/hs/dta/obj?request=getKorrByFilter&filter=", new HttpRequestInterface() {
+        httpClient.request_get("/hs/dta/obj?request=getReturns&warehouseId=" + warehouseId + "&filter=" + filter, new HttpRequestInterface() {
             @Override
             public void setProgressVisibility(int visibility) {
 
@@ -61,47 +152,33 @@ public class ReturnsFragment extends Fragment {
 
                 if (JsonProcs.getBooleanFromJSON(jsonObjectResponse, "success")){
 
-                    JSONArray jsonArrayR = JsonProcs.getJsonArrayFromJsonObject(jsonObjectResponse, "responses");
+                    JSONArray jsonArrayResponses = JsonProcs.getJsonArrayFromJsonObject(jsonObjectResponse, "responses");
 
-                    JSONObject jsonObjectItem = JsonProcs.getItemJSONArray(jsonArrayR, 0);
+                    JSONObject jsonObjectItem = JsonProcs.getItemJSONArray(jsonArrayResponses, 0);
 
-                    JSONArray jsonArrayKorrs = JsonProcs.getJsonArrayFromJsonObject(jsonObjectItem, "KorrByFilter");
+                    JSONArray jsonArrayObjects = JsonProcs.getJsonArrayFromJsonObject(jsonObjectItem, "Returns");
 
-                    for (int j = 0; j < jsonArrayKorrs.length(); j++) {
+                    for (int j = 0; j < jsonArrayObjects.length(); j++) {
 
-                        JSONObject task_item = JsonProcs.getItemJSONArray(jsonArrayKorrs, j);
+                        JSONObject objectItem = JsonProcs.getItemJSONArray(jsonArrayObjects, j);
 
-                        returns.add(Return.ReturnFromJson(task_item));
+                        returns.add(Document.DocumentFromJson(objectItem));
 
                     }
+
+                    adapter.notifyDataSetChanged();
 
                 }
 
             }
 
-//            @Override
-//            public void processResponse(JSONObject response) {
-//
-//                JSONArray tasksJSON = ParseResponse.ArrayFromObject(response, "OrdersByFilter");
-//
-//                for (int j = 0; j < tasksJSON.length(); j++) {
-//
-//                    JSONObject task_item = ParseResponse.ObjectFromArray(tasksJSON, j);
-//
-//                    testDocuments.add(Order.OrderFromJson(task_item));
-//
-//                }
-//
-//
-//                adapter.notifyDataSetChanged();
-//            }
         });
 
-
-
-
-        return root;
     }
+
+
+
+
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {

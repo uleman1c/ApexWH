@@ -90,23 +90,77 @@ public class HttpClient {
 
         requestParams = new JSONObject();
 
-        DB db = new DB(mCtx);
-
-        db.open();
-
-        String appId = db.getConstant("appId");
-
-        db.close();
+        String appId = getDbConstant("appId");
 
         client.addHeader("Authorization", "Basic " + Base64.getEncoder().encodeToString((user + ":" + password).getBytes(StandardCharsets.UTF_8)));
         client.addHeader("appId", appId);
 
     }
 
+    public String getDbConstant(String constName) {
+        DB db = new DB(mCtx);
+
+        db.open();
+
+        String appId = db.getConstant(constName);
+
+        db.close();
+        return appId;
+    }
+
 
     public RequestHandle request_get(final String url, final HttpRequestInterface httpRequestInterface) {
 
         return client.get(mCtx, serverUrl + url, null, "application/json", new AsyncHttpResponseHandler(){
+
+            @Override
+            public void onStart() {
+                super.onStart();
+
+                httpRequestInterface.setProgressVisibility(View.VISIBLE);
+
+            }
+
+            @Override
+            public void onFinish() {
+                super.onFinish();
+
+                httpRequestInterface.setProgressVisibility(View.GONE);
+
+            }
+
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
+
+                httpRequestInterface.processResponse(getResponseString(responseBody));
+
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
+                showMessageOnFailure(statusCode, headers, responseBody, error);
+            }
+        });
+
+    }
+
+    public RequestHandle request_get(final String url, String methodName, final HttpRequestInterface httpRequestInterface) {
+
+        JSONArray params = new JSONArray();
+
+        JSONObject request = new JSONObject();
+        try {
+            request.put("request", methodName);
+            request.put("parameters", requestParams);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        params.put(request);
+
+        StringEntity entity = new StringEntity(params.toString(), "UTF-8");
+
+        return client.get(mCtx, serverUrl + url, entity, "application/json", new AsyncHttpResponseHandler(){
 
             @Override
             public void onStart() {
@@ -209,6 +263,26 @@ public class HttpClient {
         }
 
         return str[0];
+    }
+
+    public void addParam(String name, String value){
+
+        try {
+            requestParams.put(name, value);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    public void addParam(String name, int value){
+
+        try {
+            requestParams.put(name, value);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
     }
 
 

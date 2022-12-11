@@ -25,15 +25,14 @@ import com.example.apexwh.HttpRequestInterface;
 import com.example.apexwh.JsonProcs;
 import com.example.apexwh.R;
 import com.example.apexwh.SoundPlayer;
-import com.example.apexwh.objects.Document;
 import com.example.apexwh.objects.DocumentLine;
-import com.example.apexwh.ui.adapters.DocumentDataAdapter;
 import com.example.apexwh.ui.adapters.DocumentLineAdapter;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.UUID;
 
 public class ProductsFragment extends Fragment {
 
@@ -294,7 +293,7 @@ public class ProductsFragment extends Fragment {
 
             if (found && documentLine.quantity > documentLine.scanned) {
 
-                setShtrihCode(documentLine, i - 1);
+                setShtrihCode(strCatName, documentLine, i - 1);
 
             } else {
 
@@ -355,30 +354,54 @@ public class ProductsFragment extends Fragment {
 
     }
 
-    protected void setShtrihCode(final DocumentLine documentLine, final int pos) {
+    protected void setShtrihCode(String strCatName, final DocumentLine documentLine, final int pos) {
 
         onTaskItemFound(documentLine, pos);
 
-//        final HttpClient httpClient = new HttpClient(getContext());
-//        httpClient.addParam("ref", ref);
-//        httpClient.addParam("shtrihCode", curTask.shtrihCode);
-//        httpClient.addParam("boxNumber", boxNumber);
-//
-//        httpClient.postForResultDelayed("setScanTestProduct", new HttpRequestInterface() {
-//            @Override
-//            public void setProgressVisibility(int visibility) {
-//                progressBar.setVisibility(visibility);
-//            }
-//
-//            @Override
-//            public void processResponse(JSONObject response) {
-//
-//                if (httpClient.getBooleanFromJSON(response, "Success")) {
-//
-//                    if (pos != -1) {
-//
-//                        onTaskItemFound(curTask, pos);
+        final HttpClient httpClient = new HttpClient(getContext());
+        httpClient.addParam("id", UUID.randomUUID().toString());
+        httpClient.addParam("shtrihCode", strCatName);
+        httpClient.addParam("appId", httpClient.getDbConstant("appId"));
+        httpClient.addParam("quantity", 1);
+        httpClient.addParam("type1c", "doc");
+        httpClient.addParam("name1c", name);
+        httpClient.addParam("id1c", ref);
+        httpClient.addParam("comment", "");
+
+        httpClient.request_get("/hs/dta/obj", "setShtrihCode", new HttpRequestInterface() {
+                    @Override
+                    public void setProgressVisibility(int visibility) {
+
+                        progressBar.setVisibility(visibility);
+                    }
+
+                    @Override
+                    public void processResponse(String response) {
+
+                        JSONObject jsonObjectResponse = JsonProcs.getJSONObjectFromString(response);
+
+                        if (JsonProcs.getBooleanFromJSON(jsonObjectResponse, "success")) {
+
+                        }
+
+                    }
+                });
+
+//                httpClient.request_get("setShtrihCode", new HttpRequestInterface() {
+//                    @Override
+//                    public void setProgressVisibility(int visibility) {
+//                        progressBar.setVisibility(visibility);
 //                    }
+//
+//                    @Override
+//                    public void processResponse(JSONObject response) {
+//
+//                        if (httpClient.getBooleanFromJSON(response, "Success")) {
+//
+//                            if (pos != -1) {
+//
+//                                onTaskItemFound(curTask, pos);
+//                            }
 ////                    if (inputQuantity && httpClient.getBooleanFromJSON(response, "IsNew")) {
 ////
 ////                        inputQuantity(shtrihcode);
@@ -387,9 +410,9 @@ public class ProductsFragment extends Fragment {
 ////                        getShtrihs();
 ////                    }
 //
-//                }
-//            }
-//        });
+//                        }
+//                    }
+//                });
 
     }
 

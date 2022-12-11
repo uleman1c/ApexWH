@@ -24,6 +24,7 @@ import com.example.apexwh.HttpClient;
 import com.example.apexwh.HttpRequestInterface;
 import com.example.apexwh.JsonProcs;
 import com.example.apexwh.R;
+import com.example.apexwh.SoundPlayer;
 import com.example.apexwh.objects.Document;
 import com.example.apexwh.objects.DocumentLine;
 import com.example.apexwh.ui.adapters.DocumentDataAdapter;
@@ -56,6 +57,7 @@ public class ProductsFragment extends Fragment {
     private TextView scannedText, tvBoxNumber, tvExchStatus;
 
     Handler hSetFocus;
+    private SoundPlayer soundPlayer;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
@@ -85,6 +87,10 @@ public class ProductsFragment extends Fragment {
         imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
 
         imm.hideSoftInputFromWindow(actvShtrihCode.getWindowToken(), 0);
+
+        soundPlayer = new SoundPlayer(getContext(), R.raw.hrn05);
+        getActivity().setVolumeControlStream(soundPlayer.streamType);
+
 
         actvShtrihCode.setOnKeyListener(new View.OnKeyListener() {
                                             public boolean onKey(View v, int keyCode, KeyEvent event) {
@@ -262,80 +268,90 @@ public class ProductsFragment extends Fragment {
 
     private void scanShtrihCode(String strCatName) {
 
-        Boolean found = false;
-        DocumentLine documentLine = null;
+        if (strCatName.isEmpty()){
 
-        int i;
-        for (i = 0; i < lines.size() && !found; i++) {
+            soundPlayer.play();
 
-            documentLine = lines.get(i);
+        }
+        else {
 
-            found = documentLine.shtrihCodes.indexOf(strCatName) > -1;
+            Boolean found = false;
+            DocumentLine documentLine = null;
 
-            if (found) {
-//                scannedItems.get(0).product = curTask.productName;
-//                scannedItems.get(0).character = curTask.characterName;
+            int i;
+            for (i = 0; i < lines.size() && !found; i++) {
+
+                documentLine = lines.get(i);
+
+                found = documentLine.shtrihCodes.indexOf(strCatName) > -1;
+
+                if (found) {
+                    //                scannedItems.get(0).product = curTask.productName;
+                    //                scannedItems.get(0).character = curTask.characterName;
+                }
+
+            }
+
+            if (found && documentLine.quantity > documentLine.scanned) {
+
+                setShtrihCode(documentLine, i - 1);
+
+            } else {
+
+                soundPlayer.play();
+
+                //
+                //            if (!sendingInProgress) {
+                //
+                //                Integer index = toScan.indexOf(strCatName);
+                //
+                //                if (index < 0) {
+                //
+                //            error.setText("Не найден штрихкод " + strCatName);
+
+                //            setNotFoundShtrihCode(strCatName);
+                //
+                //            setProductNames();
+                //
+                //            if (createdFromTsd) {
+                //
+                //                setScannedText();
+                //
+                //            } else {
+                //
+                //                soundPlayer.play();
+                //            }
+                //                    Boolean present = false;
+                //                    for (ScannedShtrihCode scannedShtrihCode : scanned) {
+                //                        present = scannedShtrihCode.shtrihCode.equals(strCatName);
+                //                        if (present) break;
+                //                    }
+                //
+                //                    if (present) {
+                //
+                //                        askForRepeatCode(strCatName);
+                //
+                //                    } else {
+                //
+                //                        askForNotFoundCode(strCatName);
+                //
+                //                    }
+                //
+                //
+                //                } else {
+                //                    error.setText("");
+                //
+                //                    toScan.remove(strCatName);
+                //
+                //                    scanned.add(0, new ScannedShtrihCode(strCatName, "", false));
+                //                    adapterScanned.notifyDataSetChanged();
+                //
+                //                    setShtrihs(strCatName);
+                //                }
+                //            }
             }
 
         }
-
-        if (found && documentLine.quantity > documentLine.scanned) {
-
-            setShtrihCode(documentLine, i - 1);
-
-        } else {
-//
-//            if (!sendingInProgress) {
-//
-//                Integer index = toScan.indexOf(strCatName);
-//
-//                if (index < 0) {
-//
-//            error.setText("Не найден штрихкод " + strCatName);
-
-//            setNotFoundShtrihCode(strCatName);
-//
-//            setProductNames();
-//
-//            if (createdFromTsd) {
-//
-//                setScannedText();
-//
-//            } else {
-//
-//                soundPlayer.play();
-//            }
-//                    Boolean present = false;
-//                    for (ScannedShtrihCode scannedShtrihCode : scanned) {
-//                        present = scannedShtrihCode.shtrihCode.equals(strCatName);
-//                        if (present) break;
-//                    }
-//
-//                    if (present) {
-//
-//                        askForRepeatCode(strCatName);
-//
-//                    } else {
-//
-//                        askForNotFoundCode(strCatName);
-//
-//                    }
-//
-//
-//                } else {
-//                    error.setText("");
-//
-//                    toScan.remove(strCatName);
-//
-//                    scanned.add(0, new ScannedShtrihCode(strCatName, "", false));
-//                    adapterScanned.notifyDataSetChanged();
-//
-//                    setShtrihs(strCatName);
-//                }
-//            }
-        }
-
-
 
     }
 

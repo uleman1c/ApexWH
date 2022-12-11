@@ -46,7 +46,7 @@ public class DocumentDataAdapter extends RecyclerView.Adapter<DocumentDataAdapte
                 public boolean onLongClick(View view) {
                     Document document = documents.get(getLayoutPosition());
                     onDocumentItemLongClickListener.onDocumentLongItemClick(document);
-                    return false;
+                    return true;
                 }
             });
         }

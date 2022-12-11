@@ -1,8 +1,12 @@
 package com.example.apexwh.ui.returns;
 
+import static android.app.Activity.RESULT_OK;
+import static android.os.Environment.DIRECTORY_PICTURES;
+
 import androidx.core.content.FileProvider;
 import androidx.lifecycle.ViewModelProvider;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -24,8 +28,11 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.example.apexwh.Connections;
 import com.example.apexwh.DB;
+import com.example.apexwh.GetFoto;
 import com.example.apexwh.HttpClient;
 import com.example.apexwh.HttpRequestInterface;
 import com.example.apexwh.JsonProcs;
@@ -36,13 +43,26 @@ import com.example.apexwh.objects.Return;
 import com.example.apexwh.objects.Warehouse;
 import com.example.apexwh.ui.adapters.DocumentDataAdapter;
 import com.example.apexwh.ui.adapters.ReferenceDataAdapter;
+import com.loopj.android.http.AsyncHttpResponseHandler;
+import com.loopj.android.http.ResponseHandlerInterface;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.io.IOException;
+import java.net.URLEncoder;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.UUID;
+
+import cz.msebera.android.httpclient.HttpEntity;
+import cz.msebera.android.httpclient.entity.ContentType;
+import cz.msebera.android.httpclient.entity.FileEntity;
+import cz.msebera.android.httpclient.entity.mime.HttpMultipartMode;
+import cz.msebera.android.httpclient.entity.mime.MultipartEntityBuilder;
+import cz.msebera.android.httpclient.entity.mime.content.FileBody;
 
 public class ReturnsFragment extends Fragment {
 
@@ -64,7 +84,16 @@ public class ReturnsFragment extends Fragment {
 
     private Uri outputFileUri;
     private static final int CAMERA_REQUEST = 20;
+    public static final int CAMERA_REQUEST_FOTO = 0, CAMERA_REQUEST_ADAPTER = 1;
 
+    private File photo;
+
+    private String currentPhotoPath;
+
+    private String name = "";
+    private String ref = "";
+
+    GetFoto getFoto;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
@@ -78,6 +107,8 @@ public class ReturnsFragment extends Fragment {
         progressBar = root.findViewById(R.id.progressBar);
 
         returns = new ArrayList<>();
+
+        getFoto = new GetFoto(getContext());
 
         adapter = new DocumentDataAdapter(getContext(), returns);
         adapter.setOnDocumentItemClickListener(new DocumentDataAdapter.OnDocumentItemClickListener() {
@@ -102,21 +133,15 @@ public class ReturnsFragment extends Fragment {
             @Override
             public void onDocumentLongItemClick(Document document) {
 
-                File file = new File(Environment.getExternalStorageDirectory(), UUID.randomUUID().toString() + ".jpg");
+                name = document.name;
+                ref = document.ref;
 
-                outputFileUri = FileProvider.getUriForFile(
-                        getContext(),
-                        "com.example.apexwh.fileprovider",
-                        file);
+                if (getFoto.intent != null){
 
-//                File file = new File(Environment.getExternalStorageDirectory(), UUID.randomUUID().toString() + ".jpg");
-//                outputFileUri = Uri.fromFile(file);
+                    startActivityForResult(getFoto.intent, CAMERA_REQUEST_FOTO);
 
-                Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                }
 
-                cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, outputFileUri);
-
-                startActivityForResult(cameraIntent, CAMERA_REQUEST);
 
 
             }
@@ -219,5 +244,104 @@ public class ReturnsFragment extends Fragment {
         mViewModel = new ViewModelProvider(this).get(ReturnsViewModel.class);
         // TODO: Use the ViewModel
     }
+
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == CAMERA_REQUEST_FOTO) {
+
+            String arFileNameWithExt = getFoto.file.getName();
+            String arFileName = UUID.randomUUID().toString();
+
+            MultipartEntityBuilder builder = MultipartEntityBuilder.create();
+
+            /* example for setting a HttpMultipartMode */
+            builder.setMode(HttpMultipartMode.BROWSER_COMPATIBLE);
+
+            /* example for adding an image part */
+            FileBody fileBody = new FileBody(getFoto.file); //image should be a String
+            builder.addPart("icon", fileBody);
+
+            HttpEntity httpEntity = new FileEntity(getFoto.file, ContentType.IMAGE_JPEG);
+
+            HttpClient httpClient = new HttpClient(getActivity(), Connections.fileAddr, "", "");
+
+            httpClient.addHeader("type1c", "doc");
+            httpClient.addHeader("name1c", Uri.encode(name));
+            httpClient.addHeader("id1c", ref);
+            httpClient.addHeader("id", arFileName);
+            httpClient.addHeader("part", "1");
+            httpClient.addHeader("filename", Uri.encode(arFileNameWithExt));
+            httpClient.addHeader("size", String.valueOf(getFoto.file.length()));
+
+            httpClient.postBinary("/upfa/?ak=" + Connections.fileAccessKey, httpEntity, new HttpRequestInterface() {
+                @Override
+                public void setProgressVisibility(int visibility) {
+
+                    progressBar.setVisibility(visibility);
+
+                }
+
+                @Override
+                public void processResponse(String response) {
+
+                    JSONObject jsonObjectResponse = JsonProcs.getJSONObjectFromString(response);
+
+                    if(JsonProcs.getBooleanFromJSON(jsonObjectResponse, "success")){
+
+                        Toast.makeText(getContext(), "Фото сохранено", Toast.LENGTH_SHORT).show();
+
+                    }
+
+
+                }
+            });
+
+        }
+
+    }
+
+//    String currentPhotoPath;
+//
+//    private File createImageFile() throws IOException {
+//        // Create an image file name
+//        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+//        String imageFileName = "JPEG_" + timeStamp + "_";
+//        File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+//        File image = File.createTempFile(
+//                imageFileName,  /* prefix */
+//                ".jpg",         /* suffix */
+//                storageDir      /* directory */
+//        );
+//
+//        // Save a file: path for use with ACTION_VIEW intents
+//        currentPhotoPath = image.getAbsolutePath();
+//        return image;
+//    }
+//
+//
+//    private void dispatchTakePictureIntent() {
+//        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+//        // Ensure that there's a camera activity to handle the intent
+//        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+//            // Create the File where the photo should go
+//            File photoFile = null;
+//            try {
+//                photoFile = createImageFile();
+//            } catch (IOException ex) {
+//                // Error occurred while creating the File
+//            ...
+//            }
+//            // Continue only if the File was successfully created
+//            if (photoFile != null) {
+//                Uri photoURI = FileProvider.getUriForFile(this,
+//                        "com.example.android.fileprovider",
+//                        photoFile);
+//                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+//                startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+//            }
+//        }
+//    }
+
 
 }

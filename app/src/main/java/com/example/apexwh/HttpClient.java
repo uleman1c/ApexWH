@@ -52,6 +52,8 @@ public class HttpClient {
     private JSONObject requestParams;
 
     private String serverUrl = Connections.addr;
+    private String user = Connections.user;
+    private String password = Connections.password;
 
     private MultipartEntityBuilder builder;
     private String pathToFile;
@@ -61,6 +63,22 @@ public class HttpClient {
     public HttpClient(Context Ctx) {
 
         Init(Ctx, false);
+
+    }
+
+    public HttpClient(Context Ctx, String addr, String usr, String pwd) {
+
+        serverUrl = addr;
+        user = usr;
+        password = pwd;
+
+        Init(Ctx, false);
+
+    }
+
+    public void addHeader(String header, String value){
+
+        client.addHeader(header, value);
 
     }
 
@@ -80,7 +98,7 @@ public class HttpClient {
 
         db.close();
 
-        client.addHeader("Authorization", "Basic " + Base64.getEncoder().encodeToString((Connections.user + ":" + Connections.password).getBytes(StandardCharsets.UTF_8)));
+        client.addHeader("Authorization", "Basic " + Base64.getEncoder().encodeToString((user + ":" + password).getBytes(StandardCharsets.UTF_8)));
         client.addHeader("appId", appId);
 
     }
@@ -124,6 +142,40 @@ public class HttpClient {
     public RequestHandle postBinary(Context context, String url, HttpEntity entity, ResponseHandlerInterface responseHandler) {
 
         return client.post(context, serverUrl + url, entity, entity.getContentType().toString(), responseHandler);
+
+    }
+
+    public RequestHandle postBinary(String url, HttpEntity entity, HttpRequestInterface httpRequestInterface) {
+
+        return client.post(mCtx, serverUrl + url, entity, entity.getContentType().toString(), new AsyncHttpResponseHandler() {
+            @Override
+            public void onStart() {
+                super.onStart();
+
+                httpRequestInterface.setProgressVisibility(View.VISIBLE);
+
+            }
+
+            @Override
+            public void onFinish() {
+                super.onFinish();
+
+                httpRequestInterface.setProgressVisibility(View.GONE);
+
+            }
+
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
+
+                httpRequestInterface.processResponse(getResponseString(responseBody));
+
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
+                showMessageOnFailure(statusCode, headers, responseBody, error);
+            }
+        });
 
     }
 

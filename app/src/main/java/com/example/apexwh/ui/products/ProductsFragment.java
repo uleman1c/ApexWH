@@ -26,6 +26,8 @@ import com.example.apexwh.JsonProcs;
 import com.example.apexwh.R;
 import com.example.apexwh.SoundPlayer;
 import com.example.apexwh.objects.DocumentLine;
+import com.example.apexwh.ui.BundleMethodInterface;
+import com.example.apexwh.ui.Dialogs;
 import com.example.apexwh.ui.adapters.DocumentLineAdapter;
 
 import org.json.JSONArray;
@@ -142,6 +144,15 @@ public class ProductsFragment extends Fragment {
         adapter.setOnDocumentLineItemClickListener(new DocumentLineAdapter.OnDocumentLineItemClickListener() {
            @Override
            public void onDocumentLineItemClick(DocumentLine documentLine) {
+
+
+               Dialogs.showQuestionYesNoCancel(getContext(), getActivity(), new BundleMethodInterface() {
+                   @Override
+                   public void callMethod(Bundle arguments) {
+
+                   }
+               }, new Bundle(), "svv", "zxczxczxc");
+
 
            }
         });

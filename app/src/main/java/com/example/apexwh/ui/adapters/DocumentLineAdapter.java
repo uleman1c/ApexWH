@@ -20,6 +20,7 @@ public class DocumentLineAdapter extends RecyclerView.Adapter<DocumentLineAdapte
     private LayoutInflater inflater;
     private ArrayList<DocumentLine> documentLines;
     private OnDocumentLineItemClickListener onDocumentLineItemClickListener;
+    private OnDocumentLineItemLongClickListener onDocumentLineItemLongClickListener;
 
     class DocumentLineItemViewHolder extends RecyclerView.ViewHolder {
 
@@ -41,6 +42,15 @@ public class DocumentLineAdapter extends RecyclerView.Adapter<DocumentLineAdapte
                     onDocumentLineItemClickListener.onDocumentLineItemClick(documentLine);
                 }
             });
+
+            itemView.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View view) {
+                    DocumentLine documentLine = documentLines.get(getLayoutPosition());
+                    onDocumentLineItemLongClickListener.onDocumentLineItemLongClick(documentLine);
+                    return false;
+                }
+            });
         }
 
     }
@@ -54,8 +64,15 @@ public class DocumentLineAdapter extends RecyclerView.Adapter<DocumentLineAdapte
         void onDocumentLineItemClick(DocumentLine documentLine);
     }
 
+    public interface OnDocumentLineItemLongClickListener {
+        void onDocumentLineItemLongClick(DocumentLine documentLine);
+    }
     public void setOnDocumentLineItemClickListener(OnDocumentLineItemClickListener onDocumentLineItemClickListener) {
         this.onDocumentLineItemClickListener = onDocumentLineItemClickListener;
+    }
+
+    public void setOnDocumentLineItemLongClickListener(OnDocumentLineItemLongClickListener onDocumentLineItemLongClickListener) {
+        this.onDocumentLineItemLongClickListener = onDocumentLineItemLongClickListener;
     }
 
     @Override

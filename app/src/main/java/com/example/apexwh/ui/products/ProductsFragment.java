@@ -145,16 +145,40 @@ public class ProductsFragment extends Fragment {
            @Override
            public void onDocumentLineItemClick(DocumentLine documentLine) {
 
+               Bundle bundle = new Bundle();
+               bundle.putString("shtrihcode", documentLine.shtrihCodes.get(0));
 
                Dialogs.showQuestionYesNoCancel(getContext(), getActivity(), new BundleMethodInterface() {
                    @Override
                    public void callMethod(Bundle arguments) {
 
+                       scanShtrihCode(arguments.getString("shtrihcode"));
+
                    }
-               }, new Bundle(), "svv", "zxczxczxc");
+               }, bundle, "Ввести вручную?", "Ввод");
 
 
            }
+        });
+
+        adapter.setOnDocumentLineItemLongClickListener(new DocumentLineAdapter.OnDocumentLineItemLongClickListener() {
+            @Override
+            public void onDocumentLineItemLongClick(DocumentLine documentLine) {
+
+                Bundle bundle = new Bundle();
+                bundle.putString("shtrihcode", documentLine.shtrihCodes.get(0));
+
+                Dialogs.showQuestionYesNoCancel(getContext(), getActivity(), new BundleMethodInterface() {
+                    @Override
+                    public void callMethod(Bundle arguments) {
+
+                        scanShtrihCode(arguments.getString("shtrihcode"));
+
+                    }
+                }, bundle, "Ввести вручную long?", "Ввод");
+
+
+            }
         });
 
         recyclerView = root.findViewById(R.id.list);

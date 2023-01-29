@@ -8,6 +8,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Handler;
@@ -106,7 +107,7 @@ public class ProductsFragment extends Fragment {
 
                                                     imm.hideSoftInputFromWindow(actvShtrihCode.getWindowToken(), 0);
 
-                                                    scanShtrihCode(strCatName);
+                                                    scanShtrihCode(strCatName, 1);
 
                                                     return true;
                                                 }
@@ -152,7 +153,7 @@ public class ProductsFragment extends Fragment {
                    @Override
                    public void callMethod(Bundle arguments) {
 
-                       scanShtrihCode(arguments.getString("shtrihcode"));
+                       scanShtrihCode(arguments.getString("shtrihcode"), 1);
 
                    }
                }, bundle, "Ввести вручную?", "Ввод");
@@ -167,15 +168,25 @@ public class ProductsFragment extends Fragment {
 
                 Bundle bundle = new Bundle();
                 bundle.putString("shtrihcode", documentLine.shtrihCodes.get(0));
+                bundle.putInt("toScan", documentLine.quantity - documentLine.scanned);
+                bundle.putString("productRef", documentLine.productRef);
 
-                Dialogs.showQuestionYesNoCancel(getContext(), getActivity(), new BundleMethodInterface() {
+                Dialogs.showProductMenu(getContext(), getActivity(), new BundleMethodInterface() {
                     @Override
                     public void callMethod(Bundle arguments) {
 
-                        scanShtrihCode(arguments.getString("shtrihcode"));
+                        if (arguments.getString("btn").equals("Foto")){
+
+                            Navigation.findNavController(getActivity(), R.id.nav_host_fragment_content_main).navigate(R.id.nav_gallery, arguments);
+
+                        } else {
+
+                            showInputNumber(arguments.getString("shtrihcode"), arguments.getInt("toScan"));
+
+                        }
 
                     }
-                }, bundle, "Ввести вручную long?", "Ввод");
+                }, bundle, "Выберите", "Меню");
 
 
             }
@@ -189,9 +200,26 @@ public class ProductsFragment extends Fragment {
         return root;
     }
 
-    private void onTaskItemFound(DocumentLine taskItem, Integer pos) {
+    private void showInputNumber(String shtrihcode, int toScan){
 
-        taskItem.scanned = taskItem.scanned + 1;
+        Bundle bundle = new Bundle();
+        bundle.putString("shtrihcode", shtrihcode);
+
+        Dialogs.showInputQuantity(getContext(), toScan, getActivity(), new BundleMethodInterface() {
+            @Override
+            public void callMethod(Bundle arguments) {
+
+                scanShtrihCode(arguments.getString("shtrihcode"), arguments.getInt("quantity"));
+
+            }
+        }, bundle, "Введите", "Ввод количества");
+
+
+    }
+
+    private void onTaskItemFound(DocumentLine taskItem, Integer pos, Integer quantity) {
+
+        taskItem.scanned = taskItem.scanned + quantity;
 
         setScannedText();
 
@@ -300,7 +328,7 @@ public class ProductsFragment extends Fragment {
         scannedText.setText(scanned.toString() + (modeFrom ? " из " + quantity.toString() + ", " + (quantity == 0 ? 0 : (scanned * 100 / quantity)) + "%" : ""));
     }
 
-    private void scanShtrihCode(String strCatName) {
+    private void scanShtrihCode(String strCatName, int quantity) {
 
         if (strCatName.isEmpty()){
 
@@ -328,7 +356,7 @@ public class ProductsFragment extends Fragment {
 
             if (found && documentLine.quantity > documentLine.scanned) {
 
-                setShtrihCode(strCatName, documentLine, i - 1);
+                setShtrihCode(strCatName, documentLine, i - 1, quantity);
 
             } else {
 
@@ -389,15 +417,15 @@ public class ProductsFragment extends Fragment {
 
     }
 
-    protected void setShtrihCode(String strCatName, final DocumentLine documentLine, final int pos) {
+    protected void setShtrihCode(String strCatName, final DocumentLine documentLine, final int pos, int quantity) {
 
-        onTaskItemFound(documentLine, pos);
+        onTaskItemFound(documentLine, pos, quantity);
 
         final HttpClient httpClient = new HttpClient(getContext());
         httpClient.addParam("id", UUID.randomUUID().toString());
         httpClient.addParam("shtrihCode", strCatName);
         httpClient.addParam("appId", httpClient.getDbConstant("appId"));
-        httpClient.addParam("quantity", 1);
+        httpClient.addParam("quantity", quantity);
         httpClient.addParam("type1c", "doc");
         httpClient.addParam("name1c", name);
         httpClient.addParam("id1c", ref);

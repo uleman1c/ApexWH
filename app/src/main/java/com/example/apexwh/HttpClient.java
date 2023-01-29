@@ -52,6 +52,8 @@ public class HttpClient {
     private JSONObject requestParams;
 
     private String serverUrl = Connections.addr;
+
+    private String serverUrlApx = Connections.addrApx;
     private String user = Connections.user;
     private String password = Connections.password;
 
@@ -112,6 +114,40 @@ public class HttpClient {
     public RequestHandle request_get(final String url, final HttpRequestInterface httpRequestInterface) {
 
         return client.get(mCtx, serverUrl + url, null, "application/json", new AsyncHttpResponseHandler(){
+
+            @Override
+            public void onStart() {
+                super.onStart();
+
+                httpRequestInterface.setProgressVisibility(View.VISIBLE);
+
+            }
+
+            @Override
+            public void onFinish() {
+                super.onFinish();
+
+                httpRequestInterface.setProgressVisibility(View.GONE);
+
+            }
+
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
+
+                httpRequestInterface.processResponse(getResponseString(responseBody));
+
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
+                showMessageOnFailure(statusCode, headers, responseBody, error);
+            }
+        });
+
+    }
+    public RequestHandle request_get_apx(final String url, final HttpRequestInterface httpRequestInterface) {
+
+        return client.get(mCtx, serverUrlApx + url, null, "application/json", new AsyncHttpResponseHandler(){
 
             @Override
             public void onStart() {

@@ -6,16 +6,17 @@ import org.json.JSONObject;
 
 public class Document {
 
-    public String ref, name, nameStr, number, date, description;
+    public String ref, name, nameStr, number, date, description, status;
 
 
-    public Document(String ref, String name, String nameStr, String number, String date, String description) {
+    public Document(String ref, String name, String nameStr, String number, String date, String description, String status) {
         this.ref = ref;
         this.name = name;
         this.nameStr = nameStr;
         this.number = number;
         this.date = date;
         this.description = description;
+        this.status = status;
     }
 
     public static Document DocumentFromJson(JSONObject task_item) {
@@ -26,10 +27,11 @@ public class Document {
         String number = JsonProcs.getStringFromJSON(task_item, "number");
         String date = JsonProcs.getStringFromJSON(task_item, "date");
         String description = JsonProcs.getStringFromJSON(task_item, "description");
+        String status = JsonProcs.getStringFromJSON(task_item, "status");
 
         date = date.substring(6, 8) + "." + date.substring(4, 6) + "." + date.substring(0, 4);
 
-        return new Document(ref, name, nameStr, number, date, description);
+        return new Document(ref, name, nameStr, number, date, description, status);
 
 
     }

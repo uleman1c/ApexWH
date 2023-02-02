@@ -1,11 +1,13 @@
 package com.example.apexwh.ui.adapters;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import androidx.annotation.ColorInt;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -26,12 +28,14 @@ public class DocumentDataAdapter extends RecyclerView.Adapter<DocumentDataAdapte
 
         private TextView tvNumberDate;
         private TextView tvDescription;
+        private TextView tvStatus;
 
         public DocumentItemViewHolder(View itemView) {
             super(itemView);
 
             tvNumberDate = (TextView) itemView.findViewById(R.id.tvNumberDate);
             tvDescription = (TextView) itemView.findViewById(R.id.tvDescription);
+            tvStatus = (TextView) itemView.findViewById(R.id.tvStatus);
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -87,6 +91,19 @@ public class DocumentDataAdapter extends RecyclerView.Adapter<DocumentDataAdapte
 
         holder.tvNumberDate.setText(document.nameStr + " № " + document.number + " от " + document.date);
         holder.tvDescription.setText(document.description);
+
+        if (document.status.isEmpty()){
+
+            holder.tvStatus.setText("Новый");
+            holder.tvStatus.setBackgroundColor(Color.parseColor("#ffffff"));
+
+
+        } else if (document.status.equals("closed")){
+
+            holder.tvStatus.setText("Закрыт");
+            holder.tvStatus.setBackgroundColor(Color.parseColor("#00ff00"));
+        }
+
 
     }
 

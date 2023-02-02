@@ -356,7 +356,55 @@ public class ProductsFragment extends Fragment {
 
             if (found && documentLine.quantity > documentLine.scanned) {
 
-                setShtrihCode(strCatName, documentLine, i - 1, quantity);
+                setShtrihCode(strCatName, documentLine, i - 1, quantity, new BundleMethodInterface() {
+                    @Override
+                    public void callMethod(Bundle arguments) {
+
+                        Integer totalToScan = 0;
+
+                        for ( DocumentLine line : lines
+                             ) {
+
+                            totalToScan = totalToScan + line.quantity - line.scanned;
+
+                        }
+
+                        if (totalToScan == 0){
+
+                            Dialogs.showQuestionYesNoCancel(getContext(), getActivity(), new BundleMethodInterface() {
+                                @Override
+                                public void callMethod(Bundle arguments) {
+
+                                    final HttpClient httpClient = new HttpClient(getContext());
+                                    httpClient.addParam("id", UUID.randomUUID().toString());
+                                    httpClient.addParam("appId", httpClient.getDbConstant("appId"));
+                                    httpClient.addParam("type1c", "doc");
+                                    httpClient.addParam("name1c", name);
+                                    httpClient.addParam("id1c", ref);
+                                    httpClient.addParam("status", "closed");
+
+                                    httpClient.request_get("/hs/dta/obj", "setDocumentStatus", new HttpRequestInterface() {
+                                        @Override
+                                        public void setProgressVisibility(int visibility) {
+
+                                        }
+
+                                        @Override
+                                        public void processResponse(String response) {
+
+                                            Navigation.findNavController(getActivity(), R.id.nav_host_fragment_content_main).popBackStack();
+
+                                        }
+                                    });
+
+
+                                }
+                            }, new Bundle(), "Завершить документ?", "Завершить");
+                        }
+
+
+                    }
+                });
 
             } else {
 
@@ -417,7 +465,7 @@ public class ProductsFragment extends Fragment {
 
     }
 
-    protected void setShtrihCode(String strCatName, final DocumentLine documentLine, final int pos, int quantity) {
+    protected void setShtrihCode(String strCatName, final DocumentLine documentLine, final int pos, int quantity, BundleMethodInterface bundleMethodInterface) {
 
         onTaskItemFound(documentLine, pos, quantity);
 
@@ -444,6 +492,8 @@ public class ProductsFragment extends Fragment {
                         JSONObject jsonObjectResponse = JsonProcs.getJSONObjectFromString(response);
 
                         if (JsonProcs.getBooleanFromJSON(jsonObjectResponse, "success")) {
+
+                            bundleMethodInterface.callMethod(new Bundle());
 
                         }
 

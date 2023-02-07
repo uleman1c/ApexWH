@@ -83,6 +83,43 @@ public class ProductsFragment extends Fragment {
                     @Override
                     public void callMethod(Bundle arguments) {
 
+                        final HttpClient httpClient = new HttpClient(getContext());
+                        httpClient.addParam("id", UUID.randomUUID().toString());
+                        httpClient.addParam("appId", httpClient.getDbConstant("appId"));
+                        httpClient.addParam("quantity", 1);
+                        httpClient.addParam("type1c", "doc");
+                        httpClient.addParam("name1c", name);
+                        httpClient.addParam("id1c", ref);
+                        httpClient.addParam("comment", "");
+                        httpClient.addParam("productRef", productRef);
+                        httpClient.addParam("characterRef", characterRef);
+                        httpClient.addParam("characteristicRefNew", characteristicRef);
+                        httpClient.addParam("characteristicDescriptionNew", characteristicDescription);
+
+                        httpClient.request_get("/hs/dta/obj", "setChangeCharacteristic", new HttpRequestInterface() {
+                            @Override
+                            public void setProgressVisibility(int visibility) {
+
+                                progressBar.setVisibility(visibility);
+                            }
+
+                            @Override
+                            public void processResponse(String response) {
+
+                                JSONObject jsonObjectResponse = JsonProcs.getJSONObjectFromString(response);
+
+                                if (JsonProcs.getBooleanFromJSON(jsonObjectResponse, "success")) {
+
+                                    updateList();
+
+                                    //bundleMethodInterface.callMethod(new Bundle());
+
+                                }
+
+                            }
+                        });
+
+
                     }
                 }, bundle, "Номенклатура " + productName + ": заменить характеристику (" + characterName + ") на (" + characteristicDescription + ")",
                         "Замена характеристики");

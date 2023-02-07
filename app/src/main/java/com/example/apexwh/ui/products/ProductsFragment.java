@@ -179,9 +179,13 @@ public class ProductsFragment extends Fragment {
 
                             Navigation.findNavController(getActivity(), R.id.nav_host_fragment_content_main).navigate(R.id.nav_gallery, arguments);
 
-                        } else {
+                        } else if (arguments.getString("btn").equals("InputNumber")) {
 
                             showInputNumber(arguments.getString("shtrihcode"), arguments.getInt("toScan"));
+
+                        } else if (arguments.getString("btn").equals("ChangeCharcteristic")) {
+
+                            //showInputNumber(arguments.getString("shtrihcode"), arguments.getInt("toScan"));
 
                         }
 

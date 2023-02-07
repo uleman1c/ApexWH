@@ -115,6 +115,19 @@ public class Dialogs {
             }
         });
 
+        view.findViewById(R.id.btnChangeCharcteristic).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                arguments.putString("btn", "ChangeCharcteristic");
+
+                bundleMethodInterface.callMethod(arguments);
+
+                alertDialog.cancel();
+
+            }
+        });
+
         alertDialog.show();
 
 

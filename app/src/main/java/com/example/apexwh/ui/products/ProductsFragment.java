@@ -1,5 +1,6 @@
 package com.example.apexwh.ui.products;
 
+import androidx.fragment.app.FragmentResultListener;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.content.Context;
@@ -61,9 +62,35 @@ public class ProductsFragment extends Fragment {
     Handler hSetFocus;
     private SoundPlayer soundPlayer;
 
+
+
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
+
+        getParentFragmentManager().setFragmentResultListener("selectCharacteristic", this, new FragmentResultListener() {
+            @Override
+            public void onFragmentResult(@NonNull String requestKey, @NonNull Bundle bundle) {
+
+                String characteristicRef = bundle.getString("characteristicRef");
+                String characteristicDescription = bundle.getString("characteristicDescription");
+                String productRef = bundle.getString("productRef");
+                String productName = bundle.getString("productName");
+                String characterRef = bundle.getString("characterRef");
+                String characterName = bundle.getString("characterName");
+
+                Dialogs.showQuestionYesNoCancel(getContext(), getActivity(), new BundleMethodInterface() {
+                    @Override
+                    public void callMethod(Bundle arguments) {
+
+                    }
+                }, bundle, "Номенклатура " + productName + ": заменить характеристику (" + characterName + ") на (" + characteristicDescription + ")",
+                        "Замена характеристики");
+
+            }
+        });
+
+
         View root = inflater.inflate(R.layout.fragment_products, container, false);
 
         Bundle args = getArguments();
@@ -170,6 +197,9 @@ public class ProductsFragment extends Fragment {
                 bundle.putString("shtrihcode", documentLine.shtrihCodes.get(0));
                 bundle.putInt("toScan", documentLine.quantity - documentLine.scanned);
                 bundle.putString("productRef", documentLine.productRef);
+                bundle.putString("productName", documentLine.productName);
+                bundle.putString("characterRef", documentLine.characterRef);
+                bundle.putString("characterName", documentLine.characterName);
 
                 Dialogs.showProductMenu(getContext(), getActivity(), new BundleMethodInterface() {
                     @Override
@@ -185,7 +215,7 @@ public class ProductsFragment extends Fragment {
 
                         } else if (arguments.getString("btn").equals("ChangeCharcteristic")) {
 
-                            //showInputNumber(arguments.getString("shtrihcode"), arguments.getInt("toScan"));
+                            Navigation.findNavController(getActivity(), R.id.nav_host_fragment_content_main).navigate(R.id.nav_characteristics, arguments);
 
                         }
 

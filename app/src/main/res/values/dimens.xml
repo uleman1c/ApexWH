@@ -6,4 +6,5 @@
     <dimen name="nav_header_height">176dp</dimen>
     <dimen name="fab_margin">16dp</dimen>
     <dimen name="cast_expanded_controller_margin_between_seek_bar_and_control_buttons">4</dimen>
+    <dimen name="text_margin">16dp</dimen>
 </resources>

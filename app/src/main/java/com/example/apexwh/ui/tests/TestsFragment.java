@@ -1,38 +1,116 @@
 package com.example.apexwh.ui.tests;
 
-import androidx.lifecycle.ViewModelProvider;
-
-import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-
-import android.view.LayoutInflater;
+import android.content.Context;
 import android.view.View;
-import android.view.ViewGroup;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 
+import com.example.apexwh.HttpClient;
+import com.example.apexwh.HttpRequestInterface;
+import com.example.apexwh.JsonProcs;
 import com.example.apexwh.R;
+import com.example.apexwh.objects.Document;
+import com.example.apexwh.objects.Test;
+import com.example.apexwh.ui.adapters.DataAdapter;
+import com.example.apexwh.ui.adapters.ListFragment;
 
-public class TestsFragment extends Fragment {
+import org.json.JSONArray;
+import org.json.JSONObject;
 
-    private TestsViewModel mViewModel;
+import java.security.AccessController;
+import java.util.ArrayList;
 
-    public static TestsFragment newInstance() {
-        return new TestsFragment();
+public class TestsFragment extends ListFragment<Test>{
+
+
+    public TestsFragment() {
+
+        super(R.layout.test_list_item);
+
+        setInitViewsMaker(new DataAdapter.InitViewsMaker() {
+            @Override
+            public void init(View itemView, ArrayList<TextView> textViews) {
+
+                textViews.add(itemView.findViewById(R.id.tvNumberDate));
+                textViews.add(itemView.findViewById(R.id.tvDescription));
+                textViews.add(itemView.findViewById(R.id.tvStatus));
+
+            }
+        });
+
+        setDrawViewHolder(new DataAdapter.DrawViewHolder<Test>() {
+            @Override
+            public void draw(DataAdapter.ItemViewHolder holder, Test document) {
+
+                ((TextView) holder.getTextViews().get(0)).setText(document.nameStr + " № " + document.number + " от " + document.date);
+                ((TextView) holder.getTextViews().get(1)).setText(document.description);
+
+//                if (document.status.isEmpty()){
+//
+//                    holder.tvStatus.setText("Новый");
+//                    holder.tvStatus.setBackgroundColor(Color.parseColor("#ffffff"));
+//
+//
+//                } else if (document.status.equals("closed")){
+//
+//                    holder.tvStatus.setText("Закрыт");
+//                    holder.tvStatus.setBackgroundColor(Color.parseColor("#00ff00"));
+//                }
+
+
+
+            }
+        });
+
+        setListUpdater(new ListUpdater() {
+            @Override
+            public void update(ArrayList items, ProgressBar progressBar, DataAdapter adapter, String filter) {
+
+                items.clear();
+
+                HttpClient httpClient = new HttpClient(getContext());
+
+                httpClient.request_get("/hs/dta/obj?request=getReturnsToAccept&warehouseId=" + getWarehouseId() + "&filter=" + filter, new HttpRequestInterface() {
+                    @Override
+                    public void setProgressVisibility(int visibility) {
+
+                        progressBar.setVisibility(visibility);
+
+                    }
+
+                    @Override
+                    public void processResponse(String response) {
+
+                        JSONObject jsonObjectResponse = JsonProcs.getJSONObjectFromString(response);
+
+                        if (JsonProcs.getBooleanFromJSON(jsonObjectResponse, "success")){
+
+                            JSONArray jsonArrayResponses = JsonProcs.getJsonArrayFromJsonObject(jsonObjectResponse, "responses");
+
+                            JSONObject jsonObjectItem = JsonProcs.getItemJSONArray(jsonArrayResponses, 0);
+
+                            JSONArray jsonArrayObjects = JsonProcs.getJsonArrayFromJsonObject(jsonObjectItem, "ReturnsToAccept");
+
+                            for (int j = 0; j < jsonArrayObjects.length(); j++) {
+
+                                JSONObject objectItem = JsonProcs.getItemJSONArray(jsonArrayObjects, j);
+
+                                items.add(Test.TestFromJson(objectItem));
+
+                            }
+
+                            adapter.notifyDataSetChanged();
+
+                        }
+
+                    }
+
+                });
+
+
+
+            }
+        });
+
     }
-
-    @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
-                             @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_tests, container, false);
-    }
-
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        mViewModel = new ViewModelProvider(this).get(TestsViewModel.class);
-        // TODO: Use the ViewModel
-    }
-
 }

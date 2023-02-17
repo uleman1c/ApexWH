@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -15,6 +16,8 @@ import androidx.navigation.Navigation;
 import com.example.apexwh.DB;
 import com.example.apexwh.R;
 import com.example.apexwh.databinding.FragmentHomeBinding;
+
+import java.util.ArrayList;
 
 public class HomeFragment extends Fragment {
 
@@ -55,15 +58,39 @@ public class HomeFragment extends Fragment {
             }
         });
 
+        binding.btnTest.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                Navigation.findNavController(getActivity(), R.id.nav_host_fragment_content_main).navigate(R.id.nav_tests);
+
+            }
+        });
+
+        binding.btnMovers.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                Navigation.findNavController(getActivity(), R.id.nav_host_fragment_content_main).navigate(R.id.nav_movers);
+
+            }
+        });
+
         if(!DB.isSettingsExist(getContext())){
 
-            binding.btnReturns.setBackgroundColor(getResources().getColor(R.color.gray, null));
-            binding.btnReturns.setTextColor(getResources().getColor(R.color.light_gray, null));
-            binding.btnReturns.setClickable(false);
+            ArrayList<Button> buttons = new ArrayList<>();
+            buttons.add(binding.btnReturns);
+            buttons.add(binding.btnInvents);
+            buttons.add(binding.btnTest);
+            buttons.add(binding.btnMovers);
 
-            binding.btnInvents.setBackgroundColor(getResources().getColor(R.color.gray, null));
-            binding.btnInvents.setTextColor(getResources().getColor(R.color.light_gray, null));
-            binding.btnInvents.setClickable(false);
+            for (Button curBtn: buttons
+                 ) {
+
+                curBtn.setBackgroundColor(getResources().getColor(R.color.gray, null));
+                curBtn.setTextColor(getResources().getColor(R.color.light_gray, null));
+                curBtn.setClickable(false);
+            }
 
         }
 

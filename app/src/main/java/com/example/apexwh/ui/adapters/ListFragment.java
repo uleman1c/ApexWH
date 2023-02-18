@@ -39,6 +39,10 @@ public class ListFragment<T> extends Fragment {
     private ProgressBar progressBar;
     private ArrayList<T> items;
 
+    public DataAdapter getAdapter() {
+        return adapter;
+    }
+
     private DataAdapter adapter;
     private RecyclerView recyclerView;
     private EditText etFilter;
@@ -56,17 +60,17 @@ public class ListFragment<T> extends Fragment {
 
     private ListUpdater listUpdater;
 
-    public void setInitViewsMaker(DataAdapter.InitViewsMaker initViewsMaker) {
-        this.initViewsMaker = initViewsMaker;
-    }
+//    public void setInitViewsMaker(DataAdapter.InitViewsMaker initViewsMaker) {
+//        this.initViewsMaker = initViewsMaker;
+//    }
+//
+//    private DataAdapter.InitViewsMaker initViewsMaker;
 
-    private DataAdapter.InitViewsMaker initViewsMaker;
-
-    public void setDrawViewHolder(DataAdapter.DrawViewHolder drawViewHolder) {
-        this.drawViewHolder = drawViewHolder;
-    }
-
-    private DataAdapter.DrawViewHolder drawViewHolder;
+//    public void setDrawViewHolder(DataAdapter.DrawViewHolder drawViewHolder) {
+//        this.drawViewHolder = drawViewHolder;
+//    }
+//
+//    private DataAdapter.DrawViewHolder drawViewHolder;
 
     public interface OnCreateViewElements{
 
@@ -90,19 +94,13 @@ public class ListFragment<T> extends Fragment {
 
         warehouseId = settings.getString("warehouseId");
 
-        if (onCreateViewElements != null){
-
-            onCreateViewElements.execute(root, Navigation.findNavController(getActivity(), R.id.nav_host_fragment_content_main));
-
-        }
-
         progressBar = root.findViewById(R.id.progressBar);
 
         adapter = new DataAdapter<T>(getContext(), items, itemLayout);
 
-        adapter.setInitViewsMaker(initViewsMaker);
-
-        adapter.setDrawViewHolder(drawViewHolder);
+//        adapter.setInitViewsMaker(initViewsMaker);
+//
+//        adapter.setDrawViewHolder(drawViewHolder);
 
 //        adapter.setOnItemClickListener(new DocumentDataAdapter.OnDocumentItemClickListener() {
 //            @Override
@@ -175,6 +173,12 @@ public class ListFragment<T> extends Fragment {
 
             }
         });
+
+        if (onCreateViewElements != null){
+
+            onCreateViewElements.execute(root, Navigation.findNavController(getActivity(), R.id.nav_host_fragment_content_main));
+
+        }
 
 
         updateList(etFilter.getText().toString());

@@ -28,41 +28,6 @@ public class TestsFragment extends ListFragment<Test>{
 
         super(R.layout.fragment_filter_add_list, R.layout.test_list_item);
 
-        setInitViewsMaker(new DataAdapter.InitViewsMaker() {
-            @Override
-            public void init(View itemView, ArrayList<TextView> textViews) {
-
-                textViews.add(itemView.findViewById(R.id.tvNumberDate));
-                textViews.add(itemView.findViewById(R.id.tvDescription));
-                textViews.add(itemView.findViewById(R.id.tvStatus));
-
-            }
-        });
-
-        setDrawViewHolder(new DataAdapter.DrawViewHolder<Test>() {
-            @Override
-            public void draw(DataAdapter.ItemViewHolder holder, Test document) {
-
-                ((TextView) holder.getTextViews().get(0)).setText(document.nameStr + " № " + document.number + " от " + document.date);
-                ((TextView) holder.getTextViews().get(1)).setText(document.description);
-
-//                if (document.status.isEmpty()){
-//
-//                    holder.tvStatus.setText("Новый");
-//                    holder.tvStatus.setBackgroundColor(Color.parseColor("#ffffff"));
-//
-//
-//                } else if (document.status.equals("closed")){
-//
-//                    holder.tvStatus.setText("Закрыт");
-//                    holder.tvStatus.setBackgroundColor(Color.parseColor("#00ff00"));
-//                }
-
-
-
-            }
-        });
-
         setListUpdater(new ListUpdater() {
             @Override
             public void update(ArrayList items, ProgressBar progressBar, DataAdapter adapter, String filter) {
@@ -116,6 +81,25 @@ public class TestsFragment extends ListFragment<Test>{
         setOnCreateViewElements(new OnCreateViewElements() {
             @Override
             public void execute(View root, NavController navController) {
+
+                getAdapter().setInitViewsMaker(new DataAdapter.InitViewsMaker() {
+                    @Override
+                    public void init(View itemView, ArrayList<TextView> textViews) {
+
+                        textViews.add(itemView.findViewById(R.id.tvNumberDate));
+                        textViews.add(itemView.findViewById(R.id.tvDescription));
+                        textViews.add(itemView.findViewById(R.id.tvStatus));
+                    }
+                });
+
+                getAdapter().setDrawViewHolder(new DataAdapter.DrawViewHolder<Test>() {
+                    @Override
+                    public void draw(DataAdapter.ItemViewHolder holder, Test document) {
+
+                        ((TextView) holder.getTextViews().get(0)).setText(document.nameStr + " № " + document.number + " от " + document.date);
+                        ((TextView) holder.getTextViews().get(1)).setText(document.description);
+                    }
+                });
 
                 root.findViewById(R.id.btnAdd).setOnClickListener(new View.OnClickListener() {
                     @Override

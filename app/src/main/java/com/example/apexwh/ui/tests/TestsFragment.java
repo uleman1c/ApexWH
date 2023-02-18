@@ -1,15 +1,17 @@
 package com.example.apexwh.ui.tests;
 
-import android.content.Context;
+import android.os.Bundle;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 
 import com.example.apexwh.HttpClient;
 import com.example.apexwh.HttpRequestInterface;
 import com.example.apexwh.JsonProcs;
 import com.example.apexwh.R;
-import com.example.apexwh.objects.Document;
 import com.example.apexwh.objects.Test;
 import com.example.apexwh.ui.adapters.DataAdapter;
 import com.example.apexwh.ui.adapters.ListFragment;
@@ -17,7 +19,6 @@ import com.example.apexwh.ui.adapters.ListFragment;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.security.AccessController;
 import java.util.ArrayList;
 
 public class TestsFragment extends ListFragment<Test>{
@@ -25,7 +26,7 @@ public class TestsFragment extends ListFragment<Test>{
 
     public TestsFragment() {
 
-        super(R.layout.test_list_item);
+        super(R.layout.fragment_filter_add_list, R.layout.test_list_item);
 
         setInitViewsMaker(new DataAdapter.InitViewsMaker() {
             @Override
@@ -70,7 +71,7 @@ public class TestsFragment extends ListFragment<Test>{
 
                 HttpClient httpClient = new HttpClient(getContext());
 
-                httpClient.request_get("/hs/dta/obj?request=getReturnsToAccept&warehouseId=" + getWarehouseId() + "&filter=" + filter, new HttpRequestInterface() {
+                httpClient.request_get("/hs/dta/obj?request=getTests&warehouseId=" + getWarehouseId() + "&filter=" + filter, new HttpRequestInterface() {
                     @Override
                     public void setProgressVisibility(int visibility) {
 
@@ -89,7 +90,7 @@ public class TestsFragment extends ListFragment<Test>{
 
                             JSONObject jsonObjectItem = JsonProcs.getItemJSONArray(jsonArrayResponses, 0);
 
-                            JSONArray jsonArrayObjects = JsonProcs.getJsonArrayFromJsonObject(jsonObjectItem, "ReturnsToAccept");
+                            JSONArray jsonArrayObjects = JsonProcs.getJsonArrayFromJsonObject(jsonObjectItem, "Tests");
 
                             for (int j = 0; j < jsonArrayObjects.length(); j++) {
 
@@ -108,6 +109,24 @@ public class TestsFragment extends ListFragment<Test>{
                 });
 
 
+
+            }
+        });
+
+        setOnCreateViewElements(new OnCreateViewElements() {
+            @Override
+            public void execute(View root, NavController navController) {
+
+                root.findViewById(R.id.btnAdd).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+
+                        Bundle bundle = new Bundle();
+
+                        navController.navigate(R.id.nav_products, bundle);
+
+                    }
+                });
 
             }
         });

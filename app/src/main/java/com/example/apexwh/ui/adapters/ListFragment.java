@@ -9,11 +9,12 @@ import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.apexwh.DB;
@@ -23,22 +24,20 @@ import java.util.ArrayList;
 
 public class ListFragment<T> extends Fragment {
 
-    public ListFragment(int itemLayout) {
+    public ListFragment(int fragmentLayout, int itemLayout) {
 
+        this.fragmentLayout = fragmentLayout;
         this.itemLayout = itemLayout;
 
         items = new ArrayList<>();
 
     }
 
+    private int fragmentLayout;
     private int itemLayout;
 
     private ProgressBar progressBar;
     private ArrayList<T> items;
-
-    public DataAdapter getAdapter() {
-        return adapter;
-    }
 
     private DataAdapter adapter;
     private RecyclerView recyclerView;
@@ -69,14 +68,33 @@ public class ListFragment<T> extends Fragment {
 
     private DataAdapter.DrawViewHolder drawViewHolder;
 
+    public interface OnCreateViewElements{
+
+        void execute(View root, NavController navController);
+
+    }
+
+
+    public void setOnCreateViewElements(OnCreateViewElements onCreateViewElements) {
+        this.onCreateViewElements = onCreateViewElements;
+    }
+
+    private OnCreateViewElements onCreateViewElements;
+
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        View root = inflater.inflate(R.layout.fragment_filter_list, container, false);
+        View root = inflater.inflate(fragmentLayout, container, false);
 
         Bundle settings = DB.getSettings(getContext());
 
         warehouseId = settings.getString("warehouseId");
+
+        if (onCreateViewElements != null){
+
+            onCreateViewElements.execute(root, Navigation.findNavController(getActivity(), R.id.nav_host_fragment_content_main));
+
+        }
 
         progressBar = root.findViewById(R.id.progressBar);
 

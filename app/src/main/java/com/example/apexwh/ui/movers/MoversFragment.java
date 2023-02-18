@@ -3,64 +3,123 @@ package com.example.apexwh.ui.movers;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.navigation.NavController;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 
+import com.example.apexwh.HttpClient;
+import com.example.apexwh.HttpRequestInterface;
+import com.example.apexwh.JsonProcs;
 import com.example.apexwh.R;
+import com.example.apexwh.objects.MoversService;
+import com.example.apexwh.objects.Test;
+import com.example.apexwh.ui.adapters.DataAdapter;
+import com.example.apexwh.ui.adapters.ListFragment;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link MoversFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
-public class MoversFragment extends Fragment {
+import org.json.JSONArray;
+import org.json.JSONObject;
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+import java.util.ArrayList;
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+public class MoversFragment extends ListFragment<MoversService> {
+
 
     public MoversFragment() {
-        // Required empty public constructor
-    }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment MoversFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static MoversFragment newInstance(String param1, String param2) {
-        MoversFragment fragment = new MoversFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
+        super(R.layout.fragment_filter_add_list, R.layout.movers_service_list_item);
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
-    }
+        setListUpdater(new ListUpdater() {
+            @Override
+            public void update(ArrayList items, ProgressBar progressBar, DataAdapter adapter, String filter) {
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_movers, container, false);
+                items.clear();
+
+                HttpClient httpClient = new HttpClient(getContext());
+
+                httpClient.request_get("/hs/dta/obj?request=getMoversService&warehouseId=" + getWarehouseId() + "&filter=" + filter, new HttpRequestInterface() {
+                    @Override
+                    public void setProgressVisibility(int visibility) {
+
+                        progressBar.setVisibility(visibility);
+
+                    }
+
+                    @Override
+                    public void processResponse(String response) {
+
+                        JSONObject jsonObjectResponse = JsonProcs.getJSONObjectFromString(response);
+
+                        if (JsonProcs.getBooleanFromJSON(jsonObjectResponse, "success")){
+
+                            JSONArray jsonArrayResponses = JsonProcs.getJsonArrayFromJsonObject(jsonObjectResponse, "responses");
+
+                            JSONObject jsonObjectItem = JsonProcs.getItemJSONArray(jsonArrayResponses, 0);
+
+                            JSONArray jsonArrayObjects = JsonProcs.getJsonArrayFromJsonObject(jsonObjectItem, "MoversService");
+
+                            for (int j = 0; j < jsonArrayObjects.length(); j++) {
+
+                                JSONObject objectItem = JsonProcs.getItemJSONArray(jsonArrayObjects, j);
+
+                                items.add(Test.TestFromJson(objectItem));
+
+                            }
+
+                            adapter.notifyDataSetChanged();
+
+                        }
+
+                    }
+
+                });
+
+
+
+            }
+        });
+
+
+        setOnCreateViewElements(new OnCreateViewElements() {
+            @Override
+            public void execute(View root, NavController navController) {
+
+                getAdapter().setInitViewsMaker(new DataAdapter.InitViewsMaker() {
+                    @Override
+                    public void init(View itemView, ArrayList<TextView> textViews) {
+
+                        textViews.add(itemView.findViewById(R.id.tvNumberDate));
+                        textViews.add(itemView.findViewById(R.id.tvDescription));
+                        textViews.add(itemView.findViewById(R.id.tvStatus));
+                    }
+                });
+
+                getAdapter().setDrawViewHolder(new DataAdapter.DrawViewHolder<MoversService>() {
+                    @Override
+                    public void draw(DataAdapter.ItemViewHolder holder, MoversService document) {
+
+                        ((TextView) holder.getTextViews().get(0)).setText(document.nameStr + " № " + document.number + " от " + document.date);
+                        ((TextView) holder.getTextViews().get(1)).setText(document.description);
+                    }
+                });
+
+                root.findViewById(R.id.btnAdd).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+
+                        Bundle bundle = new Bundle();
+
+                        navController.navigate(R.id.nav_products, bundle);
+
+                    }
+                });
+
+            }
+        });
+
+
     }
 }

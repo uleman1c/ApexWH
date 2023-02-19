@@ -13,6 +13,7 @@ import androidx.fragment.app.FragmentResultListener;
 import androidx.navigation.Navigation;
 
 import android.text.Editable;
+import android.text.InputType;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -149,6 +150,11 @@ public class MoversServiceRecordFragment extends Fragment {
 
                 View input = tr.getChildAt(1);
                 input.setId(View.generateViewId());
+
+                if (type.equals("integer")){
+
+                    ((EditText) input).setInputType(InputType.TYPE_CLASS_NUMBER);
+                }
 
                 JsonProcs.putToJsonObject(field, "input", input.getId());
 

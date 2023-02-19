@@ -15,7 +15,9 @@
         android:layout_height="wrap_content"
         android:layout_marginRight="8sp"
         android:layout_weight="1"
-        android:text="@string/hello_blank_fragment" />
+        android:text="@string/hello_blank_fragment"
+        android:textSize="16sp"
+        android:textStyle="bold" />
 
 
     <Button

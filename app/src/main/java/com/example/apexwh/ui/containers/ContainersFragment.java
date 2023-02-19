@@ -83,6 +83,13 @@ public class ContainersFragment extends ListFragment<Container> {
 
                             }
 
+
+                            for (Container c: Container.getTestArray()) {
+
+                                items.add(c);
+
+                            }
+
                             adapter.notifyDataSetChanged();
 
                         }

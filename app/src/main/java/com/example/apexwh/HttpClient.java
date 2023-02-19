@@ -229,11 +229,14 @@ public class HttpClient {
 
     }
 
+
     public RequestHandle postBinary(Context context, String url, HttpEntity entity, ResponseHandlerInterface responseHandler) {
 
         return client.post(context, serverUrl + url, entity, entity.getContentType().toString(), responseHandler);
 
     }
+
+
 
     public RequestHandle postBinary(String url, HttpEntity entity, HttpRequestInterface httpRequestInterface) {
 

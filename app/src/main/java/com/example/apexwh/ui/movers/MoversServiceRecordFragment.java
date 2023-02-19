@@ -24,6 +24,9 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
+import com.example.apexwh.DB;
+import com.example.apexwh.HttpClient;
+import com.example.apexwh.HttpRequestInterface;
 import com.example.apexwh.JsonProcs;
 import com.example.apexwh.R;
 
@@ -274,6 +277,53 @@ public class MoversServiceRecordFragment extends Fragment {
 
                 if(allRequired){
 
+                    Bundle settings = DB.getSettings(getContext());
+
+                    HttpClient httpClient = new HttpClient(getContext());
+                    httpClient.addParam("warehouseId", settings.getString("warehouseId"));
+
+                    for (int i = 0; i < record.length(); i++) {
+
+                        JSONObject jf = JsonProcs.getItemJSONArray(record, i);
+
+                        String name = jf.keys().next();
+
+                        JSONObject field = JsonProcs.getJsonObjectFromJsonObject(jf, name);
+
+                        String type = JsonProcs.getStringFromJSON(field, "type");
+
+                        String value = JsonProcs.getStringFromJSON(field, "value");
+
+                        if (type.equals("integer")){
+
+                            httpClient.addParam(name, Integer.valueOf(value));
+
+                        } else {
+
+                            httpClient.addParam(name, value);
+
+                        }
+
+
+                    }
+
+                    httpClient.request_get("/hs/dta/obj", "setMoversService", new HttpRequestInterface() {
+                        @Override
+                        public void setProgressVisibility(int visibility) {
+
+                        }
+
+                        @Override
+                        public void processResponse(String response) {
+
+                            JSONObject jsonObjectResponse = JsonProcs.getJSONObjectFromString(response);
+
+                            if (JsonProcs.getBooleanFromJSON(jsonObjectResponse, "success")) {
+
+                                Navigation.findNavController(getActivity(), R.id.nav_host_fragment_content_main).popBackStack();
+                            }
+                        }
+                    });
 
 
                 }

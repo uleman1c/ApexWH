@@ -2,11 +2,17 @@ package com.example.apexwh.ui.containers;
 
 import android.icu.text.SimpleDateFormat;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
+import androidx.navigation.fragment.NavHostFragment;
 
 import com.example.apexwh.HttpClient;
 import com.example.apexwh.HttpRequestInterface;
@@ -17,6 +23,8 @@ import com.example.apexwh.objects.MoversService;
 import com.example.apexwh.objects.Test;
 import com.example.apexwh.ui.adapters.DataAdapter;
 import com.example.apexwh.ui.adapters.ListFragment;
+import com.example.apexwh.ui.movers.MoversFragment;
+import com.example.apexwh.ui.movers.MoversServiceRecordFragment;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -29,10 +37,13 @@ import java.util.UUID;
 
 public class ContainersFragment extends ListFragment<Container> {
 
+    ArrayList<Container> selected;
 
     public ContainersFragment() {
 
         super(R.layout.fragment_filter_list, R.layout.containers_list_item);
+
+        selected = new ArrayList<>();
 
         setListUpdater(new ListUpdater() {
             @Override
@@ -122,4 +133,35 @@ public class ContainersFragment extends ListFragment<Container> {
 
 
     }
+
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View view = super.onCreateView(inflater, container, savedInstanceState);
+
+        getAdapter().setOnClickListener(new DataAdapter.OnClickListener<Container>() {
+            @Override
+            public void onItemClick(Container document) {
+
+                if (selected.size() == 0){
+
+                    selected.add(document);
+
+                    Bundle result = new Bundle();
+                    result.putString("selected", new JSONArray(selected).toString());
+                    getParentFragmentManager().setFragmentResult("selected", result);
+
+                    NavHostFragment.findNavController(ContainersFragment.this).popBackStack();
+
+                }
+
+
+            }
+        });
+
+
+
+        return view;
+    }
+
+
 }

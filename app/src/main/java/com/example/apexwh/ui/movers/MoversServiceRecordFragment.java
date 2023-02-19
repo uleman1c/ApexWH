@@ -5,7 +5,9 @@ import android.app.TimePickerDialog;
 import android.icu.text.SimpleDateFormat;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentResultListener;
 import androidx.navigation.Navigation;
 
 import android.view.LayoutInflater;
@@ -181,6 +183,16 @@ public class MoversServiceRecordFragment extends Fragment {
 
         }
 
+
+
+        getParentFragmentManager().setFragmentResultListener("selected", this, new FragmentResultListener() {
+            @Override
+            public void onFragmentResult(@NonNull String requestKey, @NonNull Bundle bundle) {
+
+                String e = bundle.getString("sg");
+
+            }
+        });
 
 
         return inflate;

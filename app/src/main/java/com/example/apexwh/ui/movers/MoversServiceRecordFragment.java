@@ -6,6 +6,7 @@ import android.icu.text.SimpleDateFormat;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentResultListener;
 import androidx.navigation.Navigation;
@@ -120,8 +121,6 @@ public class MoversServiceRecordFragment extends Fragment {
 
                 }
 
-
-
                 int field_layout = R.layout.field_note_item;
 
                 if (editable) {
@@ -133,9 +132,8 @@ public class MoversServiceRecordFragment extends Fragment {
                         field_layout = R.layout.field_edittext_item;
                     }
 
-
-
                 }
+
                 LinearLayout tr = (LinearLayout) inflater.inflate(field_layout, null);
 
                 ((TextView) tr.getChildAt(0)).setText(JsonProcs.getStringFromJSON(field, "alias"));
@@ -144,7 +142,6 @@ public class MoversServiceRecordFragment extends Fragment {
                 input.setId(View.generateViewId());
 
                 JsonProcs.putToJsonObject(field, "input", input.getId());
-
 
 
                 ((TextView) input).setText(value);
@@ -183,8 +180,6 @@ public class MoversServiceRecordFragment extends Fragment {
 
         }
 
-
-
         getParentFragmentManager().setFragmentResultListener("selected", this, new FragmentResultListener() {
             @Override
             public void onFragmentResult(@NonNull String requestKey, @NonNull Bundle bundle) {
@@ -193,7 +188,27 @@ public class MoversServiceRecordFragment extends Fragment {
 
                 JSONArray containers = JsonProcs.getJsonArrayFromString(bundle.getString("selected"));
 
+                JSONObject field = getFieldByViewId(btnId);
 
+                try {
+                    field.put("containers", containers);
+                } catch (JSONException e) {
+                    throw new RuntimeException(e);
+                }
+
+                String strContainers = "";
+
+                for (int i = 0; i < containers.length(); i++) {
+
+                    JSONObject jsonObject = JsonProcs.getItemJSONArray(containers, i);
+
+                    strContainers = strContainers + (strContainers.isEmpty() ? "" : ", ") + JsonProcs.getStringFromJSON(jsonObject, "name");
+
+                }
+
+                JsonProcs.putToJsonObject(field,"value", strContainers);
+
+                ((TextView) inflate.findViewById(JsonProcs.getIntegerFromJSON(field, "input"))).setText(strContainers);
 
             }
         });
@@ -207,24 +222,8 @@ public class MoversServiceRecordFragment extends Fragment {
             @Override
             public void onClick(View view) {
 
-                String value = null;
-                JSONObject field = null;
-                for (int j = 0; j < record.length() && value == null; j++) {
-
-                    JSONObject fd = JsonProcs.getItemJSONArray(record, j);
-
-                    String name = fd.keys().next();
-
-                    field = JsonProcs.getJsonObjectFromJsonObject(fd, name);
-
-                    int curBtn = JsonProcs.getIntegerFromJSON(field, "btn");
-                    if (view.getId() == curBtn){
-
-                        value = JsonProcs.getStringFromJSON(field, "value");
-
-                    }
-
-                }
+                JSONObject field = getFieldByViewId(view.getId());
+                String value = JsonProcs.getStringFromJSON(field, "value");
 
                 TimeZone timeZone = TimeZone.getTimeZone("Europe/Moscow");
 
@@ -294,27 +293,12 @@ public class MoversServiceRecordFragment extends Fragment {
             @Override
             public void onClick(View view) {
 
-                String value = null;
-                JSONObject field = null;
-                for (int j = 0; j < record.length() && value == null; j++) {
-
-                    JSONObject fd = JsonProcs.getItemJSONArray(record, j);
-
-                    String name = fd.keys().next();
-
-                    field = JsonProcs.getJsonObjectFromJsonObject(fd, name);
-
-                    int curBtn = JsonProcs.getIntegerFromJSON(field, "btn");
-                    if (view.getId() == curBtn){
-
-                        value = JsonProcs.getStringFromJSON(field, "value");
-
-                    }
-
-                }
+                JSONObject field = getFieldByViewId(view.getId());
+                String value = JsonProcs.getStringFromJSON(field, "value");
 
                 Bundle bundle = new Bundle();
                 bundle.putInt("id", view.getId());
+                bundle.putString("value", value);
 
                 Navigation.findNavController(getActivity(), R.id.nav_host_fragment_content_main)
                         .navigate(Integer.valueOf(JsonProcs.getStringFromJSON(field, "fragment")), bundle);
@@ -382,7 +366,29 @@ public class MoversServiceRecordFragment extends Fragment {
         });
     }
 
+    @Nullable
+    private JSONObject getFieldByViewId(int viewId) {
 
+        JSONObject field = null;
+        String value = null;
+        for (int j = 0; j < record.length() && value == null; j++) {
+
+            JSONObject fd = JsonProcs.getItemJSONArray(record, j);
+
+            String name = fd.keys().next();
+
+            field = JsonProcs.getJsonObjectFromJsonObject(fd, name);
+
+            int curBtn = JsonProcs.getIntegerFromJSON(field, "btn");
+            if (viewId == curBtn){
+
+                value = JsonProcs.getStringFromJSON(field, "value");
+
+            }
+
+        }
+        return field;
+    }
 
 
 }

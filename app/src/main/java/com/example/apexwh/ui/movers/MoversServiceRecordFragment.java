@@ -12,10 +12,13 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentResultListener;
 import androidx.navigation.Navigation;
 
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.DatePicker;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.TimePicker;
@@ -70,6 +73,9 @@ public class MoversServiceRecordFragment extends Fragment {
         return fragment;
     }
 
+    JSONArray record;
+
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -77,17 +83,18 @@ public class MoversServiceRecordFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+
+        record = JsonProcs.getJsonArrayFromString(getArguments().getString("record"));
+
+
     }
 
-    JSONArray record;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View inflate = inflater.inflate(R.layout.fragment_movers_service_record, container, false);
-
-        record = JsonProcs.getJsonArrayFromString(getArguments().getString("record"));
 
         LinearLayout fields = inflate.findViewById(R.id.llFields);
 
@@ -103,6 +110,7 @@ public class MoversServiceRecordFragment extends Fragment {
 
             Boolean visible = JsonProcs.getStringFromJSON(field, "visible").equals("true");
             Boolean editable = JsonProcs.getStringFromJSON(field, "editable").equals("true");
+            Boolean required = JsonProcs.getStringFromJSON(field, "required").equals("true");
 
 
             if (visible){
@@ -145,6 +153,7 @@ public class MoversServiceRecordFragment extends Fragment {
                 JsonProcs.putToJsonObject(field, "input", input.getId());
 
 
+
                 ((TextView) input).setText(value);
 
                 if (editable) {
@@ -167,6 +176,37 @@ public class MoversServiceRecordFragment extends Fragment {
 
                         setRefChoiser(inflate, tr);
 
+                    } else if (type.equals("integer")){
+
+                        if (required){
+
+                            ((EditText) input).addTextChangedListener(new TextWatcher() {
+                                @Override
+                                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                                }
+
+                                @Override
+                                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                                }
+
+                                @Override
+                                public void afterTextChanged(Editable editable) {
+
+                                    if(Integer.valueOf(editable.toString()) > 0){
+
+                                        JSONObject field = getFieldByViewId(input.getId(), "input");
+                                        JsonProcs.putToJsonObject(field, "value", editable.toString());
+
+                                        input.setBackgroundColor(Color.parseColor("#FFFFFF"));
+                                    }
+
+
+                                }
+                            });
+
+                        }
                     }
 
                 }
@@ -244,7 +284,7 @@ public class MoversServiceRecordFragment extends Fragment {
 
                 JSONArray containers = JsonProcs.getJsonArrayFromString(bundle.getString("selected"));
 
-                JSONObject field = getFieldByViewId(btnId);
+                JSONObject field = getFieldByViewId(btnId, "btn");
 
                 try {
                     field.put("containers", containers);
@@ -280,7 +320,7 @@ public class MoversServiceRecordFragment extends Fragment {
             @Override
             public void onClick(View view) {
 
-                JSONObject field = getFieldByViewId(view.getId());
+                JSONObject field = getFieldByViewId(view.getId(), "btn");
                 String value = JsonProcs.getStringFromJSON(field, "value");
 
                 TimeZone timeZone = TimeZone.getTimeZone("Europe/Moscow");
@@ -353,7 +393,7 @@ public class MoversServiceRecordFragment extends Fragment {
             @Override
             public void onClick(View view) {
 
-                JSONObject field = getFieldByViewId(view.getId());
+                JSONObject field = getFieldByViewId(view.getId(), "btn");
                 String value = JsonProcs.getStringFromJSON(field, "value");
 
                 Bundle bundle = new Bundle();
@@ -427,7 +467,7 @@ public class MoversServiceRecordFragment extends Fragment {
     }
 
     @Nullable
-    private JSONObject getFieldByViewId(int viewId) {
+    private JSONObject getFieldByViewId(int viewId, String key) {
 
         JSONObject field = null;
         String value = null;
@@ -439,7 +479,7 @@ public class MoversServiceRecordFragment extends Fragment {
 
             field = JsonProcs.getJsonObjectFromJsonObject(fd, name);
 
-            int curBtn = JsonProcs.getIntegerFromJSON(field, "btn");
+            int curBtn = JsonProcs.getIntegerFromJSON(field, key);
             if (viewId == curBtn){
 
                 value = JsonProcs.getStringFromJSON(field, "value");

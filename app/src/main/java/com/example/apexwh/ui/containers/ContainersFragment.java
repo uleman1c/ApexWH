@@ -83,15 +83,6 @@ public class ContainersFragment extends ListFragment<Container> {
 
                             }
 
-                            ArrayList<Container> containers = Container.getTestArray();
-
-                            for (int j = 0; j < containers.size(); j++) {
-
-                                items.add(containers.get(j));
-
-                            }
-
-
                             adapter.notifyDataSetChanged();
 
                         }
@@ -114,9 +105,7 @@ public class ContainersFragment extends ListFragment<Container> {
                     @Override
                     public void init(View itemView, ArrayList<TextView> textViews) {
 
-                        textViews.add(itemView.findViewById(R.id.tvNumberDate));
                         textViews.add(itemView.findViewById(R.id.tvDescription));
-                        textViews.add(itemView.findViewById(R.id.tvStatus));
                     }
                 });
 
@@ -124,8 +113,7 @@ public class ContainersFragment extends ListFragment<Container> {
                     @Override
                     public void draw(DataAdapter.ItemViewHolder holder, Container document) {
 
-                        ((TextView) holder.getTextViews().get(0)).setText("№ " + document.name);
-                        ((TextView) holder.getTextViews().get(1)).setText(document.name);
+                        ((TextView) holder.getTextViews().get(0)).setText(document.name);
                     }
                 });
 

@@ -54,6 +54,12 @@ public class MoversService {
 
     }
 
+    private void MakeFieldRequired(HashMap<String, String> field){
+
+        field.put("required", "true");
+
+    }
+
     private HashMap<String, String> getFieldDescription(String curName){
 
         HashMap<String, String> field = new HashMap<>();
@@ -84,6 +90,7 @@ public class MoversService {
             field.put("alias", "Начало");
             MakeFieldVisible(field);
             MakeFieldEdiable(field);
+            MakeFieldRequired(field);
 
         } else if (curName.equals("finish")){
 
@@ -92,6 +99,7 @@ public class MoversService {
             field.put("alias", "Окончание");
             MakeFieldVisible(field);
             MakeFieldEdiable(field);
+            MakeFieldRequired(field);
 
         } else if (curName.equals("quantity")) {
 
@@ -100,6 +108,7 @@ public class MoversService {
             field.put("alias", "Количество");
             MakeFieldVisible(field);
             MakeFieldEdiable(field);
+            MakeFieldRequired(field);
 
         } else if (curName.equals("containers")) {
 
@@ -118,6 +127,7 @@ public class MoversService {
             field.put("array", "true");
             MakeFieldVisible(field);
             MakeFieldEdiable(field);
+            MakeFieldRequired(field);
 
         }
 

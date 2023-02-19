@@ -180,6 +180,40 @@ public class MoversServiceRecordFragment extends Fragment {
 
         }
 
+        inflate.findViewById(R.id.btnSave).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                Boolean allRequired = true;
+                for (int i = 0; i < record.length(); i++) {
+
+                    JSONObject jf = JsonProcs.getItemJSONArray(record, i);
+
+                    String name = jf.keys().next();
+
+                    JSONObject field = JsonProcs.getJsonObjectFromJsonObject(jf, name);
+
+                    if (JsonProcs.getStringFromJSON(field,"required").equals("true")){
+
+                        String type = JsonProcs.getStringFromJSON(field,"type");
+
+                        if(type.equals("date")){
+
+
+
+                        }
+
+
+                    }
+
+                }
+
+
+
+
+            }
+        });
+
         getParentFragmentManager().setFragmentResultListener("selected", this, new FragmentResultListener() {
             @Override
             public void onFragmentResult(@NonNull String requestKey, @NonNull Bundle bundle) {

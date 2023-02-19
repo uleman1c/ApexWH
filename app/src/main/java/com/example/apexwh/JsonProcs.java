@@ -117,7 +117,17 @@ public class JsonProcs {
         return date;
     }
 
-    public static void putStringToJsonObject(JSONObject jsonObject, String key, String value){
+    public static void putToJsonObject(JSONObject jsonObject, String key, String value){
+
+        try {
+            jsonObject.put(key, value);
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
+        }
+
+    }
+
+    public static void putToJsonObject(JSONObject jsonObject, String key, int value){
 
         try {
             jsonObject.put(key, value);
@@ -140,5 +150,7 @@ public class JsonProcs {
         return jsonArray;
 
     }
+
+
 
 }

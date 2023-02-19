@@ -1,5 +1,7 @@
 package com.example.apexwh.ui.movers;
 
+import android.app.DatePickerDialog;
+import android.icu.text.SimpleDateFormat;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -7,6 +9,7 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.DatePicker;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -18,6 +21,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+import java.util.TimeZone;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -66,13 +72,15 @@ public class MoversServiceRecordFragment extends Fragment {
         }
     }
 
+    JSONArray record;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View inflate = inflater.inflate(R.layout.fragment_movers_service_record, container, false);
 
-        JSONArray record = JsonProcs.getJsonArrayFromString(getArguments().getString("record"));
+        record = JsonProcs.getJsonArrayFromString(getArguments().getString("record"));
 
         LinearLayout fields = inflate.findViewById(R.id.llFields);
 
@@ -113,13 +121,89 @@ public class MoversServiceRecordFragment extends Fragment {
 
                 if (editable) {
 
-                    field_layout = R.layout.field_edittext_item;
+                    if (type.equals("date")){
+                        field_layout = R.layout.field_editdate_item;
+                    } else {
+                        field_layout = R.layout.field_edittext_item;
+                    }
+
+
 
                 }
                 LinearLayout tr = (LinearLayout) inflater.inflate(field_layout, null);
 
                 ((TextView) tr.getChildAt(0)).setText(JsonProcs.getStringFromJSON(field, "alias"));
-                ((TextView) tr.getChildAt(1)).setText(value);
+
+                View input = tr.getChildAt(1);
+                input.setId(View.generateViewId());
+
+                JsonProcs.putToJsonObject(field, "input", input.getId());
+
+
+
+                ((TextView) input).setText(value);
+
+                if (editable) {
+
+                    if (type.equals("date")){
+
+                        View btn = tr.getChildAt(2);
+                        btn.setId(View.generateViewId());
+
+                        JsonProcs.putToJsonObject(field, "btn", btn.getId());
+
+                        TimeZone timeZone = TimeZone.getTimeZone("Europe/Moscow");
+
+                        Calendar calendar = new GregorianCalendar();
+                        calendar.roll(Calendar.HOUR_OF_DAY, timeZone.getRawOffset() / (3600 * 1000));
+
+                        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMddHHmmss");
+
+
+                        if (!value.isEmpty()){
+
+                            calendar.set(Calendar.YEAR, Integer.valueOf(value.substring(0, 4)));
+                            calendar.set(Calendar.MONTH, Integer.valueOf(value.substring(4, 6)) - 1);
+                            calendar.set(Calendar.DAY_OF_MONTH, Integer.valueOf(value.substring(6, 8)));
+                            calendar.set(Calendar.HOUR_OF_DAY, Integer.valueOf(value.substring(8, 10)));
+                            calendar.set(Calendar.MINUTE, Integer.valueOf(value.substring(10, 12)));
+                            calendar.set(Calendar.SECOND, Integer.valueOf(value.substring(12, 14)));
+
+                        }
+
+                        DatePickerDialog.OnDateSetListener d = new DatePickerDialog.OnDateSetListener() {
+                            public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+//                                dateAndTime.set(Calendar.YEAR, year);
+//                                dateAndTime.set(Calendar.MONTH, monthOfYear);
+//                                dateAndTime.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+//                                setInitialDateTime();
+                            }
+                        };
+
+
+//                        tr.getChildAt(2).setOnClickListener(new View.OnClickListener() {
+//                            @Override
+//                            public void onClick(View view) {
+//
+//                                new DatePickerDialog(getContext(), new DatePickerDialog.OnDateSetListener() {
+//                                    @Override
+//                                    public void onDateSet(DatePicker datePicker, int i, int i1, int i2) {
+//
+//                                    }
+//                                },
+////                                        dateAndTime.get(Calendar.YEAR),
+////                                        dateAndTime.get(Calendar.MONTH),
+////                                        dateAndTime.get(Calendar.DAY_OF_MONTH))
+//                                        .show();
+//
+////                                DatePicker datePicker =  new DatePicker();
+//
+//                            }
+//                        });
+
+                    }
+
+                }
 
                 fields.addView(tr, curViewPos);
 

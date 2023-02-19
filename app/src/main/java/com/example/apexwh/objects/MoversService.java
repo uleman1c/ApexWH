@@ -1,6 +1,7 @@
 package com.example.apexwh.objects;
 
 import com.example.apexwh.JsonProcs;
+import com.example.apexwh.R;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -102,9 +103,19 @@ public class MoversService {
 
         } else if (curName.equals("containers")) {
 
-            field.put("type", "array");
-            field.put("value", String.valueOf(containers));
+            String strContainers = "";
+
+            for (String curC: containers) {
+
+                strContainers = strContainers + (strContainers.isEmpty() ? "" : ", ") + curC;
+
+            }
+
+            field.put("type", "ref");
+            field.put("value", strContainers);
             field.put("alias", "Контейнеры");
+            field.put("fragment", String.valueOf(R.id.nav_ContainersFragment));
+            field.put("array", "true");
             MakeFieldVisible(field);
             MakeFieldEdiable(field);
 

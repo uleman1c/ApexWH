@@ -6,6 +6,7 @@ import android.icu.text.SimpleDateFormat;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.navigation.Navigation;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -123,7 +124,8 @@ public class MoversServiceRecordFragment extends Fragment {
 
                 if (editable) {
 
-                    if (type.equals("date")){
+                    if (type.equals("date")
+                    || type.equals("ref")){
                         field_layout = R.layout.field_editdate_item;
                     } else {
                         field_layout = R.layout.field_edittext_item;
@@ -154,100 +156,16 @@ public class MoversServiceRecordFragment extends Fragment {
 
                         JsonProcs.putToJsonObject(field, "btn", btn.getId());
 
-                        DatePickerDialog.OnDateSetListener d = new DatePickerDialog.OnDateSetListener() {
-                            public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-//                                dateAndTime.set(Calendar.YEAR, year);
-//                                dateAndTime.set(Calendar.MONTH, monthOfYear);
-//                                dateAndTime.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-//                                setInitialDateTime();
-                            }
-                        };
+                        setDatePicker(inflate, tr);
 
+                    } else if (type.equals("ref")){
 
-                        tr.getChildAt(2).setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
+                        View btn = tr.getChildAt(2);
+                        btn.setId(View.generateViewId());
 
-                                String value = null;
-                                JSONObject field = null;
-                                for (int j = 0; j < record.length() && value == null; j++) {
+                        JsonProcs.putToJsonObject(field, "btn", btn.getId());
 
-                                    JSONObject fd = JsonProcs.getItemJSONArray(record, j);
-
-                                    String name = fd.keys().next();
-
-                                    field = JsonProcs.getJsonObjectFromJsonObject(fd, name);
-
-                                    int curBtn = JsonProcs.getIntegerFromJSON(field, "btn");
-                                    if (view.getId() == curBtn){
-
-                                        value = JsonProcs.getStringFromJSON(field, "value");
-
-                                    }
-
-                                }
-
-                                TimeZone timeZone = TimeZone.getTimeZone("Europe/Moscow");
-
-                                Calendar calendar = new GregorianCalendar();
-                                calendar.roll(Calendar.HOUR_OF_DAY, timeZone.getRawOffset() / (3600 * 1000));
-
-                                if (!value.isEmpty()){
-
-                                    calendar.set(Calendar.YEAR, Integer.valueOf(value.substring(0, 4)));
-                                    calendar.set(Calendar.MONTH, Integer.valueOf(value.substring(4, 6)) - 1);
-                                    calendar.set(Calendar.DAY_OF_MONTH, Integer.valueOf(value.substring(6, 8)));
-                                    calendar.set(Calendar.HOUR_OF_DAY, Integer.valueOf(value.substring(8, 10)));
-                                    calendar.set(Calendar.MINUTE, Integer.valueOf(value.substring(10, 12)));
-                                    calendar.set(Calendar.SECOND, Integer.valueOf(value.substring(12, 14)));
-
-                                }
-
-                                JSONObject finalField = field;
-                                new DatePickerDialog(getContext(), new DatePickerDialog.OnDateSetListener() {
-                                    @Override
-                                    public void onDateSet(DatePicker datePicker, int year, int month, int day) {
-
-                                        new TimePickerDialog(getContext(), new TimePickerDialog.OnTimeSetListener() {
-                                            @Override
-                                            public void onTimeSet(TimePicker timePicker, int hour, int minute) {
-
-                                                calendar.set(Calendar.YEAR, year);
-                                                calendar.set(Calendar.MONTH, month);
-                                                calendar.set(Calendar.DAY_OF_MONTH, day);
-                                                calendar.set(Calendar.HOUR_OF_DAY, hour);
-                                                calendar.set(Calendar.MINUTE, minute);
-                                                calendar.set(Calendar.SECOND, 0);
-
-                                                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMddHHmmss");
-
-                                                String value = simpleDateFormat.format(calendar.getTime());
-
-                                                JsonProcs.putToJsonObject(finalField, "value", value);
-
-                                                value = value.substring(6, 8) + "." + value.substring(4, 6) + "." + value.substring(0, 4)
-                                                        + " " + value.substring(8, 10) + ":" + value.substring(10, 12) + ":" + value.substring(12, 14);
-
-                                                int curInput = JsonProcs.getIntegerFromJSON(finalField, "input");
-
-                                                ((TextView) inflate.findViewById(curInput)).setText(value);
-
-
-                                            }
-                                        },
-                                                calendar.get(Calendar.HOUR_OF_DAY),
-                                                calendar.get(Calendar.MINUTE), true).show();
-
-                                    }
-                                },
-                                        calendar.get(Calendar.YEAR),
-                                        calendar.get(Calendar.MONTH),
-                                        calendar.get(Calendar.DAY_OF_MONTH))
-                                        .show();
-
-
-                            }
-                        });
+                        setRefChoiser(inflate, tr);
 
                     }
 
@@ -267,4 +185,185 @@ public class MoversServiceRecordFragment extends Fragment {
 
         return inflate;
     }
+
+    private void setDatePicker(View inflate, LinearLayout tr) {
+        tr.getChildAt(2).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                String value = null;
+                JSONObject field = null;
+                for (int j = 0; j < record.length() && value == null; j++) {
+
+                    JSONObject fd = JsonProcs.getItemJSONArray(record, j);
+
+                    String name = fd.keys().next();
+
+                    field = JsonProcs.getJsonObjectFromJsonObject(fd, name);
+
+                    int curBtn = JsonProcs.getIntegerFromJSON(field, "btn");
+                    if (view.getId() == curBtn){
+
+                        value = JsonProcs.getStringFromJSON(field, "value");
+
+                    }
+
+                }
+
+                TimeZone timeZone = TimeZone.getTimeZone("Europe/Moscow");
+
+                Calendar calendar = new GregorianCalendar();
+                calendar.roll(Calendar.HOUR_OF_DAY, timeZone.getRawOffset() / (3600 * 1000));
+
+                if (!value.isEmpty()){
+
+                    calendar.set(Calendar.YEAR, Integer.valueOf(value.substring(0, 4)));
+                    calendar.set(Calendar.MONTH, Integer.valueOf(value.substring(4, 6)) - 1);
+                    calendar.set(Calendar.DAY_OF_MONTH, Integer.valueOf(value.substring(6, 8)));
+                    calendar.set(Calendar.HOUR_OF_DAY, Integer.valueOf(value.substring(8, 10)));
+                    calendar.set(Calendar.MINUTE, Integer.valueOf(value.substring(10, 12)));
+                    calendar.set(Calendar.SECOND, Integer.valueOf(value.substring(12, 14)));
+
+                }
+
+                JSONObject finalField = field;
+                new DatePickerDialog(getContext(), new DatePickerDialog.OnDateSetListener() {
+                    @Override
+                    public void onDateSet(DatePicker datePicker, int year, int month, int day) {
+
+                        new TimePickerDialog(getContext(), new TimePickerDialog.OnTimeSetListener() {
+                            @Override
+                            public void onTimeSet(TimePicker timePicker, int hour, int minute) {
+
+                                calendar.set(Calendar.YEAR, year);
+                                calendar.set(Calendar.MONTH, month);
+                                calendar.set(Calendar.DAY_OF_MONTH, day);
+                                calendar.set(Calendar.HOUR_OF_DAY, hour);
+                                calendar.set(Calendar.MINUTE, minute);
+                                calendar.set(Calendar.SECOND, 0);
+
+                                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMddHHmmss");
+
+                                String value = simpleDateFormat.format(calendar.getTime());
+
+                                JsonProcs.putToJsonObject(finalField, "value", value);
+
+                                value = value.substring(6, 8) + "." + value.substring(4, 6) + "." + value.substring(0, 4)
+                                        + " " + value.substring(8, 10) + ":" + value.substring(10, 12) + ":" + value.substring(12, 14);
+
+                                int curInput = JsonProcs.getIntegerFromJSON(finalField, "input");
+
+                                ((TextView) inflate.findViewById(curInput)).setText(value);
+
+
+                            }
+                        },
+                                calendar.get(Calendar.HOUR_OF_DAY),
+                                calendar.get(Calendar.MINUTE), true).show();
+
+                    }
+                },
+                        calendar.get(Calendar.YEAR),
+                        calendar.get(Calendar.MONTH),
+                        calendar.get(Calendar.DAY_OF_MONTH))
+                        .show();
+
+
+            }
+        });
+    }
+
+    private void setRefChoiser(View inflate, LinearLayout tr) {
+        tr.getChildAt(2).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                String value = null;
+                JSONObject field = null;
+                for (int j = 0; j < record.length() && value == null; j++) {
+
+                    JSONObject fd = JsonProcs.getItemJSONArray(record, j);
+
+                    String name = fd.keys().next();
+
+                    field = JsonProcs.getJsonObjectFromJsonObject(fd, name);
+
+                    int curBtn = JsonProcs.getIntegerFromJSON(field, "btn");
+                    if (view.getId() == curBtn){
+
+                        value = JsonProcs.getStringFromJSON(field, "value");
+
+                    }
+
+                }
+
+                Navigation.findNavController(getActivity(), R.id.nav_host_fragment_content_main)
+                        .navigate(Integer.valueOf(JsonProcs.getStringFromJSON(field, "fragment")));
+
+//                TimeZone timeZone = TimeZone.getTimeZone("Europe/Moscow");
+//
+//                Calendar calendar = new GregorianCalendar();
+//                calendar.roll(Calendar.HOUR_OF_DAY, timeZone.getRawOffset() / (3600 * 1000));
+//
+//                if (!value.isEmpty()){
+//
+//                    calendar.set(Calendar.YEAR, Integer.valueOf(value.substring(0, 4)));
+//                    calendar.set(Calendar.MONTH, Integer.valueOf(value.substring(4, 6)) - 1);
+//                    calendar.set(Calendar.DAY_OF_MONTH, Integer.valueOf(value.substring(6, 8)));
+//                    calendar.set(Calendar.HOUR_OF_DAY, Integer.valueOf(value.substring(8, 10)));
+//                    calendar.set(Calendar.MINUTE, Integer.valueOf(value.substring(10, 12)));
+//                    calendar.set(Calendar.SECOND, Integer.valueOf(value.substring(12, 14)));
+//
+//                }
+//
+//                JSONObject finalField = field;
+//                new DatePickerDialog(getContext(), new DatePickerDialog.OnDateSetListener() {
+//                    @Override
+//                    public void onDateSet(DatePicker datePicker, int year, int month, int day) {
+//
+//                        new TimePickerDialog(getContext(), new TimePickerDialog.OnTimeSetListener() {
+//                            @Override
+//                            public void onTimeSet(TimePicker timePicker, int hour, int minute) {
+//
+//                                calendar.set(Calendar.YEAR, year);
+//                                calendar.set(Calendar.MONTH, month);
+//                                calendar.set(Calendar.DAY_OF_MONTH, day);
+//                                calendar.set(Calendar.HOUR_OF_DAY, hour);
+//                                calendar.set(Calendar.MINUTE, minute);
+//                                calendar.set(Calendar.SECOND, 0);
+//
+//                                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMddHHmmss");
+//
+//                                String value = simpleDateFormat.format(calendar.getTime());
+//
+//                                JsonProcs.putToJsonObject(finalField, "value", value);
+//
+//                                value = value.substring(6, 8) + "." + value.substring(4, 6) + "." + value.substring(0, 4)
+//                                        + " " + value.substring(8, 10) + ":" + value.substring(10, 12) + ":" + value.substring(12, 14);
+//
+//                                int curInput = JsonProcs.getIntegerFromJSON(finalField, "input");
+//
+//                                ((TextView) inflate.findViewById(curInput)).setText(value);
+//
+//
+//                            }
+//                        },
+//                                calendar.get(Calendar.HOUR_OF_DAY),
+//                                calendar.get(Calendar.MINUTE), true).show();
+//
+//                    }
+//                },
+//                        calendar.get(Calendar.YEAR),
+//                        calendar.get(Calendar.MONTH),
+//                        calendar.get(Calendar.DAY_OF_MONTH))
+//                        .show();
+
+
+            }
+        });
+    }
+
+
+
+
 }

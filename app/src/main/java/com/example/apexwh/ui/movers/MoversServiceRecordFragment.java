@@ -2,6 +2,7 @@ package com.example.apexwh.ui.movers;
 
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
+import android.graphics.Color;
 import android.icu.text.SimpleDateFormat;
 import android.os.Bundle;
 
@@ -197,18 +198,33 @@ public class MoversServiceRecordFragment extends Fragment {
 
                         String type = JsonProcs.getStringFromJSON(field,"type");
 
+                        String value = JsonProcs.getStringFromJSON(field,"value");
+
                         if(type.equals("date")){
 
+                            allRequired = value.isEmpty() ? false : allRequired;
 
+                            inflate.findViewById(Integer.valueOf(JsonProcs.getStringFromJSON(field,"input"))).setBackgroundColor(Color.parseColor("#FF0000"));
+
+                        } else if(type.equals("integer")){
+
+                            allRequired = value.equals("0") ? false : allRequired;
+
+                        } else {
+
+                            allRequired = value.isEmpty() ? false : allRequired;
 
                         }
-
 
                     }
 
                 }
 
+                if(allRequired){
 
+
+
+                }
 
 
             }
@@ -242,7 +258,9 @@ public class MoversServiceRecordFragment extends Fragment {
 
                 JsonProcs.putToJsonObject(field,"value", strContainers);
 
-                ((TextView) inflate.findViewById(JsonProcs.getIntegerFromJSON(field, "input"))).setText(strContainers);
+                View view = inflate.findViewById(JsonProcs.getIntegerFromJSON(field, "input"));
+                view.setBackgroundColor(Color.parseColor("#FFFFFF"));
+                ((TextView) view).setText(strContainers);
 
             }
         });
@@ -301,6 +319,8 @@ public class MoversServiceRecordFragment extends Fragment {
                                         + " " + value.substring(8, 10) + ":" + value.substring(10, 12) + ":" + value.substring(12, 14);
 
                                 int curInput = JsonProcs.getIntegerFromJSON(finalField, "input");
+
+                                inflate.findViewById(curInput).setBackgroundColor(Color.parseColor("#FFFFFF"));
 
                                 ((TextView) inflate.findViewById(curInput)).setText(value);
 

@@ -60,6 +60,8 @@ public class ListFragment<T> extends Fragment {
 
     private ListUpdater listUpdater;
 
+    private Bundle arguments;
+
 //    public void setInitViewsMaker(DataAdapter.InitViewsMaker initViewsMaker) {
 //        this.initViewsMaker = initViewsMaker;
 //    }
@@ -89,6 +91,8 @@ public class ListFragment<T> extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         View root = inflater.inflate(fragmentLayout, container, false);
+
+        arguments = getArguments();
 
         Bundle settings = DB.getSettings(getContext());
 

@@ -189,7 +189,11 @@ public class MoversServiceRecordFragment extends Fragment {
             @Override
             public void onFragmentResult(@NonNull String requestKey, @NonNull Bundle bundle) {
 
-                String e = bundle.getString("sg");
+                int btnId = bundle.getInt("id");
+
+                JSONArray containers = JsonProcs.getJsonArrayFromString(bundle.getString("selected"));
+
+
 
             }
         });
@@ -309,8 +313,11 @@ public class MoversServiceRecordFragment extends Fragment {
 
                 }
 
+                Bundle bundle = new Bundle();
+                bundle.putInt("id", view.getId());
+
                 Navigation.findNavController(getActivity(), R.id.nav_host_fragment_content_main)
-                        .navigate(Integer.valueOf(JsonProcs.getStringFromJSON(field, "fragment")));
+                        .navigate(Integer.valueOf(JsonProcs.getStringFromJSON(field, "fragment")), bundle);
 
 //                TimeZone timeZone = TimeZone.getTimeZone("Europe/Moscow");
 //

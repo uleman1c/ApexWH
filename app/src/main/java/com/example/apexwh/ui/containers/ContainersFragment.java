@@ -32,6 +32,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.HashMap;
 import java.util.TimeZone;
 import java.util.UUID;
 
@@ -128,39 +129,45 @@ public class ContainersFragment extends ListFragment<Container> {
                     }
                 });
 
+                getAdapter().setOnClickListener(new DataAdapter.OnClickListener<Container>() {
+                    @Override
+                    public void onItemClick(Container document) {
+
+                        if (selected.size() == 0){
+
+                            selected.add(document);
+
+                            JSONArray jsonArray = new JSONArray();
+
+                            for (Container curContainer:selected ) {
+
+                                JSONObject jsonObject = new JSONObject();
+
+                                JsonProcs.putToJsonObject(jsonObject, "ref", curContainer.ref);
+                                JsonProcs.putToJsonObject(jsonObject, "name", curContainer.name);
+
+                                jsonArray.put(jsonObject);
+
+                            }
+
+                            Bundle result = getArguments();
+                            result.putString("selected", jsonArray.toString());
+                            getParentFragmentManager().setFragmentResult("selected", result);
+
+                            Navigation.findNavController(getActivity(), R.id.nav_host_fragment_content_main).popBackStack();
+
+                        }
+
+
+                    }
+                });
+
+
+
             }
         });
 
 
-    }
-
-    @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = super.onCreateView(inflater, container, savedInstanceState);
-
-        getAdapter().setOnClickListener(new DataAdapter.OnClickListener<Container>() {
-            @Override
-            public void onItemClick(Container document) {
-
-                if (selected.size() == 0){
-
-                    selected.add(document);
-
-                    Bundle result = new Bundle();
-                    result.putString("selected", new JSONArray(selected).toString());
-                    getParentFragmentManager().setFragmentResult("selected", result);
-
-                    NavHostFragment.findNavController(ContainersFragment.this).popBackStack();
-
-                }
-
-
-            }
-        });
-
-
-
-        return view;
     }
 
 

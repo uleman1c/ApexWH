@@ -12,6 +12,7 @@ import com.example.apexwh.HttpClient;
 import com.example.apexwh.HttpRequestInterface;
 import com.example.apexwh.JsonProcs;
 import com.example.apexwh.R;
+import com.example.apexwh.objects.Container;
 import com.example.apexwh.objects.MoversService;
 import com.example.apexwh.objects.Test;
 import com.example.apexwh.ui.adapters.DataAdapter;
@@ -26,12 +27,12 @@ import java.util.GregorianCalendar;
 import java.util.TimeZone;
 import java.util.UUID;
 
-public class ContainersFragment extends ListFragment<MoversService> {
+public class ContainersFragment extends ListFragment<Container> {
 
 
     public ContainersFragment() {
 
-        super(R.layout.fragment_filter_list, R.layout.movers_service_list_item);
+        super(R.layout.fragment_filter_list, R.layout.containers_list_item);
 
         setListUpdater(new ListUpdater() {
             @Override
@@ -41,7 +42,7 @@ public class ContainersFragment extends ListFragment<MoversService> {
 
                 HttpClient httpClient = new HttpClient(getContext());
 
-                httpClient.request_get("/hs/dta/obj?request=getMoversService&warehouseId=" + getWarehouseId() + "&filter=" + filter, new HttpRequestInterface() {
+                httpClient.request_get("/hs/dta/obj?request=getContainers&warehouseId=" + getWarehouseId() + "&filter=" + filter, new HttpRequestInterface() {
                     @Override
                     public void setProgressVisibility(int visibility) {
 
@@ -60,15 +61,24 @@ public class ContainersFragment extends ListFragment<MoversService> {
 
                             JSONObject jsonObjectItem = JsonProcs.getItemJSONArray(jsonArrayResponses, 0);
 
-                            JSONArray jsonArrayObjects = JsonProcs.getJsonArrayFromJsonObject(jsonObjectItem, "MoversService");
+                            JSONArray jsonArrayObjects = JsonProcs.getJsonArrayFromJsonObject(jsonObjectItem, "Containers");
 
                             for (int j = 0; j < jsonArrayObjects.length(); j++) {
 
                                 JSONObject objectItem = JsonProcs.getItemJSONArray(jsonArrayObjects, j);
 
-                                items.add(Test.TestFromJson(objectItem));
+                                items.add(Container.FromJson(objectItem));
 
                             }
+
+                            ArrayList<Container> containers = Container.getTestArray();
+
+                            for (int j = 0; j < containers.size(); j++) {
+
+                                items.add(containers.get(j));
+
+                            }
+
 
                             adapter.notifyDataSetChanged();
 
@@ -98,12 +108,12 @@ public class ContainersFragment extends ListFragment<MoversService> {
                     }
                 });
 
-                getAdapter().setDrawViewHolder(new DataAdapter.DrawViewHolder<MoversService>() {
+                getAdapter().setDrawViewHolder(new DataAdapter.DrawViewHolder<Container>() {
                     @Override
-                    public void draw(DataAdapter.ItemViewHolder holder, MoversService document) {
+                    public void draw(DataAdapter.ItemViewHolder holder, Container document) {
 
-                        ((TextView) holder.getTextViews().get(0)).setText("№ " + document.number + " от " + document.date);
-                        ((TextView) holder.getTextViews().get(1)).setText(document.start);
+                        ((TextView) holder.getTextViews().get(0)).setText("№ " + document.name);
+                        ((TextView) holder.getTextViews().get(1)).setText(document.name);
                     }
                 });
 

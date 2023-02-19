@@ -200,20 +200,26 @@ public class MoversServiceRecordFragment extends Fragment {
 
                         String value = JsonProcs.getStringFromJSON(field,"value");
 
+                        Boolean curRequired = false;
                         if(type.equals("date")){
 
-                            allRequired = value.isEmpty() ? false : allRequired;
-
-                            inflate.findViewById(Integer.valueOf(JsonProcs.getStringFromJSON(field,"input"))).setBackgroundColor(Color.parseColor("#FF0000"));
+                            curRequired = value.isEmpty();
 
                         } else if(type.equals("integer")){
 
-                            allRequired = value.equals("0") ? false : allRequired;
+                            curRequired = value.equals("0");
 
                         } else {
 
-                            allRequired = value.isEmpty() ? false : allRequired;
+                            curRequired = value.isEmpty();
 
+                        }
+
+                        allRequired = curRequired ? false : allRequired;
+
+                        if (curRequired){
+
+                            inflate.findViewById(Integer.valueOf(JsonProcs.getStringFromJSON(field,"input"))).setBackgroundColor(Color.parseColor("#FF0000"));
                         }
 
                     }

@@ -25,7 +25,10 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.TimeZone;
 import java.util.UUID;
 
 public class MoversFragment extends ListFragment<MoversService> {
@@ -115,8 +118,16 @@ public class MoversFragment extends ListFragment<MoversService> {
 
                         Bundle bundle = new Bundle();
 
+                        TimeZone timeZone = TimeZone.getTimeZone("Europe/Moscow");
+
+                        Calendar calendar = new GregorianCalendar();
+                        calendar.roll(Calendar.HOUR_OF_DAY, timeZone.getRawOffset() / (3600 * 1000));
+
+                        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMddHHmmss");
+
+
                         MoversService moversService = new MoversService(UUID.randomUUID().toString(), "",
-                                new java.text.SimpleDateFormat("yyyyMMddHHmmss").format(new Date()),
+                                simpleDateFormat.format(calendar.getTime()),
                                 "", "", 0, new ArrayList<>());
 
                         bundle.putString("record", new JSONArray(moversService.getObjectDescription()).toString());

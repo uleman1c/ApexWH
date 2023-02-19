@@ -42,6 +42,17 @@ public class MoversService {
 
     }
 
+    private void MakeFieldVisible(HashMap<String, String> field){
+
+        field.put("visible", "true");
+
+    }
+    private void MakeFieldEdiable(HashMap<String, String> field){
+
+        field.put("editable", "true");
+
+    }
+
     private HashMap<String, String> getFieldDescription(String curName){
 
         HashMap<String, String> field = new HashMap<>();
@@ -55,31 +66,47 @@ public class MoversService {
 
             field.put("type", "string");
             field.put("value", number);
+            field.put("alias", "Номер");
+            MakeFieldVisible(field);
 
         } else if (curName.equals("date")){
 
-            field.put("type", "string");
+            field.put("type", "date");
             field.put("value", date);
+            field.put("alias", "Дата");
+            MakeFieldVisible(field);
 
         } else if (curName.equals("start")){
 
-            field.put("type", "string");
+            field.put("type", "date");
             field.put("value", start);
+            field.put("alias", "Начало");
+            MakeFieldVisible(field);
+            MakeFieldEdiable(field);
 
         } else if (curName.equals("finish")){
 
-            field.put("type", "string");
+            field.put("type", "date");
             field.put("value", finish);
+            field.put("alias", "Окончание");
+            MakeFieldVisible(field);
+            MakeFieldEdiable(field);
 
         } else if (curName.equals("quantity")) {
 
             field.put("type", "integer");
             field.put("value", String.valueOf(quantity));
+            field.put("alias", "Количество");
+            MakeFieldVisible(field);
+            MakeFieldEdiable(field);
 
         } else if (curName.equals("containers")) {
 
             field.put("type", "array");
             field.put("value", String.valueOf(containers));
+            field.put("alias", "Контейнеры");
+            MakeFieldVisible(field);
+            MakeFieldEdiable(field);
 
         }
 

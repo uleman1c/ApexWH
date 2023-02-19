@@ -127,4 +127,18 @@ public class JsonProcs {
 
     }
 
+    public static JSONArray getJsonArrayFromString(String key){
+
+        JSONArray jsonArray = null;
+
+        try {
+            jsonArray = new JSONArray(key);
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
+        }
+
+        return jsonArray;
+
+    }
+
 }

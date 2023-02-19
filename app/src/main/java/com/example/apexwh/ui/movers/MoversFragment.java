@@ -1,5 +1,6 @@
 package com.example.apexwh.ui.movers;
 
+import android.icu.text.SimpleDateFormat;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -24,6 +25,8 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.UUID;
 
 public class MoversFragment extends ListFragment<MoversService> {
 
@@ -112,7 +115,9 @@ public class MoversFragment extends ListFragment<MoversService> {
 
                         Bundle bundle = new Bundle();
 
-                        MoversService moversService = new MoversService("", "", "", "", "", 0, new ArrayList<>());
+                        MoversService moversService = new MoversService(UUID.randomUUID().toString(), "",
+                                new java.text.SimpleDateFormat("yyyyMMddHHmmss").format(new Date()),
+                                "", "", 0, new ArrayList<>());
 
                         bundle.putString("record", new JSONArray(moversService.getObjectDescription()).toString());
 

@@ -8,11 +8,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
+import com.example.apexwh.JsonProcs;
 import com.example.apexwh.R;
 
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 
@@ -69,19 +72,64 @@ public class MoversServiceRecordFragment extends Fragment {
         // Inflate the layout for this fragment
         View inflate = inflater.inflate(R.layout.fragment_movers_service_record, container, false);
 
-        JSONArray record = null;
-
-        try {
-            record = new JSONArray(getArguments().getString("record"));
-        } catch (JSONException e) {
-            throw new RuntimeException(e);
-        }
+        JSONArray record = JsonProcs.getJsonArrayFromString(getArguments().getString("record"));
 
         LinearLayout fields = inflate.findViewById(R.id.llFields);
 
-        LinearLayout tr = (LinearLayout) inflater.inflate(R.layout.field_note_item, null);
+        int curViewPos = 0;
 
-        fields.addView(tr);
+        for (int i = 0; i < record.length(); i++) {
+
+            JSONObject fd = JsonProcs.getItemJSONArray(record, i);
+
+            String name = fd.keys().next();
+
+            JSONObject field = JsonProcs.getJsonObjectFromJsonObject(fd, name);
+
+            Boolean visible = JsonProcs.getStringFromJSON(field, "visible").equals("true");
+            Boolean editable = JsonProcs.getStringFromJSON(field, "editable").equals("true");
+
+
+            if (visible){
+
+                String value = JsonProcs.getStringFromJSON(field, "value");
+
+                String type = JsonProcs.getStringFromJSON(field, "type");
+
+                if (type.equals("date")){
+
+                    if (!value.isEmpty()){
+
+                        value = value.substring(6, 8) + "." + value.substring(4, 6) + "." + value.substring(0, 4)
+                                + " " + value.substring(8, 10) + ":" + value.substring(10, 12) + ":" + value.substring(12, 14);
+                    }
+
+
+                }
+
+
+
+                int field_layout = R.layout.field_note_item;
+
+                if (editable) {
+
+                    field_layout = R.layout.field_edittext_item;
+
+                }
+                LinearLayout tr = (LinearLayout) inflater.inflate(field_layout, null);
+
+                ((TextView) tr.getChildAt(0)).setText(JsonProcs.getStringFromJSON(field, "alias"));
+                ((TextView) tr.getChildAt(1)).setText(value);
+
+                fields.addView(tr, curViewPos);
+
+                curViewPos = curViewPos + 1;
+
+            }
+
+
+
+        }
 
 
 

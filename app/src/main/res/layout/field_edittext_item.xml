@@ -10,8 +10,13 @@
         android:layout_marginRight="8sp"
         android:text="@string/hello_blank_fragment" />
 
-    <TextView
+    <EditText
+        android:id="@+id/editTextTextPersonName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/hello_blank_fragment" />
+        android:layout_weight="1"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:text="Name" />
+
 </LinearLayout>

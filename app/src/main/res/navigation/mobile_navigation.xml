@@ -62,4 +62,9 @@
             android:name="com.example.apexwh.ui.movers.MoversFragment"
             android:label="Грузчики"
             tools:layout="@layout/fragment_movers" />
+    <fragment
+        android:id="@+id/nav_MoversServiceRecordFragment"
+        android:name="com.example.apexwh.ui.movers.MoversServiceRecordFragment"
+        android:label="Услуги грузчиков"
+        tools:layout="@layout/fragment_movers_service_record" />
 </navigation>

@@ -101,8 +101,8 @@ public class MoversFragment extends ListFragment<MoversService> {
                     @Override
                     public void draw(DataAdapter.ItemViewHolder holder, MoversService document) {
 
-                        ((TextView) holder.getTextViews().get(0)).setText(document.nameStr + " № " + document.number + " от " + document.date);
-                        ((TextView) holder.getTextViews().get(1)).setText(document.description);
+                        ((TextView) holder.getTextViews().get(0)).setText("№ " + document.number + " от " + document.date);
+                        ((TextView) holder.getTextViews().get(1)).setText(document.start);
                     }
                 });
 
@@ -112,7 +112,11 @@ public class MoversFragment extends ListFragment<MoversService> {
 
                         Bundle bundle = new Bundle();
 
-                        navController.navigate(R.id.nav_products, bundle);
+                        MoversService moversService = new MoversService("", "", "", "", "", 0, new ArrayList<>());
+
+                        bundle.putString("record", new JSONArray(moversService.getObjectDescription()).toString());
+
+                        navController.navigate(R.id.nav_MoversServiceRecordFragment, bundle);
 
                     }
                 });

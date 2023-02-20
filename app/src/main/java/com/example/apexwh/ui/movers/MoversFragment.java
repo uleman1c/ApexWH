@@ -74,7 +74,7 @@ public class MoversFragment extends ListFragment<MoversService> {
 
                                 JSONObject objectItem = JsonProcs.getItemJSONArray(jsonArrayObjects, j);
 
-                                items.add(Test.TestFromJson(objectItem));
+                                items.add(MoversService.MoversServiceFromJson(objectItem));
 
                             }
 

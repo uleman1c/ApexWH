@@ -15,8 +15,8 @@ import java.util.Map;
 public class MoversService {
 
     public String ref, number, date, start, finish, comment;
-    Integer quantity;
-    Double sum;
+    public Integer quantity;
+    public Double sum;
     public ArrayList<String> containers;
 
     public ArrayList<String> fields;
@@ -42,6 +42,8 @@ public class MoversService {
         this.fields.add("start");
         this.fields.add("finish");
         this.fields.add("quantity");
+        this.fields.add("sum");
+        this.fields.add("comment");
         this.fields.add("containers");
 
     }
@@ -112,6 +114,22 @@ public class MoversService {
             MakeFieldVisible(field);
             MakeFieldEdiable(field);
             MakeFieldRequired(field);
+
+        } else if (curName.equals("sum")) {
+
+            field.put("type", "double");
+            field.put("value", String.valueOf(sum));
+            field.put("alias", "Сумма");
+            MakeFieldVisible(field);
+            MakeFieldEdiable(field);
+
+        } else if (curName.equals("comment")) {
+
+            field.put("type", "text");
+            field.put("value", comment);
+            field.put("alias", "Комментарий");
+            MakeFieldVisible(field);
+            MakeFieldEdiable(field);
 
         } else if (curName.equals("containers")) {
 

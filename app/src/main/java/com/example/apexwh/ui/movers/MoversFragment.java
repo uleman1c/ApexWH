@@ -15,6 +15,7 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.example.apexwh.DateStr;
 import com.example.apexwh.HttpClient;
 import com.example.apexwh.HttpRequestInterface;
 import com.example.apexwh.JsonProcs;
@@ -110,8 +111,11 @@ public class MoversFragment extends ListFragment<MoversService> {
                     @Override
                     public void draw(DataAdapter.ItemViewHolder holder, MoversService document) {
 
-                        ((TextView) holder.getTextViews().get(0)).setText("№ " + document.number + " от " + document.date);
-                        ((TextView) holder.getTextViews().get(1)).setText(document.start);
+                        ((TextView) holder.getTextViews().get(0)).setText("№ " + document.number + " от " + DateStr.FromYmdhmsToDmyhms(document.date)
+                            + ", c " + DateStr.FromYmdhmsToDmyhms(document.start)
+                            + " по " + DateStr.FromYmdhmsToDmyhms(document.finish));
+                        ((TextView) holder.getTextViews().get(1)).setText("Количество: " + String.valueOf(document.quantity) + " на сумму " + String.valueOf(document.sum));
+                        ((TextView) holder.getTextViews().get(2)).setText("Комментарий: " + document.comment);
                     }
                 });
 

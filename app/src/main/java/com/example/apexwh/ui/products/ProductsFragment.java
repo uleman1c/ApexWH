@@ -442,7 +442,7 @@ public class ProductsFragment extends Fragment {
 
                         if (totalToScan == 0){
 
-                            Dialogs.showQuestionYesNoCancel(getContext(), getActivity(), new BundleMethodInterface() {
+                            Dialogs.showReturnMenu(getContext(), getActivity(), new BundleMethodInterface() {
                                 @Override
                                 public void callMethod(Bundle arguments) {
 

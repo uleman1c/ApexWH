@@ -325,5 +325,15 @@ public class HttpClient {
     }
 
 
+    public void addParam(String name, Double value) {
 
+
+        try {
+            requestParams.put(name, value);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+
+    }
 }

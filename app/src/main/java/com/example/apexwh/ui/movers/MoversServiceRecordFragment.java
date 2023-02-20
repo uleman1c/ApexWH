@@ -139,8 +139,10 @@ public class MoversServiceRecordFragment extends Fragment {
                 if (editable) {
 
                     if (type.equals("date")
-                    || type.equals("ref")){
+                            || type.equals("ref")){
                         field_layout = R.layout.field_editdate_item;
+                    } else if (type.equals("text")){
+                        field_layout = R.layout.field_edittextmulty_item;
                     } else {
                         field_layout = R.layout.field_edittext_item;
                     }
@@ -155,6 +157,9 @@ public class MoversServiceRecordFragment extends Fragment {
                 input.setId(View.generateViewId());
 
                 if (type.equals("integer")){
+
+                    ((EditText) input).setInputType(InputType.TYPE_CLASS_NUMBER);
+                } else if (type.equals("double")){
 
                     ((EditText) input).setInputType(InputType.TYPE_CLASS_NUMBER);
                 }
@@ -187,8 +192,6 @@ public class MoversServiceRecordFragment extends Fragment {
 
                     } else if (type.equals("integer")){
 
-                        if (required){
-
                             ((EditText) input).addTextChangedListener(new TextWatcher() {
                                 @Override
                                 public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -208,7 +211,41 @@ public class MoversServiceRecordFragment extends Fragment {
                                         JSONObject field = getFieldByViewId(input.getId(), "input");
                                         JsonProcs.putToJsonObject(field, "value", editable.toString());
 
-                                        input.setBackgroundColor(Color.parseColor("#FFFFFF"));
+                                        if (required){
+
+                                            input.setBackgroundColor(Color.parseColor("#FFFFFF"));
+                                        }
+                                    }
+
+
+                                }
+                            });
+
+                    } else if (type.equals("double")){
+
+                            ((EditText) input).addTextChangedListener(new TextWatcher() {
+                                @Override
+                                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                                }
+
+                                @Override
+                                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                                }
+
+                                @Override
+                                public void afterTextChanged(Editable editable) {
+
+                                    if(Double.valueOf(editable.toString()) > 0){
+
+                                        JSONObject field = getFieldByViewId(input.getId(), "input");
+                                        JsonProcs.putToJsonObject(field, "value", editable.toString());
+
+                                        if (required){
+
+                                            input.setBackgroundColor(Color.parseColor("#FFFFFF"));
+                                        }
                                     }
 
 
@@ -216,6 +253,37 @@ public class MoversServiceRecordFragment extends Fragment {
                             });
 
                         }
+                    else if (type.equals("string") || type.equals("text")){
+
+                        ((EditText) input).addTextChangedListener(new TextWatcher() {
+                            @Override
+                            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                            }
+
+                            @Override
+                            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                            }
+
+                            @Override
+                            public void afterTextChanged(Editable editable) {
+
+                                if(!editable.toString().isEmpty()){
+
+                                    JSONObject field = getFieldByViewId(input.getId(), "input");
+                                    JsonProcs.putToJsonObject(field, "value", editable.toString());
+
+                                    if (required){
+
+                                        input.setBackgroundColor(Color.parseColor("#FFFFFF"));
+                                    }
+                                }
+
+
+                            }
+                        });
+
                     }
 
                 }
@@ -258,6 +326,10 @@ public class MoversServiceRecordFragment extends Fragment {
 
                             curRequired = value.equals("0");
 
+                        } else if(type.equals("double")){
+
+                            curRequired = value.equals("0.0");
+
                         } else {
 
                             curRequired = value.isEmpty();
@@ -297,6 +369,10 @@ public class MoversServiceRecordFragment extends Fragment {
                         if (type.equals("integer")){
 
                             httpClient.addParam(name, Integer.valueOf(value));
+
+                        } else if (type.equals("double")){
+
+                            httpClient.addParam(name, Double.valueOf(value));
 
                         } else {
 

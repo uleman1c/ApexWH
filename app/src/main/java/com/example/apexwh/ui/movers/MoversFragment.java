@@ -131,7 +131,7 @@ public class MoversFragment extends ListFragment<MoversService> {
 
                         MoversService moversService = new MoversService(UUID.randomUUID().toString(), "",
                                 simpleDateFormat.format(calendar.getTime()),
-                                "", "", 0, new ArrayList<>());
+                                "", "", 0, 0.0, "", new ArrayList<>());
 
                         bundle.putString("record", new JSONArray(moversService.getObjectDescription()).toString());
 

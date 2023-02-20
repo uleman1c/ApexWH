@@ -14,21 +14,24 @@ import java.util.Map;
 
 public class MoversService {
 
-    public String ref, number, date, start, finish;
+    public String ref, number, date, start, finish, comment;
     Integer quantity;
+    Double sum;
     public ArrayList<String> containers;
 
     public ArrayList<String> fields;
 
     //public String[][] f = [[]];
 
-    public MoversService(String ref, String number, String date, String start, String finish, Integer quantity, ArrayList<String> containers) {
+    public MoversService(String ref, String number, String date, String start, String finish, Integer quantity, Double sum, String comment, ArrayList<String> containers) {
         this.ref = ref;
         this.number = number;
         this.date = date;
         this.start = start;
         this.finish = finish;
         this.quantity = quantity;
+        this.sum = sum;
+        this.comment = comment;
         this.containers = containers;
 
         this.fields = new ArrayList<>();
@@ -158,7 +161,9 @@ public class MoversService {
         String date = JsonProcs.getStringFromJSON(task_item, "date");
         String start = JsonProcs.getStringFromJSON(task_item, "start");
         String finish = JsonProcs.getStringFromJSON(task_item, "finish");
-        Integer quantity = JsonProcs.getIntegerFromJSON(task_item, "finish");
+        Integer quantity = JsonProcs.getIntegerFromJSON(task_item, "quantity");
+        Double sum = JsonProcs.getDoubleFromJSON(task_item, "sum");
+        String comment = JsonProcs.getStringFromJSON(task_item, "comment");
         JSONArray ja_containers = JsonProcs.getJsonArrayFromJsonObject(task_item, "containers");
 
         ArrayList<String> containers = new ArrayList<>();
@@ -168,9 +173,9 @@ public class MoversService {
 
         }
 
-        date = date.substring(6, 8) + "." + date.substring(4, 6) + "." + date.substring(0, 4);
+        //date = date.substring(6, 8) + "." + date.substring(4, 6) + "." + date.substring(0, 4);
 
-        return new MoversService(ref, number, date, start, finish, quantity, containers);
+        return new MoversService(ref, number, date, start, finish, quantity, sum, comment, containers);
 
 
     }

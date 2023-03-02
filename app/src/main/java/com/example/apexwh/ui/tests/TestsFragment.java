@@ -107,7 +107,7 @@ public class TestsFragment extends ListFragment<Test>{
 
                         Bundle bundle = new Bundle();
 
-                        navController.navigate(R.id.nav_products, bundle);
+                        navController.navigate(R.id.nav_BuierOrdersFragment, bundle);
 
                     }
                 });

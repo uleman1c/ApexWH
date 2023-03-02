@@ -236,6 +236,36 @@ public class HttpClient {
 
     }
 
+    public RequestHandle post(Context context, String url, String methodName, HttpRequestInterface httpRequestInterface) {
+
+        JSONArray params = new JSONArray();
+
+        JSONObject request = new JSONObject();
+        try {
+            request.put("request", methodName);
+            request.put("parameters", requestParams);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        params.put(request);
+
+        return client.post(context, serverUrl + url, new StringEntity(params.toString(), "UTF-8"), "application/json", new AsyncHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
+
+                httpRequestInterface.processResponse(getResponseString(responseBody));
+
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
+                showMessageOnFailure(statusCode, headers, responseBody, error);
+            }
+        });
+
+    }
+
 
 
     public RequestHandle postBinary(String url, HttpEntity entity, HttpRequestInterface httpRequestInterface) {

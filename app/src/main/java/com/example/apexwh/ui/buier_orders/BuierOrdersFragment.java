@@ -42,7 +42,7 @@ public class BuierOrdersFragment extends ListFragment<BuierOrder> {
 
     public BuierOrdersFragment() {
 
-        super(R.layout.fragment_filter_btn_list, R.layout.test_list_item);
+        super(R.layout.fragment_filter_btn_list, R.layout.outcome_list_item);
 
 
 
@@ -106,7 +106,7 @@ public class BuierOrdersFragment extends ListFragment<BuierOrder> {
 
                         textViews.add(itemView.findViewById(R.id.tvNumberDate));
                         textViews.add(itemView.findViewById(R.id.tvDescription));
-                        textViews.add(itemView.findViewById(R.id.tvStatus));
+                        textViews.add(itemView.findViewById(R.id.tvComment));
                     }
                 });
 
@@ -115,7 +115,8 @@ public class BuierOrdersFragment extends ListFragment<BuierOrder> {
                     public void draw(DataAdapter.ItemViewHolder holder, BuierOrder document) {
 
                         ((TextView) holder.getTextViews().get(0)).setText(document.nameStr + " № " + document.number + " от " + document.date);
-                        ((TextView) holder.getTextViews().get(1)).setText(document.description);
+                        ((TextView) holder.getTextViews().get(1)).setText(document.reciever + " к " + DateStr.FromYmdhmsToDmy(document.outcomeDate));
+                        ((TextView) holder.getTextViews().get(2)).setText(document.comment);
                     }
                 });
 
@@ -127,10 +128,10 @@ public class BuierOrdersFragment extends ListFragment<BuierOrder> {
                     @Override
                     public void onClick(View view) {
 
-                        if (request_result == null || request_result.isEmpty()){
+                        if (true || request_result == null || request_result.isEmpty()){
 
                             HttpClient httpClient = new HttpClient(getContext());
-                            httpClient.addParam("warehouseId", getWarehouseId());
+                            httpClient.addParam("warehouse", getWarehouseId());
 
                             httpClient.post(getContext(), "/hs/dta/obj", "getOutcomeFromUpr", new HttpRequestInterface() {
 

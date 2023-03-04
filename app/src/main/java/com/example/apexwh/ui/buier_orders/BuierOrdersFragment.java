@@ -8,6 +8,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -124,6 +125,15 @@ public class BuierOrdersFragment extends ListFragment<BuierOrder> {
                     @Override
                     public void onItemClick(BuierOrder document) {
 
+                        JSONObject jsonObject = new JSONObject();
+
+                        JsonProcs.putToJsonObject(jsonObject, "ref", document.ref);
+
+                        Bundle result = getArguments();
+                        result.putString("selected", jsonObject.toString());
+                        getParentFragmentManager().setFragmentResult("buier_order_selected", result);
+
+                        Navigation.findNavController(getActivity(), R.id.nav_host_fragment_content_main).popBackStack();
 
 
                     }

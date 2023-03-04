@@ -1,10 +1,13 @@
 package com.example.apexwh.ui.tests;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.fragment.app.FragmentResultListener;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
@@ -17,6 +20,7 @@ import com.example.apexwh.ui.adapters.DataAdapter;
 import com.example.apexwh.ui.adapters.ListFragment;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -111,6 +115,43 @@ public class TestsFragment extends ListFragment<Test>{
 
                     }
                 });
+
+                getParentFragmentManager().setFragmentResultListener("buier_order_selected", getViewLifecycleOwner(), new FragmentResultListener() {
+                    @Override
+                    public void onFragmentResult(@NonNull String requestKey, @NonNull Bundle bundle) {
+
+                        int btnId = bundle.getInt("id");
+
+//                        JSONArray containers = JsonProcs.getJsonArrayFromString(bundle.getString("selected"));
+//
+//                        JSONObject field = getFieldByViewId(btnId, "btn");
+//
+//                        try {
+//                            field.put("containers", containers);
+//                        } catch (JSONException e) {
+//                            throw new RuntimeException(e);
+//                        }
+//
+//                        String strContainers = "";
+//
+//                        for (int i = 0; i < containers.length(); i++) {
+//
+//                            JSONObject jsonObject = JsonProcs.getItemJSONArray(containers, i);
+//
+//                            strContainers = strContainers + (strContainers.isEmpty() ? "" : ", ") + JsonProcs.getStringFromJSON(jsonObject, "name");
+//
+//                        }
+//
+//                        JsonProcs.putToJsonObject(field,"value", strContainers);
+//
+//                        View view = inflate.findViewById(JsonProcs.getIntegerFromJSON(field, "input"));
+//                        view.setBackgroundColor(Color.parseColor("#FFFFFF"));
+//                        ((TextView) view).setText(strContainers);
+
+                    }
+                });
+
+
 
             }
         });

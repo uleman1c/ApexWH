@@ -120,6 +120,22 @@ public class BuierOrdersFragment extends ListFragment<BuierOrder> {
                     }
                 });
 
+                getAdapter().setOnClickListener(new DataAdapter.OnClickListener<BuierOrder>() {
+                    @Override
+                    public void onItemClick(BuierOrder document) {
+
+
+
+                    }
+                });
+
+                getAdapter().setOnLongClickListener(new DataAdapter.OnLongClickListener<BuierOrder>() {
+                    @Override
+                    public void onLongItemClick(BuierOrder document) {
+
+                    }
+                });
+
                 btnUpdate = root.findViewById(R.id.btnAction);
 
                 setUpdateBtn();
@@ -128,7 +144,51 @@ public class BuierOrdersFragment extends ListFragment<BuierOrder> {
                     @Override
                     public void onClick(View view) {
 
-                        if (true || request_result == null || request_result.isEmpty()){
+                        if (request_result.equals("start")){
+
+                            HttpClient httpClient = new HttpClient(getContext());
+                            httpClient.addParam("requestid", request_id);
+
+                            httpClient.request_get("/hs/dta/obj", "getRequestExecuted", new HttpRequestInterface() {
+                                @Override
+                                public void setProgressVisibility(int visibility) {
+
+                                }
+
+                                @Override
+                                public void processResponse(String response) {
+
+                                    JSONObject jsonObjectResponse = JsonProcs.getJSONObjectFromString(response);
+
+                                    if (JsonProcs.getBooleanFromJSON(jsonObjectResponse, "success")) {
+
+                                        JSONArray jsonArrayResponses = JsonProcs.getJsonArrayFromJsonObject(jsonObjectResponse, "responses");
+
+                                        JSONObject jsonObjectItem = JsonProcs.getItemJSONArray(jsonArrayResponses, 0);
+
+                                        if (JsonProcs.getBooleanFromJSON(jsonObjectItem, "RequestExecuted")) {
+
+                                            request_result = "";
+                                            request_date = "";
+
+                                            DB db = new DB(getContext());
+                                            db.open();
+                                            db.updateConstant("UpdateBuierOrdersRequestResult", request_result);
+                                            db.updateConstant("UpdateBuierOrdersRequestDate", request_date);
+                                            db.close();
+
+                                            setUpdateBtn();
+
+                                            updateList("");
+
+                                        }
+                                    }
+                                }
+                            });
+
+
+                        }
+                        else if (request_result == null || request_result.isEmpty()){
 
                             HttpClient httpClient = new HttpClient(getContext());
                             httpClient.addParam("warehouse", getWarehouseId());
@@ -188,7 +248,7 @@ public class BuierOrdersFragment extends ListFragment<BuierOrder> {
         request_result = db.getConstant("UpdateBuierOrdersRequestResult");
         db.close();
 
-        btnUpdate.setText("Обновить" + (request_date == null || request_date.isEmpty() ? "" : DateStr.FromYmdhmsToDmyhms(request_date)));
+        btnUpdate.setText("Обновить" + (request_date == null || request_date.isEmpty() ? "" : " " + DateStr.FromYmdhmsToDmyhms(request_date)));
     }
 
 

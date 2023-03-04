@@ -196,7 +196,7 @@ public class ListFragment<T> extends Fragment {
 
     }
 
-    private void updateList(String filter) {
+    public void updateList(String filter) {
 
         listUpdater.update(items, progressBar, adapter, filter);
 

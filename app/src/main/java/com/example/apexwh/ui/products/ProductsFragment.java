@@ -93,8 +93,7 @@ public class ProductsFragment extends Fragment {
 
         name = args.getString("name");
         ref = args.getString("ref");
-        description = args.getString("nameStr") + " № " + args.getString("number") + " от " + args.getString("date");
-
+        description = args.getString("description");
 
         getParentFragmentManager().setFragmentResultListener("selectCharacteristic", this, new FragmentResultListener() {
             @Override

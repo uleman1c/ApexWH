@@ -128,6 +128,7 @@ public class BuierOrdersFragment extends ListFragment<BuierOrder> {
                         JSONObject jsonObject = new JSONObject();
 
                         JsonProcs.putToJsonObject(jsonObject, "ref", document.ref);
+                        JsonProcs.putToJsonObject(jsonObject, "name", document.name);
 
                         Bundle result = getArguments();
                         result.putString("selected", jsonObject.toString());

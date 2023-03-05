@@ -1,6 +1,5 @@
 package com.example.apexwh.ui.tests;
 
-import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ProgressBar;
@@ -9,7 +8,6 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.FragmentResultListener;
 import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
 
 import com.example.apexwh.HttpClient;
 import com.example.apexwh.HttpRequestInterface;
@@ -20,7 +18,6 @@ import com.example.apexwh.ui.adapters.DataAdapter;
 import com.example.apexwh.ui.adapters.ListFragment;
 
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -116,11 +113,50 @@ public class TestsFragment extends ListFragment<Test>{
                     }
                 });
 
+                getAdapter().setOnClickListener(new DataAdapter.OnClickListener<Test>() {
+                    @Override
+                    public void onItemClick(Test document) {
+
+                        startTest(navController, document.ref);
+
+                    }
+                });
+
                 getParentFragmentManager().setFragmentResultListener("buier_order_selected", getViewLifecycleOwner(), new FragmentResultListener() {
                     @Override
                     public void onFragmentResult(@NonNull String requestKey, @NonNull Bundle bundle) {
 
-                        int btnId = bundle.getInt("id");
+                        JSONObject jsonObject = JsonProcs.getJSONObjectFromString(bundle.getString("selected"));
+
+                        HttpClient httpClient = new HttpClient(getContext());
+
+                        httpClient.request_get("/hs/dta/obj?request=setTest&type=" + JsonProcs.getStringFromJSON(jsonObject, "name")
+                                + "&ref=" + JsonProcs.getStringFromJSON(jsonObject, "ref")
+                                + "&warehouseId=" + getWarehouseId(), new HttpRequestInterface() {
+                            @Override
+                            public void setProgressVisibility(int visibility) {
+
+                            }
+
+                            @Override
+                            public void processResponse(String response) {
+
+                                JSONObject jsonObjectResponse = JsonProcs.getJSONObjectFromString(response);
+
+                                if (JsonProcs.getBooleanFromJSON(jsonObjectResponse, "success")) {
+
+                                    JSONArray jsonArrayResponses = JsonProcs.getJsonArrayFromJsonObject(jsonObjectResponse, "responses");
+
+                                    JSONObject jsonObjectItem = JsonProcs.getItemJSONArray(jsonArrayResponses, 0);
+
+                                    String ref = JsonProcs.getStringFromJSON(jsonObjectItem, "Test");
+
+                                    startTest(navController, ref);
+
+                                }
+
+                            }
+                        });
 
 //                        JSONArray containers = JsonProcs.getJsonArrayFromString(bundle.getString("selected"));
 //
@@ -157,6 +193,18 @@ public class TestsFragment extends ListFragment<Test>{
         });
 
     }
+
+    private void startTest(NavController navController, String ref) {
+
+        Bundle bundle = new Bundle();
+        bundle.putString("ref", ref);
+
+        navController.navigate(R.id.nav_BuierOrdersFragment, bundle);
+
+
+    }
+
+
 
 
 }

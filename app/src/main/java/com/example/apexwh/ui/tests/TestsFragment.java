@@ -100,6 +100,7 @@ public class TestsFragment extends ListFragment<Test>{
 
                         ((TextView) holder.getTextViews().get(0)).setText(document.nameStr + " № " + document.number + " от " + document.date);
                         ((TextView) holder.getTextViews().get(1)).setText(document.description);
+                        ((TextView) holder.getTextViews().get(2)).setText(document.status);
                     }
                 });
 

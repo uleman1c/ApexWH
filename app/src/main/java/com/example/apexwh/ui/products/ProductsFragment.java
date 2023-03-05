@@ -62,6 +62,10 @@ public class ProductsFragment extends Fragment {
 
     private ArrayList<DocumentLine> lines;
 
+    public DocumentLineAdapter getAdapter() {
+        return adapter;
+    }
+
     private DocumentLineAdapter adapter;
     private RecyclerView recyclerView;
 
@@ -84,6 +88,20 @@ public class ProductsFragment extends Fragment {
     }
 
     private ListUpdater listUpdater;
+
+    public interface OnCreateViewElements{
+
+        void execute(View root);
+
+    }
+
+
+    public void setOnCreateViewElements(OnCreateViewElements onCreateViewElements) {
+        this.onCreateViewElements = onCreateViewElements;
+    }
+
+    private OnCreateViewElements onCreateViewElements;
+
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
@@ -288,6 +306,12 @@ public class ProductsFragment extends Fragment {
         recyclerView = root.findViewById(R.id.list);
         recyclerView.setAdapter(adapter);
 
+        if (onCreateViewElements != null) {
+
+            onCreateViewElements.execute(root);
+
+        }
+
         updateList();
 
         return root;
@@ -421,7 +445,7 @@ public class ProductsFragment extends Fragment {
         scannedText.setText(scanned.toString() + (modeFrom ? " из " + quantity.toString() + ", " + (quantity == 0 ? 0 : (scanned * 100 / quantity)) + "%" : ""));
     }
 
-    private void scanShtrihCode(String strCatName, int quantity) {
+    public void scanShtrihCode(String strCatName, int quantity) {
 
         if (strCatName.isEmpty()){
 

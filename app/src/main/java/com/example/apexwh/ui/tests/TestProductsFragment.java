@@ -84,6 +84,31 @@ public class TestProductsFragment extends ProductsFragment {
             }
         });
 
+        setOnCreateViewElements(new OnCreateViewElements() {
+            @Override
+            public void execute(View root) {
+
+                getAdapter().setOnDocumentLineItemClickListener(new DocumentLineAdapter.OnDocumentLineItemClickListener() {
+                    @Override
+                    public void onDocumentLineItemClick(DocumentLine documentLine) {
+
+
+
+                    }
+                });
+
+                getAdapter().setOnDocumentLineItemLongClickListener(new DocumentLineAdapter.OnDocumentLineItemLongClickListener() {
+                    @Override
+                    public void onDocumentLineItemLongClick(DocumentLine documentLine) {
+
+
+
+                    }
+                });
+
+            }
+        });
+
     }
 
 }

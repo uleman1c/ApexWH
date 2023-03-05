@@ -268,6 +268,58 @@ public class HttpClient {
 
     }
 
+    public RequestHandle request_get(final String url, String methodName, final HttpRequestJsonObjectInterface httpRequestInterface) {
+
+        JSONArray params = new JSONArray();
+
+        JSONObject request = new JSONObject();
+        try {
+            request.put("request", methodName);
+            request.put("parameters", requestParams);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        params.put(request);
+
+        StringEntity entity = new StringEntity(params.toString(), "UTF-8");
+
+        return client.get(mCtx, serverUrl + url, entity, "application/json", new AsyncHttpResponseHandler(){
+
+            @Override
+            public void onStart() {
+                super.onStart();
+
+                httpRequestInterface.setProgressVisibility(View.VISIBLE);
+
+            }
+
+            @Override
+            public void onFinish() {
+                super.onFinish();
+
+                httpRequestInterface.setProgressVisibility(View.GONE);
+
+            }
+
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
+
+                JSONObject jsonObjectResponse = JsonProcs.getJSONObjectFromString(getResponseString(responseBody));
+
+                if (JsonProcs.getBooleanFromJSON(jsonObjectResponse, "success")) {
+
+                    httpRequestInterface.processResponse(jsonObjectResponse);
+                }
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
+                showMessageOnFailure(statusCode, headers, responseBody, error);
+            }
+        });
+
+    }
 
     public RequestHandle postBinary(Context context, String url, HttpEntity entity, ResponseHandlerInterface responseHandler) {
 

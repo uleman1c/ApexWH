@@ -125,6 +125,20 @@ public class TestProductsFragment extends ProductsFragment {
                     @Override
                     public void onDocumentLineItemLongClick(DocumentLine documentLine) {
 
+                        Bundle bundle = new Bundle();
+
+                        Dialogs.showInputQuantity(getContext(), documentLine.quantity - documentLine.scanned, getActivity(), new BundleMethodInterface() {
+                            @Override
+                            public void callMethod(Bundle arguments) {
+
+                                sendScanned(documentLine, arguments.getInt("quantity"));
+
+                            }
+                        }, bundle, "Ввести вручную "
+                                + documentLine.productName
+                                + (documentLine.characterName.equals("Основная характеристика") ? "" :
+                                " (" + documentLine.characterName + ")" ) + " ?", "Ввод количества");
+
 
 
                     }

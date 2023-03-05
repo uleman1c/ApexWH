@@ -22,6 +22,8 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class TestsFragment extends ListFragment<Test>{
 
@@ -100,7 +102,13 @@ public class TestsFragment extends ListFragment<Test>{
 
                         ((TextView) holder.getTextViews().get(0)).setText(document.nameStr + " № " + document.number + " от " + document.date);
                         ((TextView) holder.getTextViews().get(1)).setText(document.description);
-                        ((TextView) holder.getTextViews().get(2)).setText(document.status);
+
+                        HashMap statuses = new HashMap();
+                        statuses.put("closed", "Завершена");
+
+                        String curStatus = (String) statuses.get(document.status);
+
+                        ((TextView) holder.getTextViews().get(2)).setText(curStatus != null ? curStatus : document.status);
                     }
                 });
 

@@ -32,7 +32,6 @@ import com.example.apexwh.ui.BundleMethodInterface;
 import com.example.apexwh.ui.Dialogs;
 import com.example.apexwh.ui.adapters.DocumentLineAdapter;
 
-import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -41,6 +40,18 @@ import java.util.UUID;
 public class ProductsFragment extends Fragment {
 
     private ProductsViewModel mViewModel;
+    private String description;
+
+    public ProductsFragment() {
+    }
+
+    public ProductsFragment(String name, String ref, String description) {
+
+        this.ref = ref;
+        this.name = name;
+        this.description = description;
+
+    }
 
     public static ProductsFragment newInstance() {
         return new ProductsFragment();
@@ -62,11 +73,28 @@ public class ProductsFragment extends Fragment {
     Handler hSetFocus;
     private SoundPlayer soundPlayer;
 
+    public interface ListUpdater{
 
+        void update(String name, String ref, ArrayList<DocumentLine> lines, ProgressBar progressBar, DocumentLineAdapter adapter);
+
+    }
+
+    public void setListUpdater(ListUpdater listUpdater) {
+        this.listUpdater = listUpdater;
+    }
+
+    private ListUpdater listUpdater;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
+
+        Bundle args = getArguments();
+
+        name = args.getString("name");
+        ref = args.getString("ref");
+        description = args.getString("nameStr") + " № " + args.getString("number") + " от " + args.getString("date");
+
 
         getParentFragmentManager().setFragmentResultListener("selectCharacteristic", this, new FragmentResultListener() {
             @Override
@@ -130,12 +158,7 @@ public class ProductsFragment extends Fragment {
 
         View root = inflater.inflate(R.layout.fragment_products, container, false);
 
-        Bundle args = getArguments();
-
-        ref = args.getString("ref");
-        name = args.getString("name");
-
-        ((TextView) root.findViewById(R.id.tvHeader)).setText(args.getString("nameStr") + " № " + args.getString("number") + " от " + args.getString("date"));
+        ((TextView) root.findViewById(R.id.tvHeader)).setText(description);
 
         actvShtrihCode = root.findViewById(R.id.actvShtrihCode);
         actvShtrihCode.requestFocus();
@@ -600,48 +623,10 @@ public class ProductsFragment extends Fragment {
 
     }
 
+
     private void updateList() {
 
-        lines.clear();
-
-        HttpClient httpClient = new HttpClient(getContext());
-
-        httpClient.request_get("/hs/dta/obj?request=getLinesToAccept&name=" + name + "&id=" + ref, new HttpRequestInterface() {
-            @Override
-            public void setProgressVisibility(int visibility) {
-
-                progressBar.setVisibility(visibility);
-
-            }
-
-            @Override
-            public void processResponse(String response) {
-
-                JSONObject jsonObjectResponse = JsonProcs.getJSONObjectFromString(response);
-
-                if (JsonProcs.getBooleanFromJSON(jsonObjectResponse, "success")){
-
-                    JSONArray jsonArrayResponses = JsonProcs.getJsonArrayFromJsonObject(jsonObjectResponse, "responses");
-
-                    JSONObject jsonObjectItem = JsonProcs.getItemJSONArray(jsonArrayResponses, 0);
-
-                    JSONArray jsonArrayObjects = JsonProcs.getJsonArrayFromJsonObject(jsonObjectItem, "LinesToAccept");
-
-                    for (int j = 0; j < jsonArrayObjects.length(); j++) {
-
-                        JSONObject objectItem = JsonProcs.getItemJSONArray(jsonArrayObjects, j);
-
-                        lines.add(DocumentLine.DocumentLineFromJson(objectItem));
-
-                    }
-
-                    adapter.notifyDataSetChanged();
-
-                }
-
-            }
-
-        });
+        listUpdater.update(name, ref, lines, progressBar, adapter);
 
     }
 

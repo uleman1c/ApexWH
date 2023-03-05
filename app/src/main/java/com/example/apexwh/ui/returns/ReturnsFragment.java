@@ -121,10 +121,10 @@ public class ReturnsFragment extends Fragment {
                 bundle.putString("nameStr", document.nameStr);
                 bundle.putString("number", document.number);
                 bundle.putString("date", document.date);
-                bundle.putString("description", document.description);
+                bundle.putString("description", document.description); // args.getString("nameStr") + " № " + args.getString("number") + " от " + args.getString("date")
                 bundle.putString("mode", "return");
 
-                Navigation.findNavController(getActivity(), R.id.nav_host_fragment_content_main).navigate(R.id.nav_products, bundle);
+                Navigation.findNavController(getActivity(), R.id.nav_host_fragment_content_main).navigate(R.id.nav_returnProductsFragment, bundle);
 
             }
 

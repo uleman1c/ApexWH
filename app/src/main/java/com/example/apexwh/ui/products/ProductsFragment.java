@@ -542,7 +542,8 @@ public class ProductsFragment extends Fragment {
 
     }
 
-    private void testForExecuted() {
+    protected void testForExecuted() {
+
         Integer totalToScan = 0;
 
         for ( DocumentLine line : lines
@@ -558,27 +559,7 @@ public class ProductsFragment extends Fragment {
                 @Override
                 public void callMethod(Bundle arguments) {
 
-                    final HttpClient httpClient = new HttpClient(getContext());
-                    httpClient.addParam("id", UUID.randomUUID().toString());
-                    httpClient.addParam("appId", httpClient.getDbConstant("appId"));
-                    httpClient.addParam("type1c", "doc");
-                    httpClient.addParam("name1c", name);
-                    httpClient.addParam("id1c", ref);
-                    httpClient.addParam("status", "closed");
-
-                    httpClient.request_get("/hs/dta/obj", "setDocumentStatus", new HttpRequestInterface() {
-                        @Override
-                        public void setProgressVisibility(int visibility) {
-
-                        }
-
-                        @Override
-                        public void processResponse(String response) {
-
-                            Navigation.findNavController(getActivity(), R.id.nav_host_fragment_content_main).popBackStack();
-
-                        }
-                    });
+                    setDocumentStatus();
 
 
                 }
@@ -586,9 +567,32 @@ public class ProductsFragment extends Fragment {
         }
     }
 
-    protected void setShtrihCode(String strCatName, final DocumentLine documentLine, int quantity, BundleMethodInterface bundleMethodInterface) {
+    protected void setDocumentStatus() {
 
-        setScanned(documentLine, quantity);
+        final HttpClient httpClient = new HttpClient(getContext());
+        httpClient.addParam("id", UUID.randomUUID().toString());
+        httpClient.addParam("appId", httpClient.getDbConstant("appId"));
+        httpClient.addParam("type1c", "doc");
+        httpClient.addParam("name1c", name);
+        httpClient.addParam("id1c", ref);
+        httpClient.addParam("status", "closed");
+
+        httpClient.request_get("/hs/dta/obj", "setDocumentStatus", new HttpRequestInterface() {
+            @Override
+            public void setProgressVisibility(int visibility) {
+
+            }
+
+            @Override
+            public void processResponse(String response) {
+
+                Navigation.findNavController(getActivity(), R.id.nav_host_fragment_content_main).popBackStack();
+
+            }
+        });
+    }
+
+    protected void setShtrihCode(String strCatName, final DocumentLine documentLine, int quantity, BundleMethodInterface bundleMethodInterface) {
 
         final HttpClient httpClient = new HttpClient(getContext());
         httpClient.addParam("id", UUID.randomUUID().toString());
@@ -614,7 +618,13 @@ public class ProductsFragment extends Fragment {
 
                         if (JsonProcs.getBooleanFromJSON(jsonObjectResponse, "success")) {
 
-                            bundleMethodInterface.callMethod(new Bundle());
+                            setScanned(documentLine, quantity);
+
+                            if (allScanned()) {
+
+                                bundleMethodInterface.callMethod(new Bundle());
+
+                            }
 
                         }
 
@@ -650,6 +660,20 @@ public class ProductsFragment extends Fragment {
 
     }
 
+    protected Boolean allScanned(){
+
+        Integer totalToScan = 0;
+
+        for ( DocumentLine line : lines) {
+
+            totalToScan = totalToScan + line.quantity - line.scanned;
+
+        }
+
+        return  totalToScan == 0;
+
+
+    }
 
     private void updateList() {
 

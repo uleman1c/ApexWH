@@ -3,6 +3,7 @@ package com.example.apexwh.ui.tests;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.navigation.Navigation;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -134,6 +135,7 @@ public class TestProductsFragment extends ProductsFragment {
 
     }
 
+
     private void sendScanned(DocumentLine documentLine, int quantity) {
 
         final HttpClient httpClient = new HttpClient(getContext());
@@ -144,6 +146,9 @@ public class TestProductsFragment extends ProductsFragment {
         httpClient.addParam("type1c", "doc");
         httpClient.addParam("name1c", name);
         httpClient.addParam("id1c", ref);
+        httpClient.addParam("productRef", documentLine.productRef);
+        httpClient.addParam("characterRef", documentLine.characterRef);
+        httpClient.addParam("characterName", documentLine.characterName);
         httpClient.addParam("comment", "");
 
         httpClient.request_get("/hs/dta/obj", "setTestProduct", new HttpRequestJsonObjectInterface() {
@@ -156,9 +161,20 @@ public class TestProductsFragment extends ProductsFragment {
             @Override
             public void processResponse(JSONObject response) {
 
-
-
                 setScanned(documentLine, quantity);
+
+                if (allScanned()){
+
+                    Dialogs.showQuestionYesNoCancel(getContext(), getActivity(), new BundleMethodInterface() {
+                        @Override
+                        public void callMethod(Bundle arguments) {
+
+                            setDocumentStatus();
+
+                        }
+                    }, new Bundle(), "Завершить проверку?", "Вопрос");
+
+                }
 
             }
         });

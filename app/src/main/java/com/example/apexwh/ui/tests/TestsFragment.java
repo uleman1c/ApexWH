@@ -11,6 +11,7 @@ import androidx.navigation.NavController;
 
 import com.example.apexwh.HttpClient;
 import com.example.apexwh.HttpRequestInterface;
+import com.example.apexwh.HttpRequestJsonObjectInterface;
 import com.example.apexwh.JsonProcs;
 import com.example.apexwh.R;
 import com.example.apexwh.objects.Test;
@@ -132,57 +133,26 @@ public class TestsFragment extends ListFragment<Test>{
 
                         httpClient.request_get("/hs/dta/obj?request=setTest&type=" + JsonProcs.getStringFromJSON(jsonObject, "name")
                                 + "&ref=" + JsonProcs.getStringFromJSON(jsonObject, "ref")
-                                + "&warehouseId=" + getWarehouseId(), new HttpRequestInterface() {
+                                + "&warehouseId=" + getWarehouseId(), new HttpRequestJsonObjectInterface() {
                             @Override
                             public void setProgressVisibility(int visibility) {
 
                             }
 
                             @Override
-                            public void processResponse(String response) {
+                            public void processResponse(JSONObject jsonObjectResponse) {
 
-                                JSONObject jsonObjectResponse = JsonProcs.getJSONObjectFromString(response);
+                                JSONArray jsonArrayResponses = JsonProcs.getJsonArrayFromJsonObject(jsonObjectResponse, "responses");
 
-                                if (JsonProcs.getBooleanFromJSON(jsonObjectResponse, "success")) {
+                                JSONObject jsonObjectItem = JsonProcs.getItemJSONArray(jsonArrayResponses, 0);
 
-                                    JSONArray jsonArrayResponses = JsonProcs.getJsonArrayFromJsonObject(jsonObjectResponse, "responses");
+                                String ref = JsonProcs.getStringFromJSON(jsonObjectItem, "Test");
 
-                                    JSONObject jsonObjectItem = JsonProcs.getItemJSONArray(jsonArrayResponses, 0);
-
-                                    String ref = JsonProcs.getStringFromJSON(jsonObjectItem, "Test");
-
-                                    startTest(navController, ref);
-
-                                }
+                                startTest(navController, ref);
 
                             }
                         });
 
-//                        JSONArray containers = JsonProcs.getJsonArrayFromString(bundle.getString("selected"));
-//
-//                        JSONObject field = getFieldByViewId(btnId, "btn");
-//
-//                        try {
-//                            field.put("containers", containers);
-//                        } catch (JSONException e) {
-//                            throw new RuntimeException(e);
-//                        }
-//
-//                        String strContainers = "";
-//
-//                        for (int i = 0; i < containers.length(); i++) {
-//
-//                            JSONObject jsonObject = JsonProcs.getItemJSONArray(containers, i);
-//
-//                            strContainers = strContainers + (strContainers.isEmpty() ? "" : ", ") + JsonProcs.getStringFromJSON(jsonObject, "name");
-//
-//                        }
-//
-//                        JsonProcs.putToJsonObject(field,"value", strContainers);
-//
-//                        View view = inflate.findViewById(JsonProcs.getIntegerFromJSON(field, "input"));
-//                        view.setBackgroundColor(Color.parseColor("#FFFFFF"));
-//                        ((TextView) view).setText(strContainers);
 
                     }
                 });

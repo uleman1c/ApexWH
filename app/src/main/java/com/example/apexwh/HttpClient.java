@@ -145,6 +145,45 @@ public class HttpClient {
         });
 
     }
+    public RequestHandle request_get(final String url, final HttpRequestJsonObjectInterface httpRequestInterface) {
+
+        return client.get(mCtx, serverUrl + url, null, "application/json", new AsyncHttpResponseHandler(){
+
+            @Override
+            public void onStart() {
+                super.onStart();
+
+                httpRequestInterface.setProgressVisibility(View.VISIBLE);
+
+            }
+
+            @Override
+            public void onFinish() {
+                super.onFinish();
+
+                httpRequestInterface.setProgressVisibility(View.GONE);
+
+            }
+
+            public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
+
+                JSONObject jsonObjectResponse = JsonProcs.getJSONObjectFromString(getResponseString(responseBody));
+
+                if (JsonProcs.getBooleanFromJSON(jsonObjectResponse, "success")) {
+
+                    httpRequestInterface.processResponse(jsonObjectResponse);
+                }
+
+            }
+
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
+                showMessageOnFailure(statusCode, headers, responseBody, error);
+            }
+        });
+
+    }
     public RequestHandle request_get_apx(final String url, final HttpRequestInterface httpRequestInterface) {
 
         return client.get(mCtx, serverUrlApx + url, null, "application/json", new AsyncHttpResponseHandler(){

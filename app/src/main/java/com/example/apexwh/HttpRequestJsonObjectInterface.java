@@ -2,9 +2,9 @@ package com.example.apexwh;
 
 import org.json.JSONObject;
 
-public interface HttpRequestInterface {
+public interface HttpRequestJsonObjectInterface {
 
     void setProgressVisibility(int visibility);
-    void processResponse(String response);
+    void processResponse(JSONObject response);
 
 }

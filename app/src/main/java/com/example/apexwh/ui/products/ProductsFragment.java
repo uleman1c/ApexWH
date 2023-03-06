@@ -9,6 +9,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -24,6 +25,7 @@ import android.widget.TextView;
 
 import com.example.apexwh.HttpClient;
 import com.example.apexwh.HttpRequestInterface;
+import com.example.apexwh.HttpRequestJsonObjectInterface;
 import com.example.apexwh.JsonProcs;
 import com.example.apexwh.R;
 import com.example.apexwh.SoundPlayer;
@@ -102,10 +104,13 @@ public class ProductsFragment extends Fragment {
 
     private OnCreateViewElements onCreateViewElements;
 
+    private NavController navController;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
+
+        navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment_content_main);
 
         Bundle args = getArguments();
 
@@ -251,16 +256,31 @@ public class ProductsFragment extends Fragment {
            public void onDocumentLineItemClick(DocumentLine documentLine) {
 
                Bundle bundle = new Bundle();
-               bundle.putString("shtrihcode", documentLine.shtrihCodes.get(0));
+               //bundle.putString("shtrihcode", documentLine.shtrihCodes.get(0));
 
                Dialogs.showQuestionYesNoCancel(getContext(), getActivity(), new BundleMethodInterface() {
                    @Override
                    public void callMethod(Bundle arguments) {
 
-                       scanShtrihCode(arguments.getString("shtrihcode"), 1);
+//                       scanShtrihCode(arguments.getString("shtrihcode"), 1);
+
+                       setShtrihCode("", documentLine, 1, new BundleMethodInterface() {
+                           @Override
+                           public void callMethod(Bundle arguments) {
+
+                               testForExecuted();
+
+
+                           }
+                       });
+
+                       //sendScanned(documentLine, 1);
 
                    }
-               }, bundle, "Ввести вручную?", "Ввод");
+               }, bundle, "Ввести вручную "
+                       + documentLine.productName
+                       + (documentLine.characterName.equals("Основная характеристика") ? "" :
+                       " (" + documentLine.characterName + ")" ) + " ?", "Ввод");
 
 
            }
@@ -271,7 +291,7 @@ public class ProductsFragment extends Fragment {
             public void onDocumentLineItemLongClick(DocumentLine documentLine) {
 
                 Bundle bundle = new Bundle();
-                bundle.putString("shtrihcode", documentLine.shtrihCodes.get(0));
+                bundle.putString("shtrihcode", "");
                 bundle.putInt("toScan", documentLine.quantity - documentLine.scanned);
                 bundle.putString("productRef", documentLine.productRef);
                 bundle.putString("productName", documentLine.productName);
@@ -288,7 +308,7 @@ public class ProductsFragment extends Fragment {
 
                         } else if (arguments.getString("btn").equals("InputNumber")) {
 
-                            showInputNumber(arguments.getString("shtrihcode"), arguments.getInt("toScan"));
+                            showInputNumber(documentLine);
 
                         } else if (arguments.getString("btn").equals("ChangeCharcteristic")) {
 
@@ -317,19 +337,28 @@ public class ProductsFragment extends Fragment {
         return root;
     }
 
-    private void showInputNumber(String shtrihcode, int toScan){
+    private void showInputNumber(DocumentLine documentLine){
 
         Bundle bundle = new Bundle();
-        bundle.putString("shtrihcode", shtrihcode);
 
-        Dialogs.showInputQuantity(getContext(), toScan, getActivity(), new BundleMethodInterface() {
+        Dialogs.showInputQuantity(getContext(), documentLine.quantity - documentLine.scanned, getActivity(), new BundleMethodInterface() {
             @Override
             public void callMethod(Bundle arguments) {
 
-                scanShtrihCode(arguments.getString("shtrihcode"), arguments.getInt("quantity"));
+                setShtrihCode("", documentLine, arguments.getInt("quantity"), new BundleMethodInterface() {
+                    @Override
+                    public void callMethod(Bundle arguments) {
+
+                        testForExecuted();
+
+                    }
+                });
 
             }
-        }, bundle, "Введите", "Ввод количества");
+        }, bundle, "Ввести вручную "
+                + documentLine.productName
+                + (documentLine.characterName.equals("Основная характеристика") ? "" :
+                " (" + documentLine.characterName + ")" ) + " ?", "Ввод количества");
 
 
     }
@@ -586,7 +615,7 @@ public class ProductsFragment extends Fragment {
             @Override
             public void processResponse(String response) {
 
-                Navigation.findNavController(getActivity(), R.id.nav_host_fragment_content_main).popBackStack();
+                navController.popBackStack();
 
             }
         });
@@ -603,6 +632,9 @@ public class ProductsFragment extends Fragment {
         httpClient.addParam("name1c", name);
         httpClient.addParam("id1c", ref);
         httpClient.addParam("comment", "");
+        httpClient.addParam("productRef", documentLine.productRef);
+        httpClient.addParam("characterRef", documentLine.characterRef);
+        httpClient.addParam("characterName", documentLine.characterName);
 
         httpClient.request_get("/hs/dta/obj", "setShtrihCode", new HttpRequestInterface() {
                     @Override
@@ -703,6 +735,53 @@ public class ProductsFragment extends Fragment {
 
         }
     };
+
+    private void sendScanned(DocumentLine documentLine, int quantity) {
+
+        final HttpClient httpClient = new HttpClient(getContext());
+        httpClient.addParam("id", UUID.randomUUID().toString());
+        httpClient.addParam("shtrihCode", "");
+        httpClient.addParam("appId", httpClient.getDbConstant("appId"));
+        httpClient.addParam("quantity", quantity);
+        httpClient.addParam("type1c", "doc");
+        httpClient.addParam("name1c", name);
+        httpClient.addParam("id1c", ref);
+        httpClient.addParam("productRef", documentLine.productRef);
+        httpClient.addParam("characterRef", documentLine.characterRef);
+        httpClient.addParam("characterName", documentLine.characterName);
+        httpClient.addParam("comment", "");
+
+        httpClient.request_get("/hs/dta/obj", "setTestProduct", new HttpRequestJsonObjectInterface() {
+            @Override
+            public void setProgressVisibility(int visibility) {
+
+                progressBar.setVisibility(visibility);
+            }
+
+            @Override
+            public void processResponse(JSONObject response) {
+
+                setScanned(documentLine, quantity);
+
+                if (allScanned()){
+
+                    Dialogs.showQuestionYesNoCancel(getContext(), getActivity(), new BundleMethodInterface() {
+                        @Override
+                        public void callMethod(Bundle arguments) {
+
+                            setDocumentStatus();
+
+                        }
+                    }, new Bundle(), "Завершить проверку?", "Вопрос");
+
+                }
+
+            }
+        });
+
+
+
+    }
 
 
 

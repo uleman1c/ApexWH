@@ -44,7 +44,7 @@ public class GetFoto {
 
             intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
             // Ensure that there's a camera activity to handle the intent
-            if (intent.resolveActivity(context.getPackageManager()) != null) {
+            if (true || intent.resolveActivity(context.getPackageManager()) != null) {
                 // Create the File where the photo should go
                 file = null;
                 try {
@@ -64,7 +64,7 @@ public class GetFoto {
                     intent = null;
                 }
             } else {
-                intent = null;
+                    intent = null;
             }
 
         } else {

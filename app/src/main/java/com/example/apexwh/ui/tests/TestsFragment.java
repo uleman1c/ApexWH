@@ -101,7 +101,7 @@ public class TestsFragment extends ListFragment<Test>{
                     public void draw(DataAdapter.ItemViewHolder holder, Test document) {
 
                         ((TextView) holder.getTextViews().get(0)).setText(document.nameStr + " № " + document.number + " от " + document.date);
-                        ((TextView) holder.getTextViews().get(1)).setText(document.description);
+                        ((TextView) holder.getTextViews().get(1)).setText(document.receiver + " " + document.description);
 
                         HashMap statuses = new HashMap();
                         statuses.put("closed", "Завершена");

@@ -6,10 +6,10 @@ import org.json.JSONObject;
 
 public class Test {
 
-    public String ref, name, nameStr, number, date, description, status;
+    public String ref, name, nameStr, number, date, description, status, receiver;
 
 
-    public Test(String ref, String name, String nameStr, String number, String date, String description, String status) {
+    public Test(String ref, String name, String nameStr, String number, String date, String description, String status, String receiver) {
         this.ref = ref;
         this.name = name;
         this.nameStr = nameStr;
@@ -17,6 +17,7 @@ public class Test {
         this.date = date;
         this.description = description;
         this.status = status;
+        this.receiver = receiver;
     }
 
     public static Test TestFromJson(JSONObject task_item) {
@@ -28,10 +29,11 @@ public class Test {
         String date = JsonProcs.getStringFromJSON(task_item, "date");
         String description = JsonProcs.getStringFromJSON(task_item, "description");
         String status = JsonProcs.getStringFromJSON(task_item, "status");
+        String receiver = JsonProcs.getStringFromJSON(task_item, "receiver");
 
-        date = date.substring(6, 8) + "." + date.substring(4, 6) + "." + date.substring(0, 4);
+        //date = date.substring(6, 8) + "." + date.substring(4, 6) + "." + date.substring(0, 4);
 
-        return new Test(ref, name, nameStr, number, date, description, status);
+        return new Test(ref, name, nameStr, number, date, description, status, receiver);
 
 
     }

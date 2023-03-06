@@ -155,7 +155,51 @@ public class BuierOrdersFragment extends ListFragment<BuierOrder> {
                     @Override
                     public void onClick(View view) {
 
-                        if (request_result.equals("start")){
+                        if (request_result == null || request_result.isEmpty()){
+
+                            HttpClient httpClient = new HttpClient(getContext());
+                            httpClient.addParam("warehouse", getWarehouseId());
+
+                            httpClient.post(getContext(), "/hs/dta/obj", "getOutcomeFromUpr", new HttpRequestInterface() {
+
+                                @Override
+                                public void setProgressVisibility(int visibility) {
+
+                                }
+
+                                @Override
+                                public void processResponse(String response) {
+
+                                    JSONObject jsonObjectResponse = JsonProcs.getJSONObjectFromString(response);
+
+                                    if (JsonProcs.getBooleanFromJSON(jsonObjectResponse, "success")){
+
+                                        request_id = JsonProcs.getStringFromJSON(jsonObjectResponse, "requestid");
+                                        request_result = "start";
+                                        request_date = DateStr.NowYmdhms();
+
+                                        DB db = new DB(getContext());
+                                        db.open();
+                                        db.updateConstant("UpdateBuierOrdersRequestId", request_id);
+                                        db.updateConstant("UpdateBuierOrdersRequestDate", request_date);
+                                        db.updateConstant("UpdateBuierOrdersRequestResult", request_result);
+                                        db.close();
+
+                                        setUpdateBtn();
+
+                                    }
+
+                                }
+
+                            });
+
+
+                            //navController.navigate(R.id.nav_BuierOrdersFragment, bundle);
+
+
+                        }
+
+                        else if (request_result.equals("start")){
 
                             HttpClient httpClient = new HttpClient(getContext());
                             httpClient.addParam("requestid", request_id);
@@ -196,49 +240,6 @@ public class BuierOrdersFragment extends ListFragment<BuierOrder> {
                                     }
                                 }
                             });
-
-
-                        }
-                        else if (request_result == null || request_result.isEmpty()){
-
-                            HttpClient httpClient = new HttpClient(getContext());
-                            httpClient.addParam("warehouse", getWarehouseId());
-
-                            httpClient.post(getContext(), "/hs/dta/obj", "getOutcomeFromUpr", new HttpRequestInterface() {
-
-                                @Override
-                                public void setProgressVisibility(int visibility) {
-
-                                }
-
-                                @Override
-                                public void processResponse(String response) {
-
-                                    JSONObject jsonObjectResponse = JsonProcs.getJSONObjectFromString(response);
-
-                                    if (JsonProcs.getBooleanFromJSON(jsonObjectResponse, "success")){
-
-                                        request_id = JsonProcs.getStringFromJSON(jsonObjectResponse, "requestid");
-                                        request_result = "start";
-                                        request_date = DateStr.NowYmdhms();
-
-                                        DB db = new DB(getContext());
-                                        db.open();
-                                        db.updateConstant("UpdateBuierOrdersRequestId", request_id);
-                                        db.updateConstant("UpdateBuierOrdersRequestDate", request_date);
-                                        db.updateConstant("UpdateBuierOrdersRequestResult", request_result);
-                                        db.close();
-
-                                        setUpdateBtn();
-
-                                    }
-
-                                }
-
-                            });
-
-
-                            //navController.navigate(R.id.nav_BuierOrdersFragment, bundle);
 
 
                         }

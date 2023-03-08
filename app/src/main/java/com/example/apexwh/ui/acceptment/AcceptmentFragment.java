@@ -115,12 +115,11 @@ public class AcceptmentFragment extends ListFragment<Acceptment> {
                         JsonProcs.putToJsonObject(jsonObject, "ref", document.ref);
                         JsonProcs.putToJsonObject(jsonObject, "name", document.type);
 
-                        Bundle result = getArguments();
-                        result.putString("selected", jsonObject.toString());
-                        getParentFragmentManager().setFragmentResult("buier_order_selected", result);
+//                        Bundle result = getArguments();
+//                        result.putString("selected", jsonObject.toString());
+//                        getParentFragmentManager().setFragmentResult("acceptment_order_selected", result);
 
-                        Navigation.findNavController(getActivity(), R.id.nav_host_fragment_content_main).popBackStack();
-
+                        navController.popBackStack();
 
                     }
                 });

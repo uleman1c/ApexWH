@@ -40,6 +40,15 @@ public class HomeFragment extends Fragment {
             }
         });
 
+        binding.btnAcceptment.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                Navigation.findNavController(getActivity(), R.id.nav_host_fragment_content_main).navigate(R.id.nav_settings);
+
+            }
+        });
+
         binding.btnReturns.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

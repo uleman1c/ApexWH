@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layout_margin="4sp"
     android:orientation="vertical"
     tools:context=".ui.home.HomeFragment">
 
@@ -11,7 +12,7 @@
         android:id="@+id/btnSettings"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
+        android:background="@drawable/back"
         android:padding="16sp"
         android:text="Настройки"
         android:textSize="24sp"
@@ -22,6 +23,41 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="16sp"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/btnAcceptment"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="4sp"
+            android:layout_weight="1"
+            android:background="@drawable/back"
+            android:padding="16sp"
+            android:text="Приемка"
+            android:textSize="24sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/btnSettings" />
+
+        <Button
+            android:id="@+id/btnShipment"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/back"
+            android:padding="16sp"
+            android:text="Отгрузка"
+            android:textSize="24sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/btnSettings" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4sp"
         android:gravity="center|top"
         android:orientation="horizontal">
 
@@ -29,8 +65,9 @@
             android:id="@+id/btnReturns"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
+            android:layout_marginRight="4sp"
             android:layout_weight="1"
+            android:background="@drawable/back"
             android:padding="16sp"
             android:text="Возвраты"
             android:textSize="24sp"
@@ -42,8 +79,8 @@
             android:id="@+id/btnTest"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
             android:layout_weight="1"
+            android:background="@drawable/back"
             android:padding="16sp"
             android:text="Проверка"
             android:textSize="24sp"
@@ -56,8 +93,9 @@
         android:id="@+id/btnCorrections"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="4sp"
         android:width="300sp"
+        android:background="@drawable/back"
         android:padding="16sp"
         android:text="Корректировки"
         android:textSize="24sp"
@@ -69,8 +107,9 @@
         android:id="@+id/btnInvents"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="4sp"
         android:width="300sp"
+        android:background="@drawable/back"
         android:padding="16sp"
         android:text="Инвентаризация"
         android:textSize="24sp"
@@ -82,8 +121,9 @@
         android:id="@+id/btnMovers"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="4sp"
         android:width="300sp"
+        android:background="@drawable/back"
         android:padding="16sp"
         android:text="Грузчики"
         android:textSize="24sp"

@@ -29,8 +29,6 @@ public class Acceptment {
         String description = JsonProcs.getStringFromJSON(task_item, "description");
         String status = JsonProcs.getStringFromJSON(task_item, "status");
 
-        date = date.substring(6, 8) + "." + date.substring(4, 6) + "." + date.substring(0, 4);
-
         return new Acceptment(ref, name, nameStr, number, date, description, status);
 
 

@@ -45,8 +45,6 @@ public class BuierOrdersFragment extends ListFragment<BuierOrder> {
 
         super(R.layout.fragment_filter_btn_list, R.layout.outcome_list_item);
 
-
-
         setListUpdater(new ListUpdater() {
             @Override
             public void update(ArrayList items, ProgressBar progressBar, DataAdapter adapter, String filter) {

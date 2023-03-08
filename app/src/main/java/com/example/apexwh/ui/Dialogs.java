@@ -185,6 +185,43 @@ public class Dialogs {
 
     }
 
+    public static void showReturnOfProductsMenu(Context mCtx, Activity activity, final BundleMethodInterface bundleMethodInterface, final Bundle arguments, String question, String title) {
+
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(mCtx);
+        alertDialogBuilder.setTitle(title);
+
+        //alertDialogBuilder.setIcon(R.drawable.sklad96);
+
+        LayoutInflater inflater = activity.getLayoutInflater();
+
+        View view = inflater.inflate(R.layout.dialog_return_of_products_menu, null);
+
+        ((TextView) view.findViewById(R.id.tvQuestion)).setText(question);
+
+        alertDialogBuilder.setView(view);
+        //alertDialogBuilder.setIcon(R.drawable.sklad96);
+
+        final AlertDialog alertDialog = alertDialogBuilder.create();
+
+        view.findViewById(R.id.btnOrderToChangeCharacteristic).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                arguments.putString("btn", "OrderToChangeCharacteristic");
+
+                bundleMethodInterface.callMethod(arguments);
+
+                alertDialog.cancel();
+
+            }
+        });
+
+        alertDialog.show();
+
+
+
+    }
+
     public static void showInputQuantity(Context mCtx, Integer quantity, Activity activity, final BundleMethodInterface bundleMethodInterface, final Bundle arguments, String question, String title) {
 
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(mCtx);

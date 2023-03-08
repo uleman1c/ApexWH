@@ -20,6 +20,8 @@ import com.example.apexwh.R;
 import com.example.apexwh.objects.Acceptment;
 import com.example.apexwh.objects.Return;
 import com.example.apexwh.objects.ReturnOfProducts;
+import com.example.apexwh.ui.BundleMethodInterface;
+import com.example.apexwh.ui.Dialogs;
 import com.example.apexwh.ui.adapters.DataAdapter;
 import com.example.apexwh.ui.adapters.ListFragment;
 
@@ -112,11 +114,22 @@ public class ReturnsOfProductsFragment extends ListFragment<ReturnOfProducts> {
                         JsonProcs.putToJsonObject(jsonObject, "ref", document.ref);
                         JsonProcs.putToJsonObject(jsonObject, "name", document.number);
 
+                        Dialogs.showReturnOfProductsMenu(getContext(), getActivity(), new BundleMethodInterface() {
+                            @Override
+                            public void callMethod(Bundle arguments) {
+
+                                if (arguments.getString("btn").equals("OrderToChangeCharacteristic")){
+
+                                    navController.popBackStack();
+                                }
+
+                            }
+                        }, new Bundle(), "Выберите", "Меню");
+
 //                        Bundle result = getArguments();
 //                        result.putString("selected", jsonObject.toString());
 //                        getParentFragmentManager().setFragmentResult("acceptment_order_selected", result);
 
-                        navController.popBackStack();
 
                     }
                 });

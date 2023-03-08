@@ -96,24 +96,24 @@ public class AcceptmentFragment extends ListFragment<Acceptment> {
                     }
                 });
 
-                getAdapter().setDrawViewHolder(new DataAdapter.DrawViewHolder<BuierOrder>() {
+                getAdapter().setDrawViewHolder(new DataAdapter.DrawViewHolder<Acceptment>() {
                     @Override
-                    public void draw(DataAdapter.ItemViewHolder holder, BuierOrder document) {
+                    public void draw(DataAdapter.ItemViewHolder holder, Acceptment document) {
 
-                        ((TextView) holder.getTextViews().get(0)).setText(document.nameStr + " № " + document.number + " от " + document.date);
-                        ((TextView) holder.getTextViews().get(1)).setText(document.reciever + " к " + DateStr.FromYmdhmsToDmy(document.outcomeDate));
+                        ((TextView) holder.getTextViews().get(0)).setText(document.description);
+                        ((TextView) holder.getTextViews().get(1)).setText(document.senderDescription);
                         ((TextView) holder.getTextViews().get(2)).setText(document.comment);
                     }
                 });
 
-                getAdapter().setOnClickListener(new DataAdapter.OnClickListener<BuierOrder>() {
+                getAdapter().setOnClickListener(new DataAdapter.OnClickListener<Acceptment>() {
                     @Override
-                    public void onItemClick(BuierOrder document) {
+                    public void onItemClick(Acceptment document) {
 
                         JSONObject jsonObject = new JSONObject();
 
                         JsonProcs.putToJsonObject(jsonObject, "ref", document.ref);
-                        JsonProcs.putToJsonObject(jsonObject, "name", document.name);
+                        JsonProcs.putToJsonObject(jsonObject, "name", document.type);
 
                         Bundle result = getArguments();
                         result.putString("selected", jsonObject.toString());
@@ -125,9 +125,9 @@ public class AcceptmentFragment extends ListFragment<Acceptment> {
                     }
                 });
 
-                getAdapter().setOnLongClickListener(new DataAdapter.OnLongClickListener<BuierOrder>() {
+                getAdapter().setOnLongClickListener(new DataAdapter.OnLongClickListener<Acceptment>() {
                     @Override
-                    public void onLongItemClick(BuierOrder document) {
+                    public void onLongItemClick(Acceptment document) {
 
                     }
                 });

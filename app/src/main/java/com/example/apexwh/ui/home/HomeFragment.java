@@ -103,6 +103,15 @@ public class HomeFragment extends Fragment {
             }
         });
 
+        binding.btnOrderToChangeCharacteristic.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                Navigation.findNavController(getActivity(), R.id.nav_host_fragment_content_main).navigate(R.id.nav_ordersToChangeCharacteristicFragment);
+
+            }
+        });
+
         if(!DB.isSettingsExist(getContext())){
 
             ArrayList<Button> buttons = new ArrayList<>();

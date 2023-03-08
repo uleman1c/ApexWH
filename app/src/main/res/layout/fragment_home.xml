@@ -117,14 +117,14 @@
         app:layout_constraintTop_toBottomOf="@+id/btnTest" />
 
     <Button
-        android:id="@+id/btnCorrections"
+        android:id="@+id/btnOrderToChangeCharacteristic"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="4sp"
         android:width="300sp"
         android:background="@drawable/back"
         android:padding="16sp"
-        android:text="Корректировки"
+        android:text="Заявки на корректировку характеристик"
         android:textSize="24sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

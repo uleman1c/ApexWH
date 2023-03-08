@@ -43,7 +43,7 @@ public class ReturnsOfProductsFragment extends ListFragment<ReturnOfProducts> {
 
                 HttpClient httpClient = new HttpClient(getContext());
 
-                httpClient.request_get("/hs/dta/obj?request=getIncomeUpr&warehouse=" + getWarehouseId() + "&filter=" + filter, new HttpRequestJsonObjectInterface() {
+                httpClient.request_get("/hs/dta/obj?request=getReturns&warehouseId=" + getWarehouseId() + "&filter=" + filter, new HttpRequestJsonObjectInterface() {
                     @Override
                     public void setProgressVisibility(int visibility) {
 
@@ -58,7 +58,7 @@ public class ReturnsOfProductsFragment extends ListFragment<ReturnOfProducts> {
 
                         JSONObject jsonObjectItem = JsonProcs.getItemJSONArray(jsonArrayResponses, 0);
 
-                        JSONArray jsonArrayObjects = JsonProcs.getJsonArrayFromJsonObject(jsonObjectItem, "IncomeUpr");
+                        JSONArray jsonArrayObjects = JsonProcs.getJsonArrayFromJsonObject(jsonObjectItem, "Returns");
 
                         for (int j = 0; j < jsonArrayObjects.length(); j++) {
 

@@ -8,6 +8,7 @@ import androidx.navigation.NavController;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -32,6 +33,7 @@ import java.util.ArrayList;
 
 public class ReturnsOfProductsFragment extends ListFragment<ReturnOfProducts> {
 
+    Button btnUpdate;
 
     public ReturnsOfProductsFragment() {
 
@@ -99,9 +101,9 @@ public class ReturnsOfProductsFragment extends ListFragment<ReturnOfProducts> {
                     @Override
                     public void draw(DataAdapter.ItemViewHolder holder, ReturnOfProducts document) {
 
-                        ((TextView) holder.getTextViews().get(0)).setText(document.number);
-                        ((TextView) holder.getTextViews().get(1)).setText(document.contractor);
-                        ((TextView) holder.getTextViews().get(2)).setText(document.date);
+                        ((TextView) holder.getTextViews().get(0)).setText(document.description);
+                        ((TextView) holder.getTextViews().get(1)).setText(document.contractor + ", " + document.incomeNumber + " от " + DateStr.FromYmdhmsToDmy(document.incomeDate));
+                        ((TextView) holder.getTextViews().get(2)).setText(document.comment);
                     }
                 });
 
@@ -141,95 +143,18 @@ public class ReturnsOfProductsFragment extends ListFragment<ReturnOfProducts> {
                     }
                 });
 
-//                btnUpdate = root.findViewById(R.id.btnAction);
-//
-//                setUpdateBtn();
-//
-//                btnUpdate.setOnClickListener(new View.OnClickListener() {
-//                    @Override
-//                    public void onClick(View view) {
-//
-//                        if (request_result == null || request_result.isEmpty()){
-//
-//                            HttpClient httpClient = new HttpClient(getContext());
-//                            httpClient.addParam("warehouse", getWarehouseId());
-//
-//                            httpClient.post( "/hs/dta/obj", "getIncomeFromUpr", new HttpRequestJsonObjectInterface() {
-//
-//                                @Override
-//                                public void setProgressVisibility(int visibility) {
-//
-//                                }
-//
-//                                @Override
-//                                public void processResponse(JSONObject jsonObjectResponse) {
-//
-//                                    request_id = JsonProcs.getStringFromJSON(jsonObjectResponse, "requestid");
-//                                    request_result = "start";
-//                                    request_date = DateStr.NowYmdhms();
-//
-//                                    DB db = new DB(getContext());
-//                                    db.open();
-//                                    db.updateConstant("UpdateIncomeRequestId", request_id);
-//                                    db.updateConstant("UpdateIncomeRequestDate", request_date);
-//                                    db.updateConstant("UpdateIncomeRequestResult", request_result);
-//                                    db.close();
-//
-//                                    setUpdateBtn();
-//
-//                                }
-//
-//                            });
-//
-//
-//                            //navController.navigate(R.id.nav_BuierOrdersFragment, bundle);
-//
-//
-//                        }
-//
-//                        else if (request_result.equals("start")){
-//
-//                            HttpClient httpClient = new HttpClient(getContext());
-//                            httpClient.addParam("requestid", request_id);
-//
-//                            httpClient.request_get("/hs/dta/obj", "getRequestExecuted", new HttpRequestJsonObjectInterface() {
-//                                @Override
-//                                public void setProgressVisibility(int visibility) {
-//
-//                                }
-//
-//                                @Override
-//                                public void processResponse(JSONObject jsonObjectResponse) {
-//
-//                                    JSONArray jsonArrayResponses = JsonProcs.getJsonArrayFromJsonObject(jsonObjectResponse, "responses");
-//
-//                                    JSONObject jsonObjectItem = JsonProcs.getItemJSONArray(jsonArrayResponses, 0);
-//
-//                                    if (JsonProcs.getBooleanFromJSON(jsonObjectItem, "RequestExecuted")) {
-//
-//                                        request_result = "";
-//                                        request_date = "";
-//
-//                                        DB db = new DB(getContext());
-//                                        db.open();
-//                                        db.updateConstant("UpdateIncomeRequestResult", request_result);
-//                                        db.updateConstant("UpdateIncomeRequestDate", request_date);
-//                                        db.close();
-//
-//                                        setUpdateBtn();
-//
-//                                        updateList("");
-//
-//                                    }
-//
-//                                }
-//                            });
-//
-//
-//                        }
-//
-//                    }
-//                });
+                btnUpdate = root.findViewById(R.id.btnAction);
+
+                btnUpdate.setText("Обновить");
+
+                btnUpdate.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+
+                        updateList("");
+
+                    }
+                });
 
             }
         });

@@ -6,25 +6,31 @@ import org.json.JSONObject;
 
 public class ReturnOfProducts {
 
-    public String ref, number, date, contractor;
+    public String ref, number, date, contractor, incomeNumber, incomeDate, description, comment;
 
-    public ReturnOfProducts(String ref, String number, String date, String contractor) {
+    public ReturnOfProducts(String ref, String number, String date, String contractor, String incomeNumber, String incomeDate, String description, String comment) {
         this.ref = ref;
         this.number = number;
         this.date = date;
         this.contractor = contractor;
+        this.incomeNumber = incomeNumber;
+        this.incomeDate = incomeDate;
+        this.description = description;
+        this.comment = comment;
     }
 
     public static ReturnOfProducts FromJson(JSONObject task_item) {
 
-        String ref = JsonProcs.getStringFromJSON(task_item, "korr");
+        String ref = JsonProcs.getStringFromJSON(task_item, "ref");
         String number = JsonProcs.getStringFromJSON(task_item, "number");
         String date = JsonProcs.getStringFromJSON(task_item, "date");
         String contractor = JsonProcs.getStringFromJSON(task_item, "contractor");
+        String incomeNumber = JsonProcs.getStringFromJSON(task_item, "incomeNumber");
+        String incomeDate = JsonProcs.getStringFromJSON(task_item, "incomeDate");
+        String description = JsonProcs.getStringFromJSON(task_item, "description");
+        String comment = JsonProcs.getStringFromJSON(task_item, "comment");
 
-        //date = date.substring(6, 8) + "." + date.substring(4, 6) + "." + date.substring(0, 4);
-
-        return new ReturnOfProducts(ref, number, date, contractor);
+        return new ReturnOfProducts(ref, number, date, contractor, incomeNumber, incomeDate, description, comment);
 
 
     }

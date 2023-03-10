@@ -112,11 +112,15 @@ public class OrdersToChangeCharacteristicFragment extends ListFragment<OrderToCh
                         JsonProcs.putToJsonObject(jsonObject, "ref", document.ref);
                         JsonProcs.putToJsonObject(jsonObject, "name", document.number);
 
+                        Bundle bundle = new Bundle();
+                        bundle.putString("ref", document.ref);
+                        bundle.putString("name", document.name);
+
 //                        Bundle result = getArguments();
 //                        result.putString("selected", jsonObject.toString());
 //                        getParentFragmentManager().setFragmentResult("acceptment_order_selected", result);
 
-                        navController.popBackStack();
+                        navController.navigate(R.id.nav_orderToChangeCharacteristicProductsFragment, bundle);
 
                     }
                 });

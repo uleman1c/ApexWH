@@ -107,5 +107,10 @@
         android:name="com.example.apexwh.ui.orders_to_change_characteristics.OrdersToChangeCharacteristicFragment"
         android:label="Заявки на корректировку характеристик"
         tools:layout="@layout/fragment_orders_to_change_characteristic" />
+    <fragment
+        android:id="@+id/nav_orderToChangeCharacteristicProductsFragment"
+        android:name="com.example.apexwh.ui.orders_to_change_characteristics.OrderToChangeCharacteristicProductsFragment"
+        android:label="Товары"
+        tools:layout="@layout/fragment_order_to_change_characteristic_products" />
 
 </navigation>

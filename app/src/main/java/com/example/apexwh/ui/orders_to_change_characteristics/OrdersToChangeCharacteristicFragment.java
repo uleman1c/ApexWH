@@ -96,9 +96,10 @@ public class OrdersToChangeCharacteristicFragment extends ListFragment<OrderToCh
                     @Override
                     public void draw(DataAdapter.ItemViewHolder holder, OrderToChangeCharacteristic document) {
 
-                        ((TextView) holder.getTextViews().get(0)).setText(document.contractor);
-                        ((TextView) holder.getTextViews().get(1)).setText(document.date);
-                        ((TextView) holder.getTextViews().get(2)).setText(document.number);
+                        ((TextView) holder.getTextViews().get(0)).setText(document.description);
+                        ((TextView) holder.getTextViews().get(1)).setText(document.baseContractor + ", " + document.baseIncomeNumber
+                                + " от " + DateStr.FromYmdhmsToDmy(document.baseIncomeDate));
+                        ((TextView) holder.getTextViews().get(2)).setText(document.baseDescription);
                     }
                 });
 

@@ -80,7 +80,7 @@
     <fragment
         android:id="@+id/nav_BuierOrdersFragment"
         android:name="com.example.apexwh.ui.buier_orders.BuierOrdersFragment"
-        android:label="Заказы покупателей"
+        android:label="Отгрузка"
         tools:layout="@layout/fragment_buier_orders" />
     <fragment
         android:id="@+id/nav_returnProductsFragment"

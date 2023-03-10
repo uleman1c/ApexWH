@@ -128,9 +128,9 @@ public class BuierOrdersFragment extends ListFragment<BuierOrder> {
                         JsonProcs.putToJsonObject(jsonObject, "ref", document.ref);
                         JsonProcs.putToJsonObject(jsonObject, "name", document.name);
 
-                        Bundle result = getArguments();
-                        result.putString("selected", jsonObject.toString());
-                        getParentFragmentManager().setFragmentResult("buier_order_selected", result);
+//                        Bundle result = getArguments();
+//                        result.putString("selected", jsonObject.toString());
+//                        getParentFragmentManager().setFragmentResult("buier_order_selected", result);
 
                         Navigation.findNavController(getActivity(), R.id.nav_host_fragment_content_main).popBackStack();
 

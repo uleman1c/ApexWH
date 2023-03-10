@@ -30,6 +30,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.UUID;
 
 public class ReturnsOfProductsFragment extends ListFragment<ReturnOfProducts> {
 
@@ -113,20 +114,66 @@ public class ReturnsOfProductsFragment extends ListFragment<ReturnOfProducts> {
 
                         JSONObject jsonObject = new JSONObject();
 
-                        JsonProcs.putToJsonObject(jsonObject, "ref", document.ref);
-                        JsonProcs.putToJsonObject(jsonObject, "name", document.number);
+                        JsonProcs.putToJsonObject(jsonObject, "id", UUID.randomUUID().toString());
+                        JsonProcs.putToJsonObject(jsonObject, "baseId", document.ref);
+                        JsonProcs.putToJsonObject(jsonObject, "baseName", document.name);
+
+                        Bundle bundle = new Bundle();
+                        bundle.putString("selected", jsonObject.toString());
 
                         Dialogs.showReturnOfProductsMenu(getContext(), getActivity(), new BundleMethodInterface() {
                             @Override
                             public void callMethod(Bundle arguments) {
 
+                                JSONObject selected = JsonProcs.getJSONObjectFromString(arguments.getString("selected"));
+
                                 if (arguments.getString("btn").equals("OrderToChangeCharacteristic")){
 
-                                    navController.popBackStack();
+                                    HttpClient httpClient = new HttpClient(getContext());
+
+                                    httpClient.request_get("/hs/dta/obj?request=getOrderToChangeCharacteristic"
+                                            + "&id=" + JsonProcs.getStringFromJSON(selected, "id")
+                                            + "&baseId=" + JsonProcs.getStringFromJSON(selected, "baseId")
+                                            + "&baseName=" + JsonProcs.getStringFromJSON(selected, "baseName"), new HttpRequestJsonObjectInterface() {
+                                        @Override
+                                        public void setProgressVisibility(int visibility) {
+
+                                            //progressBar.setVisibility(visibility);
+
+                                        }
+
+                                        @Override
+                                        public void processResponse(JSONObject jsonObjectResponse) {
+
+                                            JSONArray jsonArrayResponses = JsonProcs.getJsonArrayFromJsonObject(jsonObjectResponse, "responses");
+
+                                            JSONObject jsonObjectItem = JsonProcs.getItemJSONArray(jsonArrayResponses, 0);
+
+                                            JSONArray jsonArrayObjects = JsonProcs.getJsonArrayFromJsonObject(jsonObjectItem, "OrderToChangeCharacteristic");
+
+                                            JSONObject objectItem = JsonProcs.getItemJSONArray(jsonArrayObjects, 0);
+
+
+//                                            for (int j = 0; j < jsonArrayObjects.length(); j++) {
+//
+//
+//
+//                                                items.add(ReturnOfProducts.FromJson(objectItem));
+//
+//                                            }
+//
+//                                            adapter.notifyDataSetChanged();
+
+                                            navController.popBackStack();
+                                        }
+
+                                    });
+
+
                                 }
 
                             }
-                        }, new Bundle(), "Выберите", "Меню");
+                        }, bundle, "Выберите", "Меню");
 
 //                        Bundle result = getArguments();
 //                        result.putString("selected", jsonObject.toString());

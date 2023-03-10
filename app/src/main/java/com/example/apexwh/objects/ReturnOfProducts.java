@@ -6,10 +6,11 @@ import org.json.JSONObject;
 
 public class ReturnOfProducts {
 
-    public String ref, number, date, contractor, incomeNumber, incomeDate, description, comment;
+    public String ref, name, number, date, contractor, incomeNumber, incomeDate, description, comment;
 
-    public ReturnOfProducts(String ref, String number, String date, String contractor, String incomeNumber, String incomeDate, String description, String comment) {
+    public ReturnOfProducts(String ref, String name, String number, String date, String contractor, String incomeNumber, String incomeDate, String description, String comment) {
         this.ref = ref;
+        this.name = name;
         this.number = number;
         this.date = date;
         this.contractor = contractor;
@@ -22,6 +23,7 @@ public class ReturnOfProducts {
     public static ReturnOfProducts FromJson(JSONObject task_item) {
 
         String ref = JsonProcs.getStringFromJSON(task_item, "ref");
+        String name = JsonProcs.getStringFromJSON(task_item, "name");
         String number = JsonProcs.getStringFromJSON(task_item, "number");
         String date = JsonProcs.getStringFromJSON(task_item, "date");
         String contractor = JsonProcs.getStringFromJSON(task_item, "contractor");
@@ -30,7 +32,7 @@ public class ReturnOfProducts {
         String description = JsonProcs.getStringFromJSON(task_item, "description");
         String comment = JsonProcs.getStringFromJSON(task_item, "comment");
 
-        return new ReturnOfProducts(ref, number, date, contractor, incomeNumber, incomeDate, description, comment);
+        return new ReturnOfProducts(ref, name, number, date, contractor, incomeNumber, incomeDate, description, comment);
 
 
     }

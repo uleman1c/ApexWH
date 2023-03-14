@@ -153,18 +153,15 @@ public class ReturnsOfProductsFragment extends ListFragment<ReturnOfProducts> {
 
                                             JSONObject objectItem = JsonProcs.getItemJSONArray(jsonArrayObjects, 0);
 
-
-//                                            for (int j = 0; j < jsonArrayObjects.length(); j++) {
-//
-//
-//
-//                                                items.add(ReturnOfProducts.FromJson(objectItem));
-//
-//                                            }
-//
-//                                            adapter.notifyDataSetChanged();
-
                                             navController.popBackStack();
+
+                                            Bundle bundle1 = new Bundle();
+                                            bundle1.putString("ref", JsonProcs.getStringFromJSON(objectItem, "ref"));
+                                            bundle1.putString("name", "ЗаявкаНаКорректировкуТоваров");
+
+
+                                            navController.navigate(R.id.nav_orderToChangeCharacteristicProductsFragment, bundle1);
+
                                         }
 
                                     });

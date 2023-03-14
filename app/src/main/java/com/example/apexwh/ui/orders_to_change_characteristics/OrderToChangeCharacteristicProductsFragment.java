@@ -68,7 +68,7 @@ public class OrderToChangeCharacteristicProductsFragment extends ProductsFragmen
 
                             JSONObject productItem = JsonProcs.getItemJSONArray(products, j);
 
-                            lines.add(DocumentLine.DocumentLineFromJson(productItem));
+                            lines.add(DocumentLine.DocumentLineFromJsonOTCC(productItem));
 
                         }
 

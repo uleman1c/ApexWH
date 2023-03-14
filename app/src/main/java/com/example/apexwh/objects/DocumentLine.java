@@ -3,6 +3,7 @@ package com.example.apexwh.objects;
 import com.example.apexwh.JsonProcs;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -48,6 +49,41 @@ public class DocumentLine {
             JSONObject objectItem = JsonProcs.getItemJSONArray(jsShtrihCodes, j);
 
             shtrihCodes.add(JsonProcs.getStringFromJSON(objectItem, "shtrihCode"));
+
+        }
+
+
+
+
+        Integer lineNumber = JsonProcs.getIntegerFromJSON(task_item, "lineNumber");
+
+        return new DocumentLine(productRef, productName, characterRef, characterName, seriesRef,  seriesName,
+                quantity, scanned, shtrihCodes, lineNumber);
+
+    }
+
+    public static DocumentLine DocumentLineFromJsonOTCC(JSONObject task_item){
+
+        String productRef = JsonProcs.getStringFromJSON(task_item, "productRef");
+        String productName = JsonProcs.getStringFromJSON(task_item, "productDescription");
+        String characterRef = JsonProcs.getStringFromJSON(task_item, "characterRef");
+        String characterName = JsonProcs.getStringFromJSON(task_item, "characterDescription");
+        String seriesRef = JsonProcs.getStringFromJSON(task_item, "seriesRef");
+        String seriesName = JsonProcs.getStringFromJSON(task_item, "seriesName");
+        Integer quantity = JsonProcs.getIntegerFromJSON(task_item, "number");
+        Integer scanned = JsonProcs.getIntegerFromJSON(task_item, "scanned");
+
+        JSONArray jsShtrihCodes = JsonProcs.getJsonArrayFromJsonObject(task_item, "shtrihCode");
+
+        ArrayList<String> shtrihCodes = new ArrayList<>();
+
+        for (int j = 0; j < jsShtrihCodes.length(); j++) {
+
+            try {
+                shtrihCodes.add(jsShtrihCodes.getString(j));
+            } catch (JSONException e) {
+                throw new RuntimeException(e);
+            }
 
         }
 

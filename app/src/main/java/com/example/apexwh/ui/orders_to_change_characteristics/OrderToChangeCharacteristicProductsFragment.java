@@ -20,6 +20,8 @@ import com.example.apexwh.R;
 import com.example.apexwh.objects.DocumentLine;
 import com.example.apexwh.objects.MoversService;
 import com.example.apexwh.objects.OrderToChangeCharactericticLine;
+import com.example.apexwh.ui.BundleMethodInterface;
+import com.example.apexwh.ui.Dialogs;
 import com.example.apexwh.ui.adapters.DataAdapter;
 import com.example.apexwh.ui.adapters.DocumentLineAdapter;
 import com.example.apexwh.ui.adapters.ListFragment;
@@ -134,6 +136,78 @@ public class OrderToChangeCharacteristicProductsFragment extends ScanProductsFra
 
                     }
                 });
+
+                getAdapter().setOnClickListener(new DataAdapter.OnClickListener<OrderToChangeCharactericticLine>() {
+                   @Override
+                   public void onItemClick(OrderToChangeCharactericticLine documentLine) {
+
+                       Bundle bundle = new Bundle();
+                       //bundle.putString("shtrihcode", documentLine.shtrihCodes.get(0));
+
+                       Dialogs.showQuestionYesNoCancel(getContext(), getActivity(), new BundleMethodInterface() {
+                           @Override
+                           public void callMethod(Bundle arguments) {
+
+        //                       scanShtrihCode(arguments.getString("shtrihcode"), 1);
+
+                               setShtrihCode("", documentLine, 1, new BundleMethodInterface() {
+                                   @Override
+                                   public void callMethod(Bundle arguments) {
+
+                                       testForExecuted();
+
+
+                                   }
+                               });
+
+                               //sendScanned(documentLine, 1);
+
+                           }
+                       }, bundle, "Ввести вручную "
+                               + documentLine.productName
+                               + (documentLine.characterName.equals("Основная характеристика") ? "" :
+                               " (" + documentLine.characterName + ")" ) + " ?", "Ввод");
+
+
+                   }
+                });
+
+//        adapter.setOnDocumentLineItemLongClickListener(new DocumentLineAdapter.OnDocumentLineItemLongClickListener() {
+//            @Override
+//            public void onDocumentLineItemLongClick(DocumentLine documentLine) {
+//
+//                Bundle bundle = new Bundle();
+//                bundle.putString("shtrihcode", "");
+//                bundle.putInt("toScan", documentLine.quantity - documentLine.scanned);
+//                bundle.putString("productRef", documentLine.productRef);
+//                bundle.putString("productName", documentLine.productName);
+//                bundle.putString("characterRef", documentLine.characterRef);
+//                bundle.putString("characterName", documentLine.characterName);
+//
+//                Dialogs.showProductMenu(getContext(), getActivity(), new BundleMethodInterface() {
+//                    @Override
+//                    public void callMethod(Bundle arguments) {
+//
+//                        if (arguments.getString("btn").equals("Foto")){
+//
+//                            Navigation.findNavController(getActivity(), R.id.nav_host_fragment_content_main).navigate(R.id.nav_gallery, arguments);
+//
+//                        } else if (arguments.getString("btn").equals("InputNumber")) {
+//
+//                            showInputNumber(documentLine);
+//
+//                        } else if (arguments.getString("btn").equals("ChangeCharcteristic")) {
+//
+//                            Navigation.findNavController(getActivity(), R.id.nav_host_fragment_content_main).navigate(R.id.nav_characteristics, arguments);
+//
+//                        }
+//
+//                    }
+//                }, bundle, "Выберите", "Меню");
+//
+//
+//            }
+//        });
 
 
 

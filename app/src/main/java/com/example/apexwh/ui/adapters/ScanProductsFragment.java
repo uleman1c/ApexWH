@@ -89,6 +89,18 @@ public class ScanProductsFragment<T> extends Fragment {
 
     private ListUpdater listUpdater;
 
+    public interface ScanCodeSetter{
+
+        void setScanCode(String strCatName, int pos, int quantity, BundleMethodInterface bundleMethodInterface);
+
+    }
+
+    public void setScanCodeSetter(ScanCodeSetter scanCodeSetter) {
+        this.scanCodeSetter = scanCodeSetter;
+    }
+
+    private ScanCodeSetter scanCodeSetter;
+
     public interface OnCreateViewElements{
 
         void execute(View root);
@@ -262,79 +274,6 @@ public class ScanProductsFragment<T> extends Fragment {
             }
         });
 
-
-//        adapter.setOnClickListener(new DataAdapter.OnClickListener<T>() {
-//           @Override
-//           public void onItemClick(DocumentLine documentLine) {
-//
-//               Bundle bundle = new Bundle();
-//               //bundle.putString("shtrihcode", documentLine.shtrihCodes.get(0));
-//
-//               Dialogs.showQuestionYesNoCancel(getContext(), getActivity(), new BundleMethodInterface() {
-//                   @Override
-//                   public void callMethod(Bundle arguments) {
-//
-////                       scanShtrihCode(arguments.getString("shtrihcode"), 1);
-//
-//                       setShtrihCode("", documentLine, 1, new BundleMethodInterface() {
-//                           @Override
-//                           public void callMethod(Bundle arguments) {
-//
-//                               testForExecuted();
-//
-//
-//                           }
-//                       });
-//
-//                       //sendScanned(documentLine, 1);
-//
-//                   }
-//               }, bundle, "Ввести вручную "
-//                       + documentLine.productName
-//                       + (documentLine.characterName.equals("Основная характеристика") ? "" :
-//                       " (" + documentLine.characterName + ")" ) + " ?", "Ввод");
-//
-//
-//           }
-//        });
-//
-//        adapter.setOnDocumentLineItemLongClickListener(new DocumentLineAdapter.OnDocumentLineItemLongClickListener() {
-//            @Override
-//            public void onDocumentLineItemLongClick(DocumentLine documentLine) {
-//
-//                Bundle bundle = new Bundle();
-//                bundle.putString("shtrihcode", "");
-//                bundle.putInt("toScan", documentLine.quantity - documentLine.scanned);
-//                bundle.putString("productRef", documentLine.productRef);
-//                bundle.putString("productName", documentLine.productName);
-//                bundle.putString("characterRef", documentLine.characterRef);
-//                bundle.putString("characterName", documentLine.characterName);
-//
-//                Dialogs.showProductMenu(getContext(), getActivity(), new BundleMethodInterface() {
-//                    @Override
-//                    public void callMethod(Bundle arguments) {
-//
-//                        if (arguments.getString("btn").equals("Foto")){
-//
-//                            Navigation.findNavController(getActivity(), R.id.nav_host_fragment_content_main).navigate(R.id.nav_gallery, arguments);
-//
-//                        } else if (arguments.getString("btn").equals("InputNumber")) {
-//
-//                            showInputNumber(documentLine);
-//
-//                        } else if (arguments.getString("btn").equals("ChangeCharcteristic")) {
-//
-//                            Navigation.findNavController(getActivity(), R.id.nav_host_fragment_content_main).navigate(R.id.nav_characteristics, arguments);
-//
-//                        }
-//
-//                    }
-//                }, bundle, "Выберите", "Меню");
-//
-//
-//            }
-//        });
-
         recyclerView = root.findViewById(R.id.list);
         recyclerView.setAdapter(adapter);
 
@@ -349,28 +288,28 @@ public class ScanProductsFragment<T> extends Fragment {
         return root;
     }
 
-    private void showInputNumber(DocumentLine documentLine){
+    private void showInputNumber(T documentLine){
 
         Bundle bundle = new Bundle();
 
-        Dialogs.showInputQuantity(getContext(), documentLine.quantity - documentLine.scanned, getActivity(), new BundleMethodInterface() {
-            @Override
-            public void callMethod(Bundle arguments) {
-
-                setShtrihCode("", documentLine, arguments.getInt("quantity"), new BundleMethodInterface() {
-                    @Override
-                    public void callMethod(Bundle arguments) {
-
-                        testForExecuted();
-
-                    }
-                });
-
-            }
-        }, bundle, "Ввести вручную "
-                + documentLine.productName
-                + (documentLine.characterName.equals("Основная характеристика") ? "" :
-                " (" + documentLine.characterName + ")" ) + " ?", "Ввод количества");
+//        Dialogs.showInputQuantity(getContext(), documentLine.quantity - documentLine.scanned, getActivity(), new BundleMethodInterface() {
+//            @Override
+//            public void callMethod(Bundle arguments) {
+//
+//                setShtrihCode("", documentLine, arguments.getInt("quantity"), new BundleMethodInterface() {
+//                    @Override
+//                    public void callMethod(Bundle arguments) {
+//
+//                        testForExecuted();
+//
+//                    }
+//                });
+//
+//            }
+//        }, bundle, "Ввести вручную "
+//                + documentLine.productName
+//                + (documentLine.characterName.equals("Основная характеристика") ? "" :
+//                " (" + documentLine.characterName + ")" ) + " ?", "Ввод количества");
 
 
     }
@@ -482,6 +421,8 @@ public class ScanProductsFragment<T> extends Fragment {
 
         }
         else {
+
+
 
 //            Boolean found = false;
 //            DocumentLine documentLine = null;
@@ -621,7 +562,10 @@ public class ScanProductsFragment<T> extends Fragment {
         });
     }
 
-    protected void setShtrihCode(String strCatName, final DocumentLine documentLine, int quantity, BundleMethodInterface bundleMethodInterface) {
+    protected void setShtrihCode(String strCatName, final T documentLine, int quantity, BundleMethodInterface bundleMethodInterface) {
+
+        scanCodeSetter.setScanCode(strCatName, );
+
 
         final HttpClient httpClient = new HttpClient(getContext());
         httpClient.addParam("id", UUID.randomUUID().toString());

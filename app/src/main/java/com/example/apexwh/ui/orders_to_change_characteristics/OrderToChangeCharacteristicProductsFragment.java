@@ -139,9 +139,10 @@ public class OrderToChangeCharacteristicProductsFragment extends ScanProductsFra
                         String characteristicRef = bundle.getString("characteristicRef");
                         String characteristicDescription = bundle.getString("characteristicDescription");
                         String productRef = bundle.getString("productRef");
-                        String productName = bundle.getString("productName");
+                        String productName = bundle.getString("productDescription");
                         String characterRef = bundle.getString("characterRef");
-                        String characterName = bundle.getString("characterName");
+                        String characterName = bundle.getString("characterDescription");
+                        int number = bundle.getInt("toScan");
 
                         Dialogs.showQuestionYesNoCancel(getContext(), getActivity(), new BundleMethodInterface() {
                                     @Override
@@ -150,7 +151,7 @@ public class OrderToChangeCharacteristicProductsFragment extends ScanProductsFra
                                         final HttpClient httpClient = new HttpClient(getContext());
                                         httpClient.addParam("id", UUID.randomUUID().toString());
                                         httpClient.addParam("appId", httpClient.getDbConstant("appId"));
-                                        httpClient.addParam("quantity", 1);
+                                        httpClient.addParam("quantity", number);
                                         httpClient.addParam("type1c", "doc");
                                         httpClient.addParam("name1c", name);
                                         httpClient.addParam("id1c", ref);
@@ -183,7 +184,7 @@ public class OrderToChangeCharacteristicProductsFragment extends ScanProductsFra
 
 
                                     }
-                                }, bundle, "Номенклатура " + productName + ": заменить характеристику (" + characterName + ") на (" + characteristicDescription + ")",
+                                }, bundle, "Номенклатура " + productName + "(" + String.valueOf(number) + " шт )" + ": заменить характеристику (" + characterName + ") на (" + characteristicDescription + ")",
                                 "Замена характеристики");
 
                     }
@@ -205,7 +206,8 @@ public class OrderToChangeCharacteristicProductsFragment extends ScanProductsFra
 
                         ((TextView) holder.getTextViews().get(0)).setText(documentLine.productDescription
                                 + (documentLine.characterDescription.isEmpty() || documentLine.characterDescription.equals("Основная характеристика") ? ""
-                                    : ", " + documentLine.characterDescription));
+                                    : ", " + documentLine.characterDescription)
+                        + ( documentLine.newCharacterRef.isEmpty() ? "" : " скорректирована на " + documentLine.newCharacterDescription ));
 
                         String allSK = "";
 
@@ -217,7 +219,7 @@ public class OrderToChangeCharacteristicProductsFragment extends ScanProductsFra
 
                         ((TextView) holder.getTextViews().get(1)).setText(allSK);
 
-                        ((TextView) holder.getTextViews().get(2)).setText(documentLine.scanned.toString() + " из " + documentLine.number.toString());
+                        ((TextView) holder.getTextViews().get(2)).setText(documentLine.number.toString());
 
 
 
@@ -268,32 +270,51 @@ public class OrderToChangeCharacteristicProductsFragment extends ScanProductsFra
                         bundle.putString("shtrihcode", "");
                         bundle.putInt("toScan", documentLine.number - documentLine.scanned);
                         bundle.putString("productRef", documentLine.productRef);
-                        bundle.putString("productName", documentLine.productDescription);
+                        bundle.putString("productDescription", documentLine.productDescription);
                         bundle.putString("characterRef", documentLine.characterRef);
-                        bundle.putString("characterName", documentLine.characterDescription);
+                        bundle.putString("characterDescription", documentLine.characterDescription);
 
-                        Dialogs.showProductMenu(getContext(), getActivity(), new BundleMethodInterface() {
-                            @Override
-                            public void callMethod(Bundle arguments) {
+                        if (documentLine.number == 1) {
 
-                                if (arguments.getString("btn").equals("Foto")){
+                            Dialogs.showProductMenuChangeCharacteristic(getContext(), getActivity(), new BundleMethodInterface() {
+                                @Override
+                                public void callMethod(Bundle arguments) {
 
-                                    navController.navigate(R.id.nav_gallery, arguments);
+                                    if (arguments.getString("btn").equals("Foto")) {
 
-                                } else if (arguments.getString("btn").equals("InputNumber")) {
+                                        navController.navigate(R.id.nav_gallery, arguments);
 
-                                    showInputNumber(documentLine);
+                                    } else if (arguments.getString("btn").equals("ChangeCharcteristic")) {
 
-                                } else if (arguments.getString("btn").equals("ChangeCharcteristic")) {
+                                        navController.navigate(R.id.nav_characteristics, arguments);
 
-                                    navController.navigate(R.id.nav_characteristics, arguments);
+                                    }
 
                                 }
+                            }, bundle, "Выберите", "Меню");
 
-                            }
-                        }, bundle, "Выберите", "Меню");
+                        } else {
+
+                            Dialogs.showProductMenu(getContext(), getActivity(), new BundleMethodInterface() {
+                                @Override
+                                public void callMethod(Bundle arguments) {
+
+                                    if (arguments.getString("btn").equals("Foto")) {
+
+                                        navController.navigate(R.id.nav_gallery, arguments);
+
+                                    } else if (arguments.getString("btn").equals("InputNumber")) {
+
+                                        showInputNumber(documentLine);
+
+                                    }
+
+                                }
+                            }, bundle, "Выберите", "Меню");
 
 
+
+                        }
 
 
                     }
@@ -548,22 +569,17 @@ public class OrderToChangeCharacteristicProductsFragment extends ScanProductsFra
 
         Bundle bundle = new Bundle();
         bundle.putString("productRef", documentLine.productRef);
+        bundle.putString("productDescription", documentLine.productDescription);
+        bundle.putString("characterRef", documentLine.characterRef);
+        bundle.putString("characterDescription", documentLine.characterDescription);
 
         Dialogs.showInputQuantity(getContext(), documentLine.number - documentLine.scanned, getActivity(), new BundleMethodInterface() {
             @Override
             public void callMethod(Bundle arguments) {
 
+                arguments.putInt("toScan", arguments.getInt("quantity"));
+
                 navController.navigate(R.id.nav_characteristics, arguments);
-
-
-//                setShtrihCode("", documentLine, arguments.getInt("quantity"), new BundleMethodInterface() {
-//                    @Override
-//                    public void callMethod(Bundle arguments) {
-//
-//                        testForExecuted();
-//
-//                    }
-//                });
 
             }
         }, bundle, "Ввести вручную "

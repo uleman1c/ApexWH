@@ -15,17 +15,6 @@
         android:textSize="18sp" />
 
     <Button
-        android:id="@+id/btnInputNumber"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="10sp"
-        android:background="@color/colorOk"
-        android:padding="16sp"
-        android:text="Ввести количество"
-        android:textColor="@color/ic_icon_background"
-        android:textSize="18sp" />
-
-    <Button
         android:id="@+id/btnFoto"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -34,6 +23,18 @@
         android:background="@color/colorOk"
         android:padding="16sp"
         android:text="Фото"
+        android:textColor="@color/ic_icon_background"
+        android:textSize="18sp" />
+
+    <Button
+        android:id="@+id/btnChangeCharcteristic"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10sp"
+        android:layout_marginTop="20sp"
+        android:background="@color/colorOk"
+        android:padding="16sp"
+        android:text="Заменить характеристику"
         android:textColor="@color/ic_icon_background"
         android:textSize="18sp" />
 

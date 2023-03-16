@@ -115,6 +115,43 @@ public class Dialogs {
             }
         });
 
+        alertDialog.show();
+
+
+
+    }
+
+    public static void showProductMenuChangeCharacteristic(Context mCtx, Activity activity, final BundleMethodInterface bundleMethodInterface, final Bundle arguments, String question, String title) {
+
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(mCtx);
+        alertDialogBuilder.setTitle(title);
+
+        //alertDialogBuilder.setIcon(R.drawable.sklad96);
+
+        LayoutInflater inflater = activity.getLayoutInflater();
+
+        View view = inflater.inflate(R.layout.dialog_product_menu_change_characteristic, null);
+
+        ((TextView) view.findViewById(R.id.tvQuestion)).setText(question);
+
+        alertDialogBuilder.setView(view);
+        //alertDialogBuilder.setIcon(R.drawable.sklad96);
+
+        final AlertDialog alertDialog = alertDialogBuilder.create();
+
+        view.findViewById(R.id.btnFoto).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                arguments.putString("btn", "Foto");
+
+                bundleMethodInterface.callMethod(arguments);
+
+                alertDialog.cancel();
+
+            }
+        });
+
         view.findViewById(R.id.btnChangeCharcteristic).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

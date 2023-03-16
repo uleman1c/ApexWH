@@ -239,11 +239,19 @@ public class OrderToChangeCharacteristicProductsFragment extends ScanProductsFra
                        if (documentLine.newCharacterRef.isEmpty()) {
 
                            Bundle bundle = new Bundle();
-                           //bundle.putString("shtrihcode", documentLine.shtrihCodes.get(0));
+                           bundle.putString("shtrihcode", "");
+                           bundle.putInt("toScan", documentLine.number - documentLine.scanned);
+                           bundle.putString("productRef", documentLine.productRef);
+                           bundle.putString("productDescription", documentLine.productDescription);
+                           bundle.putString("characterRef", documentLine.characterRef);
+                           bundle.putString("characterDescription", documentLine.characterDescription);
 
                            Dialogs.showQuestionYesNoCancel(getContext(), getActivity(), new BundleMethodInterface() {
                                @Override
                                public void callMethod(Bundle arguments) {
+
+                                   navController.navigate(R.id.nav_characteristics, arguments);
+
 
                                    //                       scanShtrihCode(arguments.getString("shtrihcode"), 1);
 
@@ -355,15 +363,15 @@ public class OrderToChangeCharacteristicProductsFragment extends ScanProductsFra
 
                 if (found && documentLine.number > documentLine.scanned) {
 
-//                    setShtrihCode(strCatName, documentLine, quantity, new BundleMethodInterface() {
-//                        @Override
-//                        public void callMethod(Bundle arguments) {
-//
-//                            testForExecuted();
-//
-//
-//                        }
-//                    });
+                    Bundle bundle = new Bundle();
+                    bundle.putString("shtrihcode", "");
+                    bundle.putInt("toScan", documentLine.number - documentLine.scanned);
+                    bundle.putString("productRef", documentLine.productRef);
+                    bundle.putString("productDescription", documentLine.productDescription);
+                    bundle.putString("characterRef", documentLine.characterRef);
+                    bundle.putString("characterDescription", documentLine.characterDescription);
+
+                    navController.navigate(R.id.nav_characteristics, bundle);
 
                 } else {
 

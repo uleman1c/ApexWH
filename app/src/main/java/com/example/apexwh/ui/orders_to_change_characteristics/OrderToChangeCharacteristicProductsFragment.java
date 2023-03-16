@@ -3,7 +3,9 @@ package com.example.apexwh.ui.orders_to_change_characteristics;
 import android.icu.text.SimpleDateFormat;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentResultListener;
 import androidx.navigation.NavController;
 
 import android.view.LayoutInflater;
@@ -14,6 +16,7 @@ import android.widget.TextView;
 
 import com.example.apexwh.DateStr;
 import com.example.apexwh.HttpClient;
+import com.example.apexwh.HttpRequestInterface;
 import com.example.apexwh.HttpRequestJsonObjectInterface;
 import com.example.apexwh.JsonProcs;
 import com.example.apexwh.R;
@@ -101,6 +104,65 @@ public class OrderToChangeCharacteristicProductsFragment extends ScanProductsFra
             @Override
             public void execute(View root) {
 
+                getParentFragmentManager().setFragmentResultListener("selectCharacteristic", getViewLifecycleOwner(), new FragmentResultListener() {
+                    @Override
+                    public void onFragmentResult(@NonNull String requestKey, @NonNull Bundle bundle) {
+
+                        String characteristicRef = bundle.getString("characteristicRef");
+                        String characteristicDescription = bundle.getString("characteristicDescription");
+                        String productRef = bundle.getString("productRef");
+                        String productName = bundle.getString("productName");
+                        String characterRef = bundle.getString("characterRef");
+                        String characterName = bundle.getString("characterName");
+
+                        Dialogs.showQuestionYesNoCancel(getContext(), getActivity(), new BundleMethodInterface() {
+                                    @Override
+                                    public void callMethod(Bundle arguments) {
+
+                                        final HttpClient httpClient = new HttpClient(getContext());
+                                        httpClient.addParam("id", UUID.randomUUID().toString());
+                                        httpClient.addParam("appId", httpClient.getDbConstant("appId"));
+                                        httpClient.addParam("quantity", 1);
+                                        httpClient.addParam("type1c", "doc");
+                                        httpClient.addParam("name1c", name);
+                                        httpClient.addParam("id1c", ref);
+                                        httpClient.addParam("comment", "");
+                                        httpClient.addParam("productRef", productRef);
+                                        httpClient.addParam("characterRef", characterRef);
+                                        httpClient.addParam("characteristicRefNew", characteristicRef);
+                                        httpClient.addParam("characteristicDescriptionNew", characteristicDescription);
+
+                                        httpClient.request_get("/hs/dta/obj", "setChangeCharacteristic", new HttpRequestInterface() {
+                                            @Override
+                                            public void setProgressVisibility(int visibility) {
+
+                                                progressBar.setVisibility(visibility);
+                                            }
+
+                                            @Override
+                                            public void processResponse(String response) {
+
+                                                JSONObject jsonObjectResponse = JsonProcs.getJSONObjectFromString(response);
+
+                                                if (JsonProcs.getBooleanFromJSON(jsonObjectResponse, "success")) {
+
+                                                    updateList();
+
+                                                }
+
+                                            }
+                                        });
+
+
+                                    }
+                                }, bundle, "Номенклатура " + productName + ": заменить характеристику (" + characterName + ") на (" + characteristicDescription + ")",
+                                "Замена характеристики");
+
+                    }
+                });
+
+
+
                 getAdapter().setInitViewsMaker(new DataAdapter.InitViewsMaker() {
                     @Override
                     public void init(View itemView, ArrayList<TextView> textViews) {
@@ -164,9 +226,9 @@ public class OrderToChangeCharacteristicProductsFragment extends ScanProductsFra
 
                            }
                        }, bundle, "Ввести вручную "
-                               + documentLine.productName
-                               + (documentLine.characterName.equals("Основная характеристика") ? "" :
-                               " (" + documentLine.characterName + ")" ) + " ?", "Ввод");
+                               + documentLine.productDescription
+                               + (documentLine.characterDescription.equals("Основная характеристика") ? "" :
+                               " (" + documentLine.characterDescription + ")" ) + " ?", "Ввод");
 
 
                    }
@@ -214,7 +276,98 @@ public class OrderToChangeCharacteristicProductsFragment extends ScanProductsFra
             }
         });
 
+        setScanCodeSetter(new ScanCodeSetter<OrderToChangeCharactericticLine>() {
+            @Override
+            public void setScanCode(ArrayList<OrderToChangeCharactericticLine> lines, String strCatName, int pos, int quantity) {
 
+                Boolean found = false;
+                OrderToChangeCharactericticLine documentLine = null;
+
+                int i;
+                for (i = 0; i < lines.size() && !found; i++) {
+
+                    documentLine = lines.get(i);
+
+                    found = documentLine.shtrihCodes.indexOf(strCatName) > -1;
+
+                    if (found) {
+                        //                scannedItems.get(0).product = curTask.productName;
+                        //                scannedItems.get(0).character = curTask.characterName;
+                    }
+
+                }
+
+                if (found && documentLine.number > documentLine.scanned) {
+
+                    setShtrihCode(strCatName, documentLine, quantity, new BundleMethodInterface() {
+                        @Override
+                        public void callMethod(Bundle arguments) {
+
+                            testForExecuted();
+
+
+                        }
+                    });
+
+                } else {
+
+                    soundPlayer.play();
+
+                    //
+                    //            if (!sendingInProgress) {
+                    //
+                    //                Integer index = toScan.indexOf(strCatName);
+                    //
+                    //                if (index < 0) {
+                    //
+                    //            error.setText("Не найден штрихкод " + strCatName);
+
+                    //            setNotFoundShtrihCode(strCatName);
+                    //
+                    //            setProductNames();
+                    //
+                    //            if (createdFromTsd) {
+                    //
+                    //                setScannedText();
+                    //
+                    //            } else {
+                    //
+                    //                soundPlayer.play();
+                    //            }
+                    //                    Boolean present = false;
+                    //                    for (ScannedShtrihCode scannedShtrihCode : scanned) {
+                    //                        present = scannedShtrihCode.shtrihCode.equals(strCatName);
+                    //                        if (present) break;
+                    //                    }
+                    //
+                    //                    if (present) {
+                    //
+                    //                        askForRepeatCode(strCatName);
+                    //
+                    //                    } else {
+                    //
+                    //                        askForNotFoundCode(strCatName);
+                    //
+                    //                    }
+                    //
+                    //
+                    //                } else {
+                    //                    error.setText("");
+                    //
+                    //                    toScan.remove(strCatName);
+                    //
+                    //                    scanned.add(0, new ScannedShtrihCode(strCatName, "", false));
+                    //                    adapterScanned.notifyDataSetChanged();
+                    //
+                    //                    setShtrihs(strCatName);
+                    //                }
+                    //            }
+                }
+
+
+
+            }
+        });
 
     }
 

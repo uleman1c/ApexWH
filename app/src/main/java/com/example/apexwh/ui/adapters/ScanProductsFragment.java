@@ -40,7 +40,6 @@ import java.util.UUID;
 public class ScanProductsFragment<T> extends Fragment {
 
     private ProductsViewModel mViewModel;
-    private String description;
 
     public ScanProductsFragment() {
     }
@@ -57,8 +56,7 @@ public class ScanProductsFragment<T> extends Fragment {
         return new ScanProductsFragment();
     }
 
-    protected ProgressBar progressBar;
-    protected String ref, name;
+    protected String ref, name, description;
 
     private ArrayList<T> lines;
 
@@ -67,15 +65,17 @@ public class ScanProductsFragment<T> extends Fragment {
     }
 
     private DataAdapter<T> adapter;
+
+    protected ProgressBar progressBar;
     private RecyclerView recyclerView;
 
     private EditText actvShtrihCode;
     private InputMethodManager imm;
     private boolean shtrihCodeKeyboard = false, createdFromTsd = false;
-    private TextView scannedText, tvBoxNumber, tvExchStatus;
+    private TextView scannedText;
 
     Handler hSetFocus;
-    private SoundPlayer soundPlayer;
+    protected SoundPlayer soundPlayer;
 
     public interface ListUpdater{
 
@@ -89,9 +89,9 @@ public class ScanProductsFragment<T> extends Fragment {
 
     private ListUpdater listUpdater;
 
-    public interface ScanCodeSetter{
+    public interface ScanCodeSetter<T>{
 
-        void setScanCode(String strCatName, int pos, int quantity, BundleMethodInterface bundleMethodInterface);
+        void setScanCode(ArrayList<T> lines, String strCatName, int pos, int quantity);
 
     }
 
@@ -127,66 +127,6 @@ public class ScanProductsFragment<T> extends Fragment {
         name = args.getString("name");
         ref = args.getString("ref");
         description = args.getString("description");
-
-        getParentFragmentManager().setFragmentResultListener("selectCharacteristic", this, new FragmentResultListener() {
-            @Override
-            public void onFragmentResult(@NonNull String requestKey, @NonNull Bundle bundle) {
-
-                String characteristicRef = bundle.getString("characteristicRef");
-                String characteristicDescription = bundle.getString("characteristicDescription");
-                String productRef = bundle.getString("productRef");
-                String productName = bundle.getString("productName");
-                String characterRef = bundle.getString("characterRef");
-                String characterName = bundle.getString("characterName");
-
-                Dialogs.showQuestionYesNoCancel(getContext(), getActivity(), new BundleMethodInterface() {
-                    @Override
-                    public void callMethod(Bundle arguments) {
-
-                        final HttpClient httpClient = new HttpClient(getContext());
-                        httpClient.addParam("id", UUID.randomUUID().toString());
-                        httpClient.addParam("appId", httpClient.getDbConstant("appId"));
-                        httpClient.addParam("quantity", 1);
-                        httpClient.addParam("type1c", "doc");
-                        httpClient.addParam("name1c", name);
-                        httpClient.addParam("id1c", ref);
-                        httpClient.addParam("comment", "");
-                        httpClient.addParam("productRef", productRef);
-                        httpClient.addParam("characterRef", characterRef);
-                        httpClient.addParam("characteristicRefNew", characteristicRef);
-                        httpClient.addParam("characteristicDescriptionNew", characteristicDescription);
-
-                        httpClient.request_get("/hs/dta/obj", "setChangeCharacteristic", new HttpRequestInterface() {
-                            @Override
-                            public void setProgressVisibility(int visibility) {
-
-                                progressBar.setVisibility(visibility);
-                            }
-
-                            @Override
-                            public void processResponse(String response) {
-
-                                JSONObject jsonObjectResponse = JsonProcs.getJSONObjectFromString(response);
-
-                                if (JsonProcs.getBooleanFromJSON(jsonObjectResponse, "success")) {
-
-                                    updateList();
-
-                                    //bundleMethodInterface.callMethod(new Bundle());
-
-                                }
-
-                            }
-                        });
-
-
-                    }
-                }, bundle, "Номенклатура " + productName + ": заменить характеристику (" + characterName + ") на (" + characteristicDescription + ")",
-                        "Замена характеристики");
-
-            }
-        });
-
 
         View root = inflater.inflate(R.layout.fragment_products, container, false);
 
@@ -422,91 +362,7 @@ public class ScanProductsFragment<T> extends Fragment {
         }
         else {
 
-
-
-//            Boolean found = false;
-//            DocumentLine documentLine = null;
-//
-//            int i;
-//            for (i = 0; i < lines.size() && !found; i++) {
-//
-//                documentLine = lines.get(i);
-//
-//                found = documentLine.shtrihCodes.indexOf(strCatName) > -1;
-//
-//                if (found) {
-//                    //                scannedItems.get(0).product = curTask.productName;
-//                    //                scannedItems.get(0).character = curTask.characterName;
-//                }
-//
-//            }
-//
-//            if (found && documentLine.quantity > documentLine.scanned) {
-//
-//                setShtrihCode(strCatName, documentLine, quantity, new BundleMethodInterface() {
-//                    @Override
-//                    public void callMethod(Bundle arguments) {
-//
-//                        testForExecuted();
-//
-//
-//                    }
-//                });
-//
-//            } else {
-//
-//                soundPlayer.play();
-//
-//                //
-//                //            if (!sendingInProgress) {
-//                //
-//                //                Integer index = toScan.indexOf(strCatName);
-//                //
-//                //                if (index < 0) {
-//                //
-//                //            error.setText("Не найден штрихкод " + strCatName);
-//
-//                //            setNotFoundShtrihCode(strCatName);
-//                //
-//                //            setProductNames();
-//                //
-//                //            if (createdFromTsd) {
-//                //
-//                //                setScannedText();
-//                //
-//                //            } else {
-//                //
-//                //                soundPlayer.play();
-//                //            }
-//                //                    Boolean present = false;
-//                //                    for (ScannedShtrihCode scannedShtrihCode : scanned) {
-//                //                        present = scannedShtrihCode.shtrihCode.equals(strCatName);
-//                //                        if (present) break;
-//                //                    }
-//                //
-//                //                    if (present) {
-//                //
-//                //                        askForRepeatCode(strCatName);
-//                //
-//                //                    } else {
-//                //
-//                //                        askForNotFoundCode(strCatName);
-//                //
-//                //                    }
-//                //
-//                //
-//                //                } else {
-//                //                    error.setText("");
-//                //
-//                //                    toScan.remove(strCatName);
-//                //
-//                //                    scanned.add(0, new ScannedShtrihCode(strCatName, "", false));
-//                //                    adapterScanned.notifyDataSetChanged();
-//                //
-//                //                    setShtrihs(strCatName);
-//                //                }
-//                //            }
-//            }
+            scanCodeSetter.setScanCode(lines, strCatName, -1, 1);
 
         }
 
@@ -564,7 +420,7 @@ public class ScanProductsFragment<T> extends Fragment {
 
     protected void setShtrihCode(String strCatName, final T documentLine, int quantity, BundleMethodInterface bundleMethodInterface) {
 
-        scanCodeSetter.setScanCode(strCatName, );
+        //scanCodeSetter.setScanCode(strCatName, );
 
 
         final HttpClient httpClient = new HttpClient(getContext());
@@ -576,9 +432,9 @@ public class ScanProductsFragment<T> extends Fragment {
         httpClient.addParam("name1c", name);
         httpClient.addParam("id1c", ref);
         httpClient.addParam("comment", "");
-        httpClient.addParam("productRef", documentLine.productRef);
-        httpClient.addParam("characterRef", documentLine.characterRef);
-        httpClient.addParam("characterName", documentLine.characterName);
+//        httpClient.addParam("productRef", documentLine.productRef);
+//        httpClient.addParam("characterRef", documentLine.characterRef);
+//        httpClient.addParam("characterName", documentLine.characterName);
 
         httpClient.request_get("/hs/dta/obj", "setShtrihCode", new HttpRequestInterface() {
                     @Override
@@ -594,7 +450,7 @@ public class ScanProductsFragment<T> extends Fragment {
 
                         if (JsonProcs.getBooleanFromJSON(jsonObjectResponse, "success")) {
 
-                            setScanned(documentLine, quantity);
+                            //setScanned(documentLine, quantity);
 
                             if (allScanned()) {
 
@@ -651,7 +507,7 @@ public class ScanProductsFragment<T> extends Fragment {
 
     }
 
-    private void updateList() {
+    protected void updateList() {
 
         listUpdater.update(name, ref, lines, progressBar, adapter);
 

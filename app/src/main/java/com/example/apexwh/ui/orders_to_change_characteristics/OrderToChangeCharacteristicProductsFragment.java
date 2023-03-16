@@ -35,6 +35,7 @@ import java.util.UUID;
  */
 public class OrderToChangeCharacteristicProductsFragment extends ScanProductsFragment<OrderToChangeCharactericticLine> {
 
+    private ArrayList<OrderToChangeCharactericticLine> baseProducts;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -70,11 +71,25 @@ public class OrderToChangeCharacteristicProductsFragment extends ScanProductsFra
 
                         JSONArray products = JsonProcs.getJsonArrayFromJsonObject(objectItem, "products");
 
+                        lines.clear();
+
                         for (int j = 0; j < products.length(); j++) {
 
                             JSONObject productItem = JsonProcs.getItemJSONArray(products, j);
 
                             lines.add(OrderToChangeCharactericticLine.FromJson(productItem));
+
+                        }
+
+                        JSONArray baproducts = JsonProcs.getJsonArrayFromJsonObject(objectItem, "baseProducts");
+
+                        baseProducts.clear();
+
+                        for (int j = 0; j < baproducts.length(); j++) {
+
+                            JSONObject productItem = JsonProcs.getItemJSONArray(products, j);
+
+                            baseProducts.add(OrderToChangeCharactericticLine.FromJson(productItem));
 
                         }
 
@@ -91,6 +106,8 @@ public class OrderToChangeCharacteristicProductsFragment extends ScanProductsFra
         setOnCreateViewElements(new ScanProductsFragment.OnCreateViewElements() {
             @Override
             public void execute(View root) {
+
+                baseProducts = new ArrayList<>();
 
                 getParentFragmentManager().setFragmentResultListener("selectCharacteristic", getViewLifecycleOwner(), new FragmentResultListener() {
                     @Override

@@ -254,9 +254,14 @@ public class Dialogs {
 
         final AlertDialog quantityDialog = alertDialogBuilder.create();
 
+        InputMethodManager imm = (InputMethodManager) quantityDialog.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+
+
         btnQuantity.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                imm.hideSoftInputFromWindow(etQuantity.getWindowToken(), 0);
 
                 etQuantity.setText(quantity.toString());
 
@@ -285,6 +290,9 @@ public class Dialogs {
 
                     }
                     else {
+
+                        imm.hideSoftInputFromWindow(etQuantity.getWindowToken(), 0);
+
                         quantityDialog.cancel();
 
                         Integer quantity2 = Integer.valueOf(strQuantity);
@@ -305,8 +313,6 @@ public class Dialogs {
 
         final Runnable setFocus2 = new Runnable() {
             public void run() {
-
-                InputMethodManager imm = (InputMethodManager) quantityDialog.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
 
                 etQuantity.requestFocus();
 

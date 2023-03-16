@@ -5,6 +5,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentResultListener;
+import androidx.navigation.NavController;
 
 import android.view.View;
 import android.widget.ProgressBar;
@@ -106,6 +107,8 @@ public class OrderToChangeCharacteristicProductsFragment extends ScanProductsFra
                             }
 
                             if (curLine.number > 0){
+
+                                lines.add(curLine);
 
                                 baseProducts.add(curLine);
 
@@ -257,44 +260,44 @@ public class OrderToChangeCharacteristicProductsFragment extends ScanProductsFra
                    }
                 });
 
-//        adapter.setOnDocumentLineItemLongClickListener(new DocumentLineAdapter.OnDocumentLineItemLongClickListener() {
-//            @Override
-//            public void onDocumentLineItemLongClick(DocumentLine documentLine) {
-//
-//                Bundle bundle = new Bundle();
-//                bundle.putString("shtrihcode", "");
-//                bundle.putInt("toScan", documentLine.quantity - documentLine.scanned);
-//                bundle.putString("productRef", documentLine.productRef);
-//                bundle.putString("productName", documentLine.productName);
-//                bundle.putString("characterRef", documentLine.characterRef);
-//                bundle.putString("characterName", documentLine.characterName);
-//
-//                Dialogs.showProductMenu(getContext(), getActivity(), new BundleMethodInterface() {
-//                    @Override
-//                    public void callMethod(Bundle arguments) {
-//
-//                        if (arguments.getString("btn").equals("Foto")){
-//
-//                            Navigation.findNavController(getActivity(), R.id.nav_host_fragment_content_main).navigate(R.id.nav_gallery, arguments);
-//
-//                        } else if (arguments.getString("btn").equals("InputNumber")) {
-//
-//                            showInputNumber(documentLine);
-//
-//                        } else if (arguments.getString("btn").equals("ChangeCharcteristic")) {
-//
-//                            Navigation.findNavController(getActivity(), R.id.nav_host_fragment_content_main).navigate(R.id.nav_characteristics, arguments);
-//
-//                        }
-//
-//                    }
-//                }, bundle, "Выберите", "Меню");
-//
-//
-//            }
-//        });
+                getAdapter().setOnLongClickListener(new DataAdapter.OnLongClickListener<OrderToChangeCharactericticLine>() {
+                    @Override
+                    public void onLongItemClick(OrderToChangeCharactericticLine documentLine) {
+
+                        Bundle bundle = new Bundle();
+                        bundle.putString("shtrihcode", "");
+                        bundle.putInt("toScan", documentLine.number - documentLine.scanned);
+                        bundle.putString("productRef", documentLine.productRef);
+                        bundle.putString("productName", documentLine.productDescription);
+                        bundle.putString("characterRef", documentLine.characterRef);
+                        bundle.putString("characterName", documentLine.characterDescription);
+
+                        Dialogs.showProductMenu(getContext(), getActivity(), new BundleMethodInterface() {
+                            @Override
+                            public void callMethod(Bundle arguments) {
+
+                                if (arguments.getString("btn").equals("Foto")){
+
+                                    navController.navigate(R.id.nav_gallery, arguments);
+
+                                } else if (arguments.getString("btn").equals("InputNumber")) {
+
+                                    showInputNumber(documentLine);
+
+                                } else if (arguments.getString("btn").equals("ChangeCharcteristic")) {
+
+                                    navController.navigate(R.id.nav_characteristics, arguments);
+
+                                }
+
+                            }
+                        }, bundle, "Выберите", "Меню");
 
 
+
+
+                    }
+                });
 
             }
         });
@@ -544,11 +547,15 @@ public class OrderToChangeCharacteristicProductsFragment extends ScanProductsFra
     private void showInputNumber(OrderToChangeCharactericticLine documentLine){
 
         Bundle bundle = new Bundle();
+        bundle.putString("productRef", documentLine.productRef);
 
-//        Dialogs.showInputQuantity(getContext(), documentLine.quantity - documentLine.scanned, getActivity(), new BundleMethodInterface() {
-//            @Override
-//            public void callMethod(Bundle arguments) {
-//
+        Dialogs.showInputQuantity(getContext(), documentLine.number - documentLine.scanned, getActivity(), new BundleMethodInterface() {
+            @Override
+            public void callMethod(Bundle arguments) {
+
+                navController.navigate(R.id.nav_characteristics, arguments);
+
+
 //                setShtrihCode("", documentLine, arguments.getInt("quantity"), new BundleMethodInterface() {
 //                    @Override
 //                    public void callMethod(Bundle arguments) {
@@ -557,12 +564,12 @@ public class OrderToChangeCharacteristicProductsFragment extends ScanProductsFra
 //
 //                    }
 //                });
-//
-//            }
-//        }, bundle, "Ввести вручную "
-//                + documentLine.productName
-//                + (documentLine.characterName.equals("Основная характеристика") ? "" :
-//                " (" + documentLine.characterName + ")" ) + " ?", "Ввод количества");
+
+            }
+        }, bundle, "Ввести вручную "
+                + documentLine.productDescription
+                + (documentLine.characterDescription.equals("Основная характеристика") ? "" :
+                " (" + documentLine.characterDescription + ")" ) + " ?", "Ввод количества");
 
 
     }

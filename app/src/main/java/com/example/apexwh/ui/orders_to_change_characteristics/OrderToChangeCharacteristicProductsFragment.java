@@ -15,6 +15,7 @@ import com.example.apexwh.HttpRequestInterface;
 import com.example.apexwh.HttpRequestJsonObjectInterface;
 import com.example.apexwh.JsonProcs;
 import com.example.apexwh.R;
+import com.example.apexwh.objects.DocumentLine;
 import com.example.apexwh.objects.OrderToChangeCharactericticLine;
 import com.example.apexwh.ui.BundleMethodInterface;
 import com.example.apexwh.ui.Dialogs;
@@ -263,7 +264,7 @@ public class OrderToChangeCharacteristicProductsFragment extends ScanProductsFra
 
         setScanCodeSetter(new ScanCodeSetter<OrderToChangeCharactericticLine>() {
             @Override
-            public void setScanCode(ArrayList<OrderToChangeCharactericticLine> lines, String strCatName, int pos, int quantity) {
+            public void setScanCode(String strCatName, int pos, int quantity) {
 
                 Boolean found = false;
                 OrderToChangeCharactericticLine documentLine = null;
@@ -430,6 +431,239 @@ public class OrderToChangeCharacteristicProductsFragment extends ScanProductsFra
 
     }
 
+    private void testForExecuted() {
+
+//        Integer totalToScan = 0;
+//
+//        for ( DocumentLine line : lines
+//             ) {
+//
+//            totalToScan = totalToScan + line.quantity - line.scanned;
+//
+//        }
+//
+//        if (totalToScan == 0){
+//
+//            Dialogs.showReturnMenu(getContext(), getActivity(), new BundleMethodInterface() {
+//                @Override
+//                public void callMethod(Bundle arguments) {
+//
+//                    setDocumentStatus();
+//
+//
+//                }
+//            }, new Bundle(), "Завершить документ?", "Завершить");
+//        }
+    }
+
+    private void sendScanned(OrderToChangeCharactericticLine documentLine, int quantity) {
+
+        final HttpClient httpClient = new HttpClient(getContext());
+        httpClient.addParam("id", UUID.randomUUID().toString());
+        httpClient.addParam("shtrihCode", "");
+        httpClient.addParam("appId", httpClient.getDbConstant("appId"));
+        httpClient.addParam("quantity", quantity);
+        httpClient.addParam("type1c", "doc");
+        httpClient.addParam("name1c", name);
+        httpClient.addParam("id1c", ref);
+        httpClient.addParam("productRef", documentLine.productRef);
+        httpClient.addParam("characterRef", documentLine.characterRef);
+        httpClient.addParam("characterName", documentLine.characterDescription);
+        httpClient.addParam("comment", "");
+
+        httpClient.request_get("/hs/dta/obj", "setTestProduct", new HttpRequestJsonObjectInterface() {
+            @Override
+            public void setProgressVisibility(int visibility) {
+
+                progressBar.setVisibility(visibility);
+            }
+
+            @Override
+            public void processResponse(JSONObject response) {
+
+                setScanned(documentLine, quantity);
+
+                if (allScanned()){
+
+                    Dialogs.showQuestionYesNoCancel(getContext(), getActivity(), new BundleMethodInterface() {
+                        @Override
+                        public void callMethod(Bundle arguments) {
+
+                            setDocumentStatus();
+
+                        }
+                    }, new Bundle(), "Завершить проверку?", "Вопрос");
+
+                }
+
+            }
+        });
+
+
+
+    }
+
+
+    private void showInputNumber(OrderToChangeCharactericticLine documentLine){
+
+        Bundle bundle = new Bundle();
+
+//        Dialogs.showInputQuantity(getContext(), documentLine.quantity - documentLine.scanned, getActivity(), new BundleMethodInterface() {
+//            @Override
+//            public void callMethod(Bundle arguments) {
+//
+//                setShtrihCode("", documentLine, arguments.getInt("quantity"), new BundleMethodInterface() {
+//                    @Override
+//                    public void callMethod(Bundle arguments) {
+//
+//                        testForExecuted();
+//
+//                    }
+//                });
+//
+//            }
+//        }, bundle, "Ввести вручную "
+//                + documentLine.productName
+//                + (documentLine.characterName.equals("Основная характеристика") ? "" :
+//                " (" + documentLine.characterName + ")" ) + " ?", "Ввод количества");
+
+
+    }
+
+    private void setScanned(OrderToChangeCharactericticLine taskItem, Integer quantity) {
+
+        taskItem.scanned = taskItem.scanned + quantity;
+
+        Integer scanned = 0;
+        Integer number = 0;
+        for (int i = 0; i < lines.size(); i++) {
+
+//            DocumentLine curTI = lines.get(i);
+//            scanned += curTI.scanned;
+//            quantity += curTI.quantity;
+        }
+
+        setScannedText(scanned.toString() + " из " + number.toString() + ", " + (number == 0 ? 0 : (scanned * 100 / number)) + "%");
+
+        if (taskItem.scanned == taskItem.number) {
+
+            //update();
+
+
+//            testDocumentsLines.sort((testDocumentLine, t1) -> testDocumentLine.);
+        }
+//        if (taskItem. < 2){
+//
+//            if (!taskItem.childExist) {
+//
+//                Integer curPos = pos;
+//
+//                if (taskItem.level == 0) {
+//
+//                    Collections.rotate(deliveryOrderTasks, deliveryOrderTasks.size() - pos);
+//
+//                    curPos = 0;
+//                }
+//
+//                taskItem.childExist = true;
+//
+//                DeliveryOrderTask cell = new DeliveryOrderTask(taskItem.ref, taskItem.status, taskItem.product, taskItem.shtrih_code, taskItem.product_status,
+//                        taskItem.product_part, taskItem.container, taskItem.container_shtrih_code, taskItem.cell, taskItem.cell_shtrih_code, taskItem.quantity);
+//                cell.level = taskItem.level + 1;
+//
+//                deliveryOrderTasks.add(curPos + 1, cell);
+//
+//                rvTasks.getLayoutManager().scrollToPosition(curPos);
+//
+//            }
+//
+//        }
+
+//        if (taskItem.level == 2){
+//
+//            taskItem.scanned = taskItem.scanned + 1;
+//
+//            if (taskItem.quantity == taskItem.scanned){
+//
+//                final HttpClient httpClient = new HttpClient(getContext());
+//                httpClient.addParam("refTask", taskItem.ref);
+//
+//                httpClient.postProc("setSelectTask", new HttpRequestInterface() {
+//                    @Override
+//                    public void setProgressVisibility(int visibility) {
+//                        progressBar.setVisibility(visibility);
+//                    }
+//
+//                    @Override
+//                    public void processResponse(JSONObject response) {
+//
+//                        if (httpClient.getBooleanFromJSON(response, "Success")) {
+//
+//                            getShtrihs();
+//
+////                    if (inputQuantity && httpClient.getBooleanFromJSON(response, "IsNew")) {
+////
+////                        inputQuantity(shtrihcode);
+////
+////                    } else {
+////                        getShtrihs();
+////                    }
+//
+//                        }
+//                    }
+//                });
+//
+//
+//
+//
+//            }
+//
+//
+//        }
+//
+
+        getAdapter().notifyDataSetChanged();
+    }
+
+    private void setDocumentStatus() {
+
+        final HttpClient httpClient = new HttpClient(getContext());
+        httpClient.addParam("id", UUID.randomUUID().toString());
+        httpClient.addParam("appId", httpClient.getDbConstant("appId"));
+        httpClient.addParam("type1c", "doc");
+        httpClient.addParam("name1c", name);
+        httpClient.addParam("id1c", ref);
+        httpClient.addParam("status", "closed");
+
+        httpClient.request_get("/hs/dta/obj", "setDocumentStatus", new HttpRequestInterface() {
+            @Override
+            public void setProgressVisibility(int visibility) {
+
+            }
+
+            @Override
+            public void processResponse(String response) {
+
+                navController.popBackStack();
+
+            }
+        });
+    }
+
+    private Boolean allScanned(){
+
+        Integer totalToScan = 0;
+
+//        for ( DocumentLine line : lines) {
+//
+//            totalToScan = totalToScan + line.quantity - line.scanned;
+//
+//        }
+
+        return  totalToScan == 0;
+
+
+    }
 
 
 

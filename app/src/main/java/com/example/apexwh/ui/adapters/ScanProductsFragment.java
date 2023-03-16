@@ -58,7 +58,7 @@ public class ScanProductsFragment<T> extends Fragment {
 
     protected String ref, name, description;
 
-    private ArrayList<T> lines;
+    protected ArrayList<T> lines;
 
     public DataAdapter<T> getAdapter() {
         return adapter;
@@ -91,7 +91,7 @@ public class ScanProductsFragment<T> extends Fragment {
 
     public interface ScanCodeSetter<T>{
 
-        void setScanCode(ArrayList<T> lines, String strCatName, int pos, int quantity);
+        void setScanCode(String strCatName, int pos, int quantity);
 
     }
 
@@ -114,7 +114,7 @@ public class ScanProductsFragment<T> extends Fragment {
 
     private OnCreateViewElements onCreateViewElements;
 
-    private NavController navController;
+    protected NavController navController;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
@@ -166,7 +166,16 @@ public class ScanProductsFragment<T> extends Fragment {
 
                                                     imm.hideSoftInputFromWindow(actvShtrihCode.getWindowToken(), 0);
 
-                                                    scanShtrihCode(strCatName, 1);
+                                                    if (strCatName.isEmpty()){
+
+                                                        soundPlayer.play();
+
+                                                    }
+                                                    else {
+
+                                                        scanCodeSetter.setScanCode(strCatName, -1, 1);
+
+                                                    }
 
                                                     return true;
                                                 }
@@ -228,119 +237,14 @@ public class ScanProductsFragment<T> extends Fragment {
         return root;
     }
 
-    private void showInputNumber(T documentLine){
 
-        Bundle bundle = new Bundle();
+    protected void updateList() {
 
-//        Dialogs.showInputQuantity(getContext(), documentLine.quantity - documentLine.scanned, getActivity(), new BundleMethodInterface() {
-//            @Override
-//            public void callMethod(Bundle arguments) {
-//
-//                setShtrihCode("", documentLine, arguments.getInt("quantity"), new BundleMethodInterface() {
-//                    @Override
-//                    public void callMethod(Bundle arguments) {
-//
-//                        testForExecuted();
-//
-//                    }
-//                });
-//
-//            }
-//        }, bundle, "Ввести вручную "
-//                + documentLine.productName
-//                + (documentLine.characterName.equals("Основная характеристика") ? "" :
-//                " (" + documentLine.characterName + ")" ) + " ?", "Ввод количества");
-
+        listUpdater.update(name, ref, lines, progressBar, adapter);
 
     }
 
-    protected void setScanned(DocumentLine taskItem, Integer quantity) {
-
-        taskItem.scanned = taskItem.scanned + quantity;
-
-        setScannedText();
-
-        if (taskItem.scanned == taskItem.quantity) {
-
-            //update();
-
-
-//            testDocumentsLines.sort((testDocumentLine, t1) -> testDocumentLine.);
-        }
-//        if (taskItem. < 2){
-//
-//            if (!taskItem.childExist) {
-//
-//                Integer curPos = pos;
-//
-//                if (taskItem.level == 0) {
-//
-//                    Collections.rotate(deliveryOrderTasks, deliveryOrderTasks.size() - pos);
-//
-//                    curPos = 0;
-//                }
-//
-//                taskItem.childExist = true;
-//
-//                DeliveryOrderTask cell = new DeliveryOrderTask(taskItem.ref, taskItem.status, taskItem.product, taskItem.shtrih_code, taskItem.product_status,
-//                        taskItem.product_part, taskItem.container, taskItem.container_shtrih_code, taskItem.cell, taskItem.cell_shtrih_code, taskItem.quantity);
-//                cell.level = taskItem.level + 1;
-//
-//                deliveryOrderTasks.add(curPos + 1, cell);
-//
-//                rvTasks.getLayoutManager().scrollToPosition(curPos);
-//
-//            }
-//
-//        }
-
-//        if (taskItem.level == 2){
-//
-//            taskItem.scanned = taskItem.scanned + 1;
-//
-//            if (taskItem.quantity == taskItem.scanned){
-//
-//                final HttpClient httpClient = new HttpClient(getContext());
-//                httpClient.addParam("refTask", taskItem.ref);
-//
-//                httpClient.postProc("setSelectTask", new HttpRequestInterface() {
-//                    @Override
-//                    public void setProgressVisibility(int visibility) {
-//                        progressBar.setVisibility(visibility);
-//                    }
-//
-//                    @Override
-//                    public void processResponse(JSONObject response) {
-//
-//                        if (httpClient.getBooleanFromJSON(response, "Success")) {
-//
-//                            getShtrihs();
-//
-////                    if (inputQuantity && httpClient.getBooleanFromJSON(response, "IsNew")) {
-////
-////                        inputQuantity(shtrihcode);
-////
-////                    } else {
-////                        getShtrihs();
-////                    }
-//
-//                        }
-//                    }
-//                });
-//
-//
-//
-//
-//            }
-//
-//
-//        }
-//
-
-        adapter.notifyDataSetChanged();
-    }
-
-    private void setScannedText() {
+    protected void setScannedText(String textScannedText) {
         Integer scanned = 0;
         Integer quantity = 0;
         for (int i = 0; i < lines.size(); i++) {
@@ -353,91 +257,6 @@ public class ScanProductsFragment<T> extends Fragment {
         scannedText.setText(scanned.toString() + " из " + quantity.toString() + ", " + (quantity == 0 ? 0 : (scanned * 100 / quantity)) + "%");
     }
 
-    public void scanShtrihCode(String strCatName, int quantity) {
-
-        if (strCatName.isEmpty()){
-
-            soundPlayer.play();
-
-        }
-        else {
-
-            scanCodeSetter.setScanCode(lines, strCatName, -1, 1);
-
-        }
-
-    }
-
-    protected void testForExecuted() {
-
-//        Integer totalToScan = 0;
-//
-//        for ( DocumentLine line : lines
-//             ) {
-//
-//            totalToScan = totalToScan + line.quantity - line.scanned;
-//
-//        }
-//
-//        if (totalToScan == 0){
-//
-//            Dialogs.showReturnMenu(getContext(), getActivity(), new BundleMethodInterface() {
-//                @Override
-//                public void callMethod(Bundle arguments) {
-//
-//                    setDocumentStatus();
-//
-//
-//                }
-//            }, new Bundle(), "Завершить документ?", "Завершить");
-//        }
-    }
-
-    protected void setDocumentStatus() {
-
-        final HttpClient httpClient = new HttpClient(getContext());
-        httpClient.addParam("id", UUID.randomUUID().toString());
-        httpClient.addParam("appId", httpClient.getDbConstant("appId"));
-        httpClient.addParam("type1c", "doc");
-        httpClient.addParam("name1c", name);
-        httpClient.addParam("id1c", ref);
-        httpClient.addParam("status", "closed");
-
-        httpClient.request_get("/hs/dta/obj", "setDocumentStatus", new HttpRequestInterface() {
-            @Override
-            public void setProgressVisibility(int visibility) {
-
-            }
-
-            @Override
-            public void processResponse(String response) {
-
-                navController.popBackStack();
-
-            }
-        });
-    }
-
-    protected Boolean allScanned(){
-
-        Integer totalToScan = 0;
-
-//        for ( DocumentLine line : lines) {
-//
-//            totalToScan = totalToScan + line.quantity - line.scanned;
-//
-//        }
-
-        return  totalToScan == 0;
-
-
-    }
-
-    protected void updateList() {
-
-        listUpdater.update(name, ref, lines, progressBar, adapter);
-
-    }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
@@ -461,54 +280,6 @@ public class ScanProductsFragment<T> extends Fragment {
 
         }
     };
-
-    private void sendScanned(DocumentLine documentLine, int quantity) {
-
-        final HttpClient httpClient = new HttpClient(getContext());
-        httpClient.addParam("id", UUID.randomUUID().toString());
-        httpClient.addParam("shtrihCode", "");
-        httpClient.addParam("appId", httpClient.getDbConstant("appId"));
-        httpClient.addParam("quantity", quantity);
-        httpClient.addParam("type1c", "doc");
-        httpClient.addParam("name1c", name);
-        httpClient.addParam("id1c", ref);
-        httpClient.addParam("productRef", documentLine.productRef);
-        httpClient.addParam("characterRef", documentLine.characterRef);
-        httpClient.addParam("characterName", documentLine.characterName);
-        httpClient.addParam("comment", "");
-
-        httpClient.request_get("/hs/dta/obj", "setTestProduct", new HttpRequestJsonObjectInterface() {
-            @Override
-            public void setProgressVisibility(int visibility) {
-
-                progressBar.setVisibility(visibility);
-            }
-
-            @Override
-            public void processResponse(JSONObject response) {
-
-                setScanned(documentLine, quantity);
-
-                if (allScanned()){
-
-                    Dialogs.showQuestionYesNoCancel(getContext(), getActivity(), new BundleMethodInterface() {
-                        @Override
-                        public void callMethod(Bundle arguments) {
-
-                            setDocumentStatus();
-
-                        }
-                    }, new Bundle(), "Завершить проверку?", "Вопрос");
-
-                }
-
-            }
-        });
-
-
-
-    }
-
 
 
 }

@@ -1,5 +1,6 @@
 package com.example.apexwh.ui.orders_to_change_characteristics;
 
+import android.graphics.Color;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -204,10 +205,14 @@ public class OrderToChangeCharacteristicProductsFragment extends ScanProductsFra
                     @Override
                     public void draw(DataAdapter.ItemViewHolder holder, OrderToChangeCharactericticLine documentLine) {
 
-                        ((TextView) holder.getTextViews().get(0)).setText(documentLine.productDescription
+                        TextView header = ((TextView) holder.getTextViews().get(0));
+
+                        header.setText(documentLine.productDescription
                                 + (documentLine.characterDescription.isEmpty() || documentLine.characterDescription.equals("Основная характеристика") ? ""
                                     : ", " + documentLine.characterDescription)
                         + ( documentLine.newCharacterRef.isEmpty() ? "" : " скорректирована на " + documentLine.newCharacterDescription ));
+
+                        header.setBackgroundColor(documentLine.newCharacterRef.isEmpty() ? Color.parseColor("#FFFFFF") : Color.parseColor("#00FF00"));
 
                         String allSK = "";
 
@@ -231,34 +236,36 @@ public class OrderToChangeCharacteristicProductsFragment extends ScanProductsFra
                    @Override
                    public void onItemClick(OrderToChangeCharactericticLine documentLine) {
 
-                       Bundle bundle = new Bundle();
-                       //bundle.putString("shtrihcode", documentLine.shtrihCodes.get(0));
+                       if (documentLine.newCharacterRef.isEmpty()) {
 
-                       Dialogs.showQuestionYesNoCancel(getContext(), getActivity(), new BundleMethodInterface() {
-                           @Override
-                           public void callMethod(Bundle arguments) {
+                           Bundle bundle = new Bundle();
+                           //bundle.putString("shtrihcode", documentLine.shtrihCodes.get(0));
 
-        //                       scanShtrihCode(arguments.getString("shtrihcode"), 1);
+                           Dialogs.showQuestionYesNoCancel(getContext(), getActivity(), new BundleMethodInterface() {
+                               @Override
+                               public void callMethod(Bundle arguments) {
 
-                               setShtrihCode("", documentLine, 1, new BundleMethodInterface() {
-                                   @Override
-                                   public void callMethod(Bundle arguments) {
+                                   //                       scanShtrihCode(arguments.getString("shtrihcode"), 1);
 
-                                       testForExecuted();
+//                                   setShtrihCode("", documentLine, 1, new BundleMethodInterface() {
+//                                       @Override
+//                                       public void callMethod(Bundle arguments) {
+//
+//                                           testForExecuted();
+//
+//
+//                                       }
+//                                   });
 
+                                   //sendScanned(documentLine, 1);
 
-                                   }
-                               });
+                               }
+                           }, bundle, "Ввести вручную "
+                                   + documentLine.productDescription
+                                   + (documentLine.characterDescription.equals("Основная характеристика") ? "" :
+                                   " (" + documentLine.characterDescription + ")") + " ?", "Ввод");
 
-                               //sendScanned(documentLine, 1);
-
-                           }
-                       }, bundle, "Ввести вручную "
-                               + documentLine.productDescription
-                               + (documentLine.characterDescription.equals("Основная характеристика") ? "" :
-                               " (" + documentLine.characterDescription + ")" ) + " ?", "Ввод");
-
-
+                       }
                    }
                 });
 
@@ -266,56 +273,58 @@ public class OrderToChangeCharacteristicProductsFragment extends ScanProductsFra
                     @Override
                     public void onLongItemClick(OrderToChangeCharactericticLine documentLine) {
 
-                        Bundle bundle = new Bundle();
-                        bundle.putString("shtrihcode", "");
-                        bundle.putInt("toScan", documentLine.number - documentLine.scanned);
-                        bundle.putString("productRef", documentLine.productRef);
-                        bundle.putString("productDescription", documentLine.productDescription);
-                        bundle.putString("characterRef", documentLine.characterRef);
-                        bundle.putString("characterDescription", documentLine.characterDescription);
+                        if (documentLine.newCharacterRef.isEmpty()) {
 
-                        if (documentLine.number == 1) {
+                            Bundle bundle = new Bundle();
+                            bundle.putString("shtrihcode", "");
+                            bundle.putInt("toScan", documentLine.number - documentLine.scanned);
+                            bundle.putString("productRef", documentLine.productRef);
+                            bundle.putString("productDescription", documentLine.productDescription);
+                            bundle.putString("characterRef", documentLine.characterRef);
+                            bundle.putString("characterDescription", documentLine.characterDescription);
 
-                            Dialogs.showProductMenuChangeCharacteristic(getContext(), getActivity(), new BundleMethodInterface() {
-                                @Override
-                                public void callMethod(Bundle arguments) {
+                            if (documentLine.number == 1) {
 
-                                    if (arguments.getString("btn").equals("Foto")) {
+                                Dialogs.showProductMenuChangeCharacteristic(getContext(), getActivity(), new BundleMethodInterface() {
+                                    @Override
+                                    public void callMethod(Bundle arguments) {
 
-                                        navController.navigate(R.id.nav_gallery, arguments);
+                                        if (arguments.getString("btn").equals("Foto")) {
 
-                                    } else if (arguments.getString("btn").equals("ChangeCharcteristic")) {
+                                            navController.navigate(R.id.nav_gallery, arguments);
 
-                                        navController.navigate(R.id.nav_characteristics, arguments);
+                                        } else if (arguments.getString("btn").equals("ChangeCharcteristic")) {
 
-                                    }
+                                            navController.navigate(R.id.nav_characteristics, arguments);
 
-                                }
-                            }, bundle, "Выберите", "Меню");
-
-                        } else {
-
-                            Dialogs.showProductMenu(getContext(), getActivity(), new BundleMethodInterface() {
-                                @Override
-                                public void callMethod(Bundle arguments) {
-
-                                    if (arguments.getString("btn").equals("Foto")) {
-
-                                        navController.navigate(R.id.nav_gallery, arguments);
-
-                                    } else if (arguments.getString("btn").equals("InputNumber")) {
-
-                                        showInputNumber(documentLine);
+                                        }
 
                                     }
+                                }, bundle, "Выберите", "Меню");
 
-                                }
-                            }, bundle, "Выберите", "Меню");
+                            } else {
+
+                                Dialogs.showProductMenu(getContext(), getActivity(), new BundleMethodInterface() {
+                                    @Override
+                                    public void callMethod(Bundle arguments) {
+
+                                        if (arguments.getString("btn").equals("Foto")) {
+
+                                            navController.navigate(R.id.nav_gallery, arguments);
+
+                                        } else if (arguments.getString("btn").equals("InputNumber")) {
+
+                                            showInputNumber(documentLine);
+
+                                        }
+
+                                    }
+                                }, bundle, "Выберите", "Меню");
 
 
+                            }
 
                         }
-
 
                     }
                 });
@@ -335,7 +344,7 @@ public class OrderToChangeCharacteristicProductsFragment extends ScanProductsFra
 
                     documentLine = lines.get(i);
 
-                    found = documentLine.shtrihCodes.indexOf(strCatName) > -1;
+                    found = documentLine.newCharacterRef.isEmpty() && documentLine.shtrihCodes.indexOf(strCatName) > -1;
 
                     if (found) {
                         //                scannedItems.get(0).product = curTask.productName;
@@ -346,15 +355,15 @@ public class OrderToChangeCharacteristicProductsFragment extends ScanProductsFra
 
                 if (found && documentLine.number > documentLine.scanned) {
 
-                    setShtrihCode(strCatName, documentLine, quantity, new BundleMethodInterface() {
-                        @Override
-                        public void callMethod(Bundle arguments) {
-
-                            testForExecuted();
-
-
-                        }
-                    });
+//                    setShtrihCode(strCatName, documentLine, quantity, new BundleMethodInterface() {
+//                        @Override
+//                        public void callMethod(Bundle arguments) {
+//
+//                            testForExecuted();
+//
+//
+//                        }
+//                    });
 
                 } else {
 

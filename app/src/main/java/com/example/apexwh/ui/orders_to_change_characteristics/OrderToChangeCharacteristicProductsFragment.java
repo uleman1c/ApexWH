@@ -1,43 +1,30 @@
 package com.example.apexwh.ui.orders_to_change_characteristics;
 
-import android.icu.text.SimpleDateFormat;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentResultListener;
-import androidx.navigation.NavController;
 
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.example.apexwh.DateStr;
 import com.example.apexwh.HttpClient;
 import com.example.apexwh.HttpRequestInterface;
 import com.example.apexwh.HttpRequestJsonObjectInterface;
 import com.example.apexwh.JsonProcs;
 import com.example.apexwh.R;
-import com.example.apexwh.objects.DocumentLine;
-import com.example.apexwh.objects.MoversService;
 import com.example.apexwh.objects.OrderToChangeCharactericticLine;
 import com.example.apexwh.ui.BundleMethodInterface;
 import com.example.apexwh.ui.Dialogs;
 import com.example.apexwh.ui.adapters.DataAdapter;
-import com.example.apexwh.ui.adapters.DocumentLineAdapter;
-import com.example.apexwh.ui.adapters.ListFragment;
 import com.example.apexwh.ui.adapters.ScanProductsFragment;
-import com.example.apexwh.ui.products.ProductsFragment;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
-import java.util.TimeZone;
 import java.util.UUID;
 
 /**
@@ -160,8 +147,6 @@ public class OrderToChangeCharacteristicProductsFragment extends ScanProductsFra
 
                     }
                 });
-
-
 
                 getAdapter().setInitViewsMaker(new DataAdapter.InitViewsMaker() {
                     @Override
@@ -368,6 +353,80 @@ public class OrderToChangeCharacteristicProductsFragment extends ScanProductsFra
 
             }
         });
+
+    }
+
+    private void setShtrihCode(String strCatName, final OrderToChangeCharactericticLine documentLine, int quantity, BundleMethodInterface bundleMethodInterface) {
+
+        //scanCodeSetter.setScanCode(strCatName, );
+
+
+        final HttpClient httpClient = new HttpClient(getContext());
+        httpClient.addParam("id", UUID.randomUUID().toString());
+        httpClient.addParam("shtrihCode", strCatName);
+        httpClient.addParam("appId", httpClient.getDbConstant("appId"));
+        httpClient.addParam("quantity", quantity);
+        httpClient.addParam("type1c", "doc");
+        httpClient.addParam("name1c", name);
+        httpClient.addParam("id1c", ref);
+        httpClient.addParam("comment", "");
+        httpClient.addParam("productRef", documentLine.productRef);
+        httpClient.addParam("characterRef", documentLine.characterRef);
+        httpClient.addParam("characterName", documentLine.characterDescription);
+
+        httpClient.request_get("/hs/dta/obj", "setShtrihCode", new HttpRequestInterface() {
+            @Override
+            public void setProgressVisibility(int visibility) {
+
+                progressBar.setVisibility(visibility);
+            }
+
+            @Override
+            public void processResponse(String response) {
+
+                JSONObject jsonObjectResponse = JsonProcs.getJSONObjectFromString(response);
+
+                if (JsonProcs.getBooleanFromJSON(jsonObjectResponse, "success")) {
+
+                    //setScanned(documentLine, quantity);
+
+                    if (allScanned()) {
+
+                        bundleMethodInterface.callMethod(new Bundle());
+
+                    }
+
+                }
+
+            }
+        });
+
+//                httpClient.request_get("setShtrihCode", new HttpRequestInterface() {
+//                    @Override
+//                    public void setProgressVisibility(int visibility) {
+//                        progressBar.setVisibility(visibility);
+//                    }
+//
+//                    @Override
+//                    public void processResponse(JSONObject response) {
+//
+//                        if (httpClient.getBooleanFromJSON(response, "Success")) {
+//
+//                            if (pos != -1) {
+//
+//                                onTaskItemFound(curTask, pos);
+//                            }
+////                    if (inputQuantity && httpClient.getBooleanFromJSON(response, "IsNew")) {
+////
+////                        inputQuantity(shtrihcode);
+////
+////                    } else {
+////                        getShtrihs();
+////                    }
+//
+//                        }
+//                    }
+//                });
 
     }
 

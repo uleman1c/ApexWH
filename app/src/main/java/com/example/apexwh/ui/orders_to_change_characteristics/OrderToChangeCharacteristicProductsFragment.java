@@ -43,7 +43,7 @@ public class OrderToChangeCharacteristicProductsFragment extends ScanProductsFra
 
         setListUpdater(new ListUpdater() {
             @Override
-            public void update(String name, String ref, ArrayList lines, ProgressBar progressBar, DataAdapter adapter) {
+            public void update(String name, String ref, ProgressBar progressBar, DataAdapter adapter) {
 
                 lines.clear();
 
@@ -87,9 +87,29 @@ public class OrderToChangeCharacteristicProductsFragment extends ScanProductsFra
 
                         for (int j = 0; j < baproducts.length(); j++) {
 
-                            JSONObject productItem = JsonProcs.getItemJSONArray(products, j);
+                            JSONObject productItem = JsonProcs.getItemJSONArray(baproducts, j);
 
-                            baseProducts.add(OrderToChangeCharactericticLine.FromJson(productItem));
+                            OrderToChangeCharactericticLine curLine = OrderToChangeCharactericticLine.FromJson(productItem);
+
+                            for (OrderToChangeCharactericticLine line: lines) {
+
+                                if (curLine.number > 0
+                                    && line.productRef.equals(curLine.productRef)
+                                    && line.characterRef.equals(curLine.characterRef)){
+
+                                    int curNumber = curLine.number > line.number ? line.number : curLine.number;
+
+                                    curLine.number = curLine.number - curNumber;
+
+                                }
+
+                            }
+
+                            if (curLine.number > 0){
+
+                                baseProducts.add(curLine);
+
+                            }
 
                         }
 

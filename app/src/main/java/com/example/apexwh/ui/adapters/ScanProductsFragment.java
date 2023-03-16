@@ -79,7 +79,7 @@ public class ScanProductsFragment<T> extends Fragment {
 
     public interface ListUpdater{
 
-        void update(String name, String ref, ArrayList lines, ProgressBar progressBar, DataAdapter adapter);
+        void update(String name, String ref, ProgressBar progressBar, DataAdapter adapter);
 
     }
 
@@ -240,7 +240,7 @@ public class ScanProductsFragment<T> extends Fragment {
 
     protected void updateList() {
 
-        listUpdater.update(name, ref, lines, progressBar, adapter);
+        listUpdater.update(name, ref, progressBar, adapter);
 
     }
 

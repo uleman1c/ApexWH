@@ -86,14 +86,14 @@ public class ReturnsFragment extends Fragment {
     private static final int CAMERA_REQUEST = 20;
     public static final int CAMERA_REQUEST_FOTO = 0, CAMERA_REQUEST_ADAPTER = 1;
 
+    GetFoto getFoto;
+
     private File photo;
 
     private String currentPhotoPath;
 
     private String name = "";
     private String ref = "";
-
-    GetFoto getFoto;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,

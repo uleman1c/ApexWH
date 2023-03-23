@@ -1,5 +1,7 @@
 package com.example.apexwh.ui.returns;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -11,19 +13,25 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.example.apexwh.Connections;
 import com.example.apexwh.DB;
 import com.example.apexwh.DateStr;
+import com.example.apexwh.GetFoto;
 import com.example.apexwh.HttpClient;
+import com.example.apexwh.HttpRequestInterface;
 import com.example.apexwh.HttpRequestJsonObjectInterface;
 import com.example.apexwh.JsonProcs;
 import com.example.apexwh.R;
 import com.example.apexwh.objects.Acceptment;
+import com.example.apexwh.objects.Document;
 import com.example.apexwh.objects.Return;
 import com.example.apexwh.objects.ReturnOfProducts;
 import com.example.apexwh.ui.BundleMethodInterface;
 import com.example.apexwh.ui.Dialogs;
 import com.example.apexwh.ui.adapters.DataAdapter;
+import com.example.apexwh.ui.adapters.DocumentDataAdapter;
 import com.example.apexwh.ui.adapters.ListFragment;
 
 import org.json.JSONArray;
@@ -32,9 +40,22 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.UUID;
 
+import cz.msebera.android.httpclient.HttpEntity;
+import cz.msebera.android.httpclient.entity.ContentType;
+import cz.msebera.android.httpclient.entity.FileEntity;
+import cz.msebera.android.httpclient.entity.mime.HttpMultipartMode;
+import cz.msebera.android.httpclient.entity.mime.MultipartEntityBuilder;
+import cz.msebera.android.httpclient.entity.mime.content.FileBody;
+
 public class ReturnsOfProductsFragment extends ListFragment<ReturnOfProducts> {
 
     Button btnUpdate;
+
+    public static final int CAMERA_REQUEST_FOTO = 0, CAMERA_REQUEST_ADAPTER = 1;
+
+    GetFoto getFoto;
+    private String name = "";
+    private String ref = "";
 
     public ReturnsOfProductsFragment() {
 
@@ -87,6 +108,8 @@ public class ReturnsOfProductsFragment extends ListFragment<ReturnOfProducts> {
         setOnCreateViewElements(new OnCreateViewElements() {
             @Override
             public void execute(View root, NavController navController) {
+
+                getFoto = new GetFoto(getContext());
 
                 getAdapter().setInitViewsMaker(new DataAdapter.InitViewsMaker() {
                     @Override
@@ -184,6 +207,20 @@ public class ReturnsOfProductsFragment extends ListFragment<ReturnOfProducts> {
                     @Override
                     public void onLongItemClick(ReturnOfProducts document) {
 
+                        name = document.name;
+                        ref = document.ref;
+
+                                if (getFoto.intent != null){
+
+                                    startActivityForResult(getFoto.intent, CAMERA_REQUEST_FOTO);
+
+                                }
+
+
+
+
+
+
                     }
                 });
 
@@ -206,5 +243,65 @@ public class ReturnsOfProductsFragment extends ListFragment<ReturnOfProducts> {
 
 
     }
+
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == CAMERA_REQUEST_FOTO) {
+
+            String arFileNameWithExt = getFoto.file.getName();
+            String arFileName = UUID.randomUUID().toString();
+
+            MultipartEntityBuilder builder = MultipartEntityBuilder.create();
+
+            /* example for setting a HttpMultipartMode */
+            builder.setMode(HttpMultipartMode.BROWSER_COMPATIBLE);
+
+            /* example for adding an image part */
+            FileBody fileBody = new FileBody(getFoto.file); //image should be a String
+            builder.addPart("icon", fileBody);
+
+            HttpEntity httpEntity = new FileEntity(getFoto.file, ContentType.IMAGE_JPEG);
+
+            HttpClient httpClient = new HttpClient(getActivity(), Connections.fileAddr, "", "");
+
+            httpClient.addHeader("type1c", "doc");
+            httpClient.addHeader("name1c", Uri.encode(name));
+            httpClient.addHeader("id1c", ref);
+            httpClient.addHeader("id", arFileName);
+            httpClient.addHeader("part", "1");
+            httpClient.addHeader("filename", Uri.encode(arFileNameWithExt));
+            httpClient.addHeader("size", String.valueOf(getFoto.file.length()));
+
+            httpClient.postBinary("/upfa/?ak=" + Connections.fileAccessKey, httpEntity, new HttpRequestInterface() {
+                @Override
+                public void setProgressVisibility(int visibility) {
+
+                    //progressBar.setVisibility(visibility);
+
+                }
+
+                @Override
+                public void processResponse(String response) {
+
+                    JSONObject jsonObjectResponse = JsonProcs.getJSONObjectFromString(response);
+
+                    if(JsonProcs.getBooleanFromJSON(jsonObjectResponse, "success")){
+
+                        Toast.makeText(getContext(), "Фото сохранено", Toast.LENGTH_SHORT).show();
+
+                    }
+
+
+                }
+            });
+
+        }
+
+    }
+
+
+
+
 
 }

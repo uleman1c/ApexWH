@@ -123,17 +123,20 @@ public class BuierOrdersFragment extends ListFragment<BuierOrder> {
                     @Override
                     public void onItemClick(BuierOrder document) {
 
-                        JSONObject jsonObject = new JSONObject();
+                        Bundle result = getArguments();
 
-                        JsonProcs.putToJsonObject(jsonObject, "ref", document.ref);
-                        JsonProcs.putToJsonObject(jsonObject, "name", document.name);
+                        if (result != null) {
 
-//                        Bundle result = getArguments();
-//                        result.putString("selected", jsonObject.toString());
-//                        getParentFragmentManager().setFragmentResult("buier_order_selected", result);
+                            JSONObject jsonObject = new JSONObject();
 
-                        Navigation.findNavController(getActivity(), R.id.nav_host_fragment_content_main).popBackStack();
+                            JsonProcs.putToJsonObject(jsonObject, "ref", document.ref);
+                            JsonProcs.putToJsonObject(jsonObject, "name", document.name);
 
+                            result.putString("selected", jsonObject.toString());
+                            getParentFragmentManager().setFragmentResult("buier_order_selected", result);
+
+                            Navigation.findNavController(getActivity(), R.id.nav_host_fragment_content_main).popBackStack();
+                        }
 
                     }
                 });

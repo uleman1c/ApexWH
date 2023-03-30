@@ -112,6 +112,8 @@ public class HomeFragment extends Fragment {
             }
         });
 
+
+
         if(!DB.isSettingsExist(getContext())){
 
             ArrayList<Button> buttons = new ArrayList<>();

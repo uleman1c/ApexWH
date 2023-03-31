@@ -147,7 +147,7 @@
 
                 <Button
                     android:id="@+id/btnPlacement"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginRight="4sp"
                     android:layout_weight="1"
@@ -161,7 +161,7 @@
 
                 <Button
                     android:id="@+id/btnTakement"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:background="@drawable/back"

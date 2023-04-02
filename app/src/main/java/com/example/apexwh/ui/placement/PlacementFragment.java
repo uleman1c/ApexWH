@@ -98,7 +98,7 @@ public class PlacementFragment extends ScanShtrihcodeFragment {
                                 JsonProcs.putToJsonObject(jsonObject,"containerRef", arguments.getString("containerRef"));
                                 JsonProcs.putToJsonObject(jsonObject,"containerName", arguments.getString("containerName"));
 
-                                RequestToServer.executeRequestBodyUW(getContext(), Request.Method.GET, "setErpSkladPlacement", jsonObject,
+                                RequestToServer.executeRequestBodyUW(getContext(), Request.Method.POST, "setErpSkladPlacement", jsonObject,
                                         RequestToServer.TypeOfResponse.JsonObjectWithArray, response1 -> {
 
                                             navController.popBackStack();

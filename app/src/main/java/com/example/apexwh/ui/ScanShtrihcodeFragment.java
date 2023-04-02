@@ -29,6 +29,7 @@ import com.example.apexwh.R;
 import com.example.apexwh.SoundPlayer;
 import com.example.apexwh.objects.DocumentLine;
 import com.example.apexwh.ui.adapters.DocumentLineAdapter;
+import com.example.apexwh.ui.adapters.ScanCodeSetter;
 import com.example.apexwh.ui.products.ProductsViewModel;
 
 import org.json.JSONObject;
@@ -38,10 +39,21 @@ import java.util.UUID;
 
 public class ScanShtrihcodeFragment extends Fragment {
 
+    private int fragmentLayout;
+
+
+    public void setScanCodeSetter(ScanCodeSetter scanCodeSetter) {
+        this.scanCodeSetter = scanCodeSetter;
+    }
+
+    private ScanCodeSetter scanCodeSetter;
     private ProductsViewModel mViewModel;
     private String description;
 
-    public ScanShtrihcodeFragment() {
+    public ScanShtrihcodeFragment(int fragmentLayout) {
+
+        this.fragmentLayout = fragmentLayout;
+
     }
 
     public ScanShtrihcodeFragment(String name, String ref, String description) {
@@ -50,10 +62,6 @@ public class ScanShtrihcodeFragment extends Fragment {
         this.name = name;
         this.description = description;
 
-    }
-
-    public static ScanShtrihcodeFragment newInstance() {
-        return new ScanShtrihcodeFragment();
     }
 
     protected ProgressBar progressBar;
@@ -175,7 +183,7 @@ public class ScanShtrihcodeFragment extends Fragment {
         });
 
 
-        View root = inflater.inflate(R.layout.fragment_products, container, false);
+        View root = inflater.inflate(fragmentLayout, container, false);
 
         ((TextView) root.findViewById(R.id.tvHeader)).setText(description);
 
@@ -213,7 +221,20 @@ public class ScanShtrihcodeFragment extends Fragment {
 
                                                     imm.hideSoftInputFromWindow(actvShtrihCode.getWindowToken(), 0);
 
-                                                    scanShtrihCode(strCatName, 1);
+                                                    if (strCatName.isEmpty()){
+
+                                                        soundPlayer.play();
+
+                                                    }
+                                                    else {
+
+                                                        if (scanCodeSetter != null){
+
+                                                            scanCodeSetter.setScanCode(strCatName, -1, 1);
+                                                        }
+
+
+                                                    }
 
                                                     return true;
                                                 }
@@ -244,84 +265,6 @@ public class ScanShtrihcodeFragment extends Fragment {
         });
 
         progressBar = root.findViewById(R.id.progressBar);
-
-        lines = new ArrayList<>();
-
-        adapter = new DocumentLineAdapter(getContext(), lines);
-        adapter.setOnDocumentLineItemClickListener(new DocumentLineAdapter.OnDocumentLineItemClickListener() {
-           @Override
-           public void onDocumentLineItemClick(DocumentLine documentLine) {
-
-               Bundle bundle = new Bundle();
-               //bundle.putString("shtrihcode", documentLine.shtrihCodes.get(0));
-
-               Dialogs.showQuestionYesNoCancel(getContext(), getActivity(), new BundleMethodInterface() {
-                   @Override
-                   public void callMethod(Bundle arguments) {
-
-//                       scanShtrihCode(arguments.getString("shtrihcode"), 1);
-
-                       setShtrihCode("", documentLine, 1, new BundleMethodInterface() {
-                           @Override
-                           public void callMethod(Bundle arguments) {
-
-                               testForExecuted();
-
-
-                           }
-                       });
-
-                       //sendScanned(documentLine, 1);
-
-                   }
-               }, bundle, "Ввести вручную "
-                       + documentLine.productName
-                       + (documentLine.characterName.equals("Основная характеристика") ? "" :
-                       " (" + documentLine.characterName + ")" ) + " ?", "Ввод");
-
-
-           }
-        });
-
-        adapter.setOnDocumentLineItemLongClickListener(new DocumentLineAdapter.OnDocumentLineItemLongClickListener() {
-            @Override
-            public void onDocumentLineItemLongClick(DocumentLine documentLine) {
-
-                Bundle bundle = new Bundle();
-                bundle.putString("shtrihcode", "");
-                bundle.putInt("toScan", documentLine.quantity - documentLine.scanned);
-                bundle.putString("productRef", documentLine.productRef);
-                bundle.putString("productName", documentLine.productName);
-                bundle.putString("characterRef", documentLine.characterRef);
-                bundle.putString("characterName", documentLine.characterName);
-
-                Dialogs.showProductMenu(getContext(), getActivity(), new BundleMethodInterface() {
-                    @Override
-                    public void callMethod(Bundle arguments) {
-
-                        if (arguments.getString("btn").equals("Foto")){
-
-                            Navigation.findNavController(getActivity(), R.id.nav_host_fragment_content_main).navigate(R.id.nav_gallery, arguments);
-
-                        } else if (arguments.getString("btn").equals("InputNumber")) {
-
-                            showInputNumber(documentLine);
-
-                        } else if (arguments.getString("btn").equals("ChangeCharcteristic")) {
-
-                            Navigation.findNavController(getActivity(), R.id.nav_host_fragment_content_main).navigate(R.id.nav_characteristics, arguments);
-
-                        }
-
-                    }
-                }, bundle, "Выберите", "Меню");
-
-
-            }
-        });
-
-        recyclerView = root.findViewById(R.id.list);
-        recyclerView.setAdapter(adapter);
 
         if (onCreateViewElements != null) {
 

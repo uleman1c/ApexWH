@@ -22,6 +22,7 @@ import com.example.apexwh.objects.OrderToChangeCharactericticLine;
 import com.example.apexwh.ui.BundleMethodInterface;
 import com.example.apexwh.ui.Dialogs;
 import com.example.apexwh.ui.adapters.DataAdapter;
+import com.example.apexwh.ui.adapters.ScanCodeSetter;
 import com.example.apexwh.ui.adapters.ScanProductsFragment;
 
 import org.json.JSONArray;

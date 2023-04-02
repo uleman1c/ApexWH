@@ -34,12 +34,6 @@ import java.util.UUID;
  */
 public class TestProductsFragment extends ProductsFragment {
 
-
-    public TestProductsFragment() {
-        // Required empty public constructor
-    }
-
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -148,7 +142,6 @@ public class TestProductsFragment extends ProductsFragment {
         });
 
     }
-
 
     private void sendScanned(DocumentLine documentLine, int quantity) {
 

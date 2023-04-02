@@ -89,11 +89,6 @@ public class ScanProductsFragment<T> extends Fragment {
 
     private ListUpdater listUpdater;
 
-    public interface ScanCodeSetter<T>{
-
-        void setScanCode(String strCatName, int pos, int quantity);
-
-    }
 
     public void setScanCodeSetter(ScanCodeSetter scanCodeSetter) {
         this.scanCodeSetter = scanCodeSetter;

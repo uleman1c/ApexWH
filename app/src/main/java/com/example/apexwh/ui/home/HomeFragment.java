@@ -14,8 +14,12 @@ import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
 import com.example.apexwh.DB;
+import com.example.apexwh.JsonProcs;
 import com.example.apexwh.R;
 import com.example.apexwh.databinding.FragmentHomeBinding;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 
@@ -37,9 +41,23 @@ public class HomeFragment extends Fragment {
 
         if (bundle != null){
 
+            JSONArray warehouses = JsonProcs.getJsonArrayFromString(bundle.getString("warehouses"));
+
             DB db = new DB(getContext());
             db.open();
             appId = db.getConstant("appId");
+
+            String warehouseId = db.getConstant("warehouseId");
+
+            if (warehouseId == null && warehouses.length() == 1){
+
+                JSONObject warehouse = JsonProcs.getItemJSONArray(warehouses, 0);
+
+                db.updateConstant("warehouseId", JsonProcs.getStringFromJSON(warehouse, "ref"));
+                db.updateConstant("warehouseDescription", JsonProcs.getStringFromJSON(warehouse,"name"));
+
+            }
+
             db.close();
 
             id = bundle.getString("id");

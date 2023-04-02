@@ -33,7 +33,7 @@ public class SettingsFragment extends Fragment {
 
         Bundle arguments = getArguments();
 
-        if (arguments != null){
+        if (false && arguments != null){
 
             String mode = arguments.getString("mode");
             if (true || mode.equals("selectWarehouseSetting")){

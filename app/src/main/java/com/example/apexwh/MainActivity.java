@@ -2,6 +2,7 @@ package com.example.apexwh;
 
 import android.Manifest;
 import android.app.Activity;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
@@ -61,15 +62,28 @@ public class MainActivity extends AppCompatActivity {
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
 
-        int rc = ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA);
-        int rc2 = ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
-        if (rc == PackageManager.PERMISSION_GRANTED &&
-            rc2 == PackageManager.PERMISSION_GRANTED) {
-            //createCameraSource(autoFocus, useFlash);
-        } else {
-            requestCameraPermission();
-            requestExternalStoragePermission();
-        }
+        Intent intent = getIntent();
+
+        navController.popBackStack();
+
+        Bundle bundle = new Bundle();
+        bundle.putString("id", intent.getStringExtra("id"));
+        bundle.putString("name", intent.getStringExtra("name"));
+        bundle.putString("warehouses", intent.getStringExtra("warehouses"));
+
+        navController.navigate(R.id.nav_home, bundle);
+
+//
+//
+//        int rc = ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA);
+//        int rc2 = ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+//        if (rc == PackageManager.PERMISSION_GRANTED &&
+//            rc2 == PackageManager.PERMISSION_GRANTED) {
+//            //createCameraSource(autoFocus, useFlash);
+//        } else {
+//            requestCameraPermission();
+//            requestExternalStoragePermission();
+//        }
 
     }
 

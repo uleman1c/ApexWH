@@ -23,6 +23,8 @@ public class HomeFragment extends Fragment {
 
     private FragmentHomeBinding binding;
 
+    private String appId, id;
+
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         HomeViewModel homeViewModel =
@@ -31,11 +33,26 @@ public class HomeFragment extends Fragment {
         binding = FragmentHomeBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
+        Bundle bundle = getArguments();
+
+        if (bundle != null){
+
+            DB db = new DB(getContext());
+            db.open();
+            appId = db.getConstant("appId");
+            db.close();
+
+            id = bundle.getString("id");
+            binding.tvName.setText(bundle.getString("name"));
+
+            bundle.putString("appId", appId);
+        }
+
         binding.btnSettings.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
-                Navigation.findNavController(getActivity(), R.id.nav_host_fragment_content_main).navigate(R.id.nav_settings);
+                Navigation.findNavController(getActivity(), R.id.nav_host_fragment_content_main).navigate(R.id.nav_settings, bundle);
 
             }
         });
@@ -44,7 +61,7 @@ public class HomeFragment extends Fragment {
             @Override
             public void onClick(View view) {
 
-                Navigation.findNavController(getActivity(), R.id.nav_host_fragment_content_main).navigate(R.id.nav_acceptmentFragment);
+                Navigation.findNavController(getActivity(), R.id.nav_host_fragment_content_main).navigate(R.id.nav_acceptmentFragment, bundle);
 
             }
         });
@@ -53,7 +70,7 @@ public class HomeFragment extends Fragment {
             @Override
             public void onClick(View view) {
 
-                Navigation.findNavController(getActivity(), R.id.nav_host_fragment_content_main).navigate(R.id.nav_BuierOrdersFragment);
+                Navigation.findNavController(getActivity(), R.id.nav_host_fragment_content_main).navigate(R.id.nav_BuierOrdersFragment, bundle);
 
             }
         });
@@ -62,7 +79,7 @@ public class HomeFragment extends Fragment {
             @Override
             public void onClick(View view) {
 
-                Navigation.findNavController(getActivity(), R.id.nav_host_fragment_content_main).navigate(R.id.nav_returns);
+                Navigation.findNavController(getActivity(), R.id.nav_host_fragment_content_main).navigate(R.id.nav_returns, bundle);
 
             }
         });
@@ -71,7 +88,7 @@ public class HomeFragment extends Fragment {
             @Override
             public void onClick(View view) {
 
-                Navigation.findNavController(getActivity(), R.id.nav_host_fragment_content_main).navigate(R.id.nav_returnsOfProductsFragment);
+                Navigation.findNavController(getActivity(), R.id.nav_host_fragment_content_main).navigate(R.id.nav_returnsOfProductsFragment, bundle);
 
             }
         });
@@ -80,7 +97,7 @@ public class HomeFragment extends Fragment {
             @Override
             public void onClick(View view) {
 
-                Navigation.findNavController(getActivity(), R.id.nav_host_fragment_content_main).navigate(R.id.nav_inventarizations);
+                Navigation.findNavController(getActivity(), R.id.nav_host_fragment_content_main).navigate(R.id.nav_inventarizations, bundle);
 
             }
         });
@@ -89,7 +106,7 @@ public class HomeFragment extends Fragment {
             @Override
             public void onClick(View view) {
 
-                Navigation.findNavController(getActivity(), R.id.nav_host_fragment_content_main).navigate(R.id.nav_tests);
+                Navigation.findNavController(getActivity(), R.id.nav_host_fragment_content_main).navigate(R.id.nav_tests, bundle);
 
             }
         });
@@ -98,7 +115,7 @@ public class HomeFragment extends Fragment {
             @Override
             public void onClick(View view) {
 
-                Navigation.findNavController(getActivity(), R.id.nav_host_fragment_content_main).navigate(R.id.nav_movers);
+                Navigation.findNavController(getActivity(), R.id.nav_host_fragment_content_main).navigate(R.id.nav_movers, bundle);
 
             }
         });
@@ -107,7 +124,7 @@ public class HomeFragment extends Fragment {
             @Override
             public void onClick(View view) {
 
-                Navigation.findNavController(getActivity(), R.id.nav_host_fragment_content_main).navigate(R.id.nav_ordersToChangeCharacteristicFragment);
+                Navigation.findNavController(getActivity(), R.id.nav_host_fragment_content_main).navigate(R.id.nav_ordersToChangeCharacteristicFragment, bundle);
 
             }
         });

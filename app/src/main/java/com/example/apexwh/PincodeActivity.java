@@ -28,6 +28,7 @@ import com.example.apexwh.R;
 import com.example.apexwh.RequestToServer;
 import com.example.apexwh.databinding.ActivityPincodeBinding;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.HashMap;
@@ -202,18 +203,19 @@ public class PincodeActivity extends AppCompatActivity {
 
     private void testPincode(String pinCode) {
 
-        RequestToServer.execute(this, Request.Method.GET, Connections.addrDta + "?request=getErpSkladAuth&pincode=" + pinCode, new JSONObject(), new RequestToServer.ResponseResultInterface(){
+        RequestToServer.executeRequest(this, Request.Method.GET,  "getErpSkladAuth", "pincode=" + pinCode, new JSONObject(), new RequestToServer.ResponseResultInterface(){
 
             @Override
             public void onResponse(JSONObject response) {
 
-                if (!DefaultJson.getString(response, "User", "").isEmpty()){
+                if (!DefaultJson.getString(response, "ref", "").isEmpty()) {
 
                     finish();
 
                     Intent intent = new Intent(getBaseContext(), MainActivity.class);
                     intent.putExtra("id", DefaultJson.getString(response, "ref", ""));
                     intent.putExtra("name", DefaultJson.getString(response, "name", ""));
+                    intent.putExtra("warehouses", JsonProcs.getJsonArrayFromJsonObject(response, "warehouses").toString());
                     startActivity(intent);
 
                 } else {

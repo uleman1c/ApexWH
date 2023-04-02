@@ -13,6 +13,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -57,6 +58,32 @@ public class RequestToServer {
 
         };
         Volley.newRequestQueue(context).add(jsonObjectRequest);
+
+
+    }
+    public static void executeRequest(Context context, int method, String request, String url, JSONObject params, ResponseResultInterface responseResultInterface){
+
+         execute(context, method, Connections.addrDta + "?request=" + request + "&" + url, params, new ResponseResultInterface() {
+             @Override
+             public void onResponse(JSONObject response) {
+
+                 if (DefaultJson.getBoolean(response, "success", false)) {
+
+                     JSONArray responses = JsonProcs.getJsonArrayFromJsonObject(response, "responses");
+
+                     if (responses.length() > 0) {
+
+                         JSONObject response0 = JsonProcs.getItemJSONArray(responses, 0);
+
+                         JSONObject responseR = JsonProcs.getJsonObjectFromJsonObject(response0, request.substring(3));
+
+                         responseResultInterface.onResponse(responseR);
+
+                     }
+                 }
+
+             }
+         });
 
 
     }

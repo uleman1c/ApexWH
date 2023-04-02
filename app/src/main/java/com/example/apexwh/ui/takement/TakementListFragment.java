@@ -121,7 +121,7 @@ public class TakementListFragment extends ListFragment<Takement> {
 
                         bundle.putString("record", new JSONArray(moversService.getObjectDescription()).toString());
 
-                        navController.navigate(R.id.nav_placementFragment, bundle);
+                        navController.navigate(R.id.nav_takementFragment, bundle);
 
                     }
                 });

@@ -1,15 +1,10 @@
-package com.example.apexwh.ui.placement;
+package com.example.apexwh.ui.takement;
 
 import android.os.Bundle;
+import android.view.View;
+import android.widget.TextView;
 
 import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.navigation.Navigation;
-
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.TextView;
 
 import com.android.volley.Request;
 import com.example.apexwh.JsonProcs;
@@ -24,10 +19,10 @@ import org.json.JSONObject;
 
 import java.util.UUID;
 
-public class PlacementFragment extends ScanShtrihcodeFragment {
+public class TakementFragment extends ScanShtrihcodeFragment {
 
 
-    public PlacementFragment() {
+    public TakementFragment() {
         super(R.layout.fragment_scan_cell_container);
     }
 
@@ -66,8 +61,9 @@ public class PlacementFragment extends ScanShtrihcodeFragment {
                             JSONObject cell = JsonProcs.getItemJSONArray(cells, 0);
 
                             cellRef = JsonProcs.getStringFromJSON(cell, "ref");
-                            tvContent.setText(JsonProcs.getStringFromJSON(cell, "container"));
                             tvCell.setText(JsonProcs.getStringFromJSON(cell, "name"));
+                            tvContent.setText(JsonProcs.getStringFromJSON(cell, "container"));
+
 
                         }
 
@@ -100,7 +96,7 @@ public class PlacementFragment extends ScanShtrihcodeFragment {
                                 JsonProcs.putToJsonObject(jsonObject,"containerRef", arguments.getString("containerRef"));
                                 JsonProcs.putToJsonObject(jsonObject,"containerName", arguments.getString("containerName"));
 
-                                RequestToServer.executeRequestBodyUW(getContext(), Request.Method.POST, "setErpSkladPlacement", jsonObject,
+                                RequestToServer.executeRequestBodyUW(getContext(), Request.Method.POST, "setErpSkladTakement", jsonObject,
                                         RequestToServer.TypeOfResponse.JsonObject, response1 -> {
 
                                     if (!JsonProcs.getStringFromJSON(response1, "ref").isEmpty()){
@@ -112,7 +108,7 @@ public class PlacementFragment extends ScanShtrihcodeFragment {
                                         });
 
 
-                            },  args, "Разместить контейнер " + tvContainer.getText().toString() + " в ячейку " + tvCell.getText().toString() + " ?", "Размещение");
+                            },  args, "Взять контейнер " + tvContainer.getText().toString() + " из ячейки " + tvCell.getText().toString() + " ?", "Взятие");
 
                         }
 

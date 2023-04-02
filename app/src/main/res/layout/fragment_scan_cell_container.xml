@@ -117,6 +117,14 @@ tools:context=".ui.products.ProductsFragment">
                     android:gravity="center"
                     android:textSize="20sp"
                     android:text="" />
+
+                <TextView
+                    android:id="@+id/tvContent"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="right"
+                    android:textSize="20sp" />
+
             </LinearLayout>
 
             <LinearLayout

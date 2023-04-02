@@ -20,6 +20,7 @@ import com.example.apexwh.JsonProcs;
 import com.example.apexwh.R;
 import com.example.apexwh.RequestToServer;
 import com.example.apexwh.objects.MoversService;
+import com.example.apexwh.objects.Placement;
 import com.example.apexwh.ui.adapters.DataAdapter;
 import com.example.apexwh.ui.adapters.ListFragment;
 
@@ -32,7 +33,7 @@ import java.util.GregorianCalendar;
 import java.util.TimeZone;
 import java.util.UUID;
 
-public class PlacementListFragment extends ListFragment<MoversService> {
+public class PlacementListFragment extends ListFragment<Placement> {
 
     public PlacementListFragment() {
 
@@ -55,9 +56,9 @@ public class PlacementListFragment extends ListFragment<MoversService> {
 
                                 for (int j = 0; j < responseItems.length(); j++) {
 
-//                                    JSONObject objectItem = JsonProcs.getItemJSONArray(jsonArrayObjects, j);
-//
-//                                    items.add(MoversService.MoversServiceFromJson(objectItem));
+                                    JSONObject objectItem = JsonProcs.getItemJSONArray(responseItems, j);
+
+                                    items.add(Placement.FromJson(objectItem));
 
                                 }
 
@@ -84,17 +85,19 @@ public class PlacementListFragment extends ListFragment<MoversService> {
                     }
                 });
 
-                getAdapter().setDrawViewHolder(new DataAdapter.DrawViewHolder<MoversService>() {
+                getAdapter().setDrawViewHolder(new DataAdapter.DrawViewHolder<Placement>() {
                     @Override
-                    public void draw(DataAdapter.ItemViewHolder holder, MoversService document) {
+                    public void draw(DataAdapter.ItemViewHolder holder, Placement document) {
 
-                        ((TextView) holder.getTextViews().get(0)).setText("№ " + document.number + " от " + DateStr.FromYmdhmsToDmyhms(document.date)
-                                + ", c " + DateStr.FromYmdhmsToDmyhms(document.start)
-                                + " по " + DateStr.FromYmdhmsToDmyhms(document.finish));
-                        ((TextView) holder.getTextViews().get(1)).setText("Количество: " + String.valueOf(document.quantity) + " на сумму " + String.valueOf(document.sum));
-                        ((TextView) holder.getTextViews().get(2)).setText("Комментарий: " + document.comment);
+                        ((TextView) holder.getTextViews().get(0)).setText("№ " + document.number + " от " + DateStr.FromYmdhmsToDmyhms(document.date));
+                        ((TextView) holder.getTextViews().get(1)).setText(document.description);
+                        ((TextView) holder.getTextViews().get(2)).setText("Ячейка: " + document.cell + ", контейнер: " + document.container);
                     }
                 });
+
+                getAdapter().setOnClickListener(document -> {});
+
+                getAdapter().setOnLongClickListener(document -> {});
 
                 root.findViewById(R.id.btnAdd).setOnClickListener(new View.OnClickListener() {
                     @Override

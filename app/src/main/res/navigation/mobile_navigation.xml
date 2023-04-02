@@ -112,5 +112,15 @@
         android:name="com.example.apexwh.ui.orders_to_change_characteristics.OrderToChangeCharacteristicProductsFragment"
         android:label="Товары"
         tools:layout="@layout/fragment_order_to_change_characteristic_products" />
+    <fragment
+        android:id="@+id/nav_placementListFragment"
+        android:name="com.example.apexwh.ui.placement.PlacementListFragment"
+        android:label="Размещения"
+        tools:layout="@layout/fragment_placement_list" />
+    <fragment
+        android:id="@+id/nav_takementListFragment"
+        android:name="com.example.apexwh.ui.takement.TakementListFragment"
+        android:label="Взятия"
+        tools:layout="@layout/fragment_takement_list" />
 
 </navigation>

@@ -31,24 +31,6 @@ public class SettingsFragment extends Fragment {
                              @Nullable Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_settings, container, false);
 
-        Bundle arguments = getArguments();
-
-        if (false && arguments != null){
-
-            String mode = arguments.getString("mode");
-            if (true || mode.equals("selectWarehouseSetting")){
-
-                DB db = new DB(getContext());
-                db.open();
-
-                db.updateConstant("warehouseId", arguments.getString("ref"));
-                db.updateConstant("warehouseDescription", arguments.getString("description"));
-
-                db.close();
-            }
-
-        }
-
         Bundle settings = DB.getSettings(getContext());
 
         TextView tvWarehouse = root.findViewById(R.id.tvWarehouse);

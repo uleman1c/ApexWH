@@ -36,7 +36,7 @@ public class SettingsFragment extends Fragment {
         if (arguments != null){
 
             String mode = arguments.getString("mode");
-            if (mode.equals("selectWarehouseSetting")){
+            if (true || mode.equals("selectWarehouseSetting")){
 
                 DB db = new DB(getContext());
                 db.open();

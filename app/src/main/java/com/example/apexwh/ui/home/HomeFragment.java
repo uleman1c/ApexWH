@@ -134,10 +134,16 @@ public class HomeFragment extends Fragment {
         if(!DB.isSettingsExist(getContext())){
 
             ArrayList<Button> buttons = new ArrayList<>();
+            buttons.add(binding.btnAcceptment);
+            buttons.add(binding.btnShipment);
             buttons.add(binding.btnReturns);
-            buttons.add(binding.btnInvents);
             buttons.add(binding.btnTest);
+            buttons.add(binding.btnReturnsOfProducts);
             buttons.add(binding.btnMovers);
+            buttons.add(binding.btnOrderToChangeCharacteristic);
+            buttons.add(binding.btnPlacement);
+            buttons.add(binding.btnTakement);
+            buttons.add(binding.btnInvents);
 
             for (Button curBtn: buttons
                  ) {

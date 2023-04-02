@@ -62,9 +62,11 @@ public class HomeFragment extends Fragment {
 
             }
 
+            id = bundle.getString("id");
+            db.updateConstant("userId", id);
+
             db.close();
 
-            id = bundle.getString("id");
             binding.tvName.setText(bundle.getString("name"));
 
             bundle.putString("appId", appId);

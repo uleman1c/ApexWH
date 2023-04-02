@@ -12,11 +12,13 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.android.volley.Request;
 import com.example.apexwh.DateStr;
 import com.example.apexwh.HttpClient;
 import com.example.apexwh.HttpRequestInterface;
 import com.example.apexwh.JsonProcs;
 import com.example.apexwh.R;
+import com.example.apexwh.RequestToServer;
 import com.example.apexwh.objects.MoversService;
 import com.example.apexwh.ui.adapters.DataAdapter;
 import com.example.apexwh.ui.adapters.ListFragment;
@@ -42,45 +44,26 @@ public class PlacementListFragment extends ListFragment<MoversService> {
 
                 items.clear();
 
-                HttpClient httpClient = new HttpClient(getContext());
+                RequestToServer.executeRequestUW(getContext(), Request.Method.GET, "getErpSkladPlacements", "filter=" + filter, new JSONObject(), 1,
+                        new RequestToServer.ResponseResultInterface() {
+                            @Override
+                            public void onResponse(JSONObject response) {
 
-                httpClient.request_get("/hs/dta/obj?request=getMoversService&warehouseId=" + getWarehouseId() + "&filter=" + filter, new HttpRequestInterface() {
-                    @Override
-                    public void setProgressVisibility(int visibility) {
+                                progressBar.setVisibility(View.GONE);
 
-                        progressBar.setVisibility(visibility);
+                                JSONArray responseItems = JsonProcs.getJsonArrayFromJsonObject(response, "ErpSkladPlacements");
 
-                    }
+                                for (int j = 0; j < responseItems.length(); j++) {
 
-                    @Override
-                    public void processResponse(String response) {
+//                                    JSONObject objectItem = JsonProcs.getItemJSONArray(jsonArrayObjects, j);
+//
+//                                    items.add(MoversService.MoversServiceFromJson(objectItem));
 
-                        JSONObject jsonObjectResponse = JsonProcs.getJSONObjectFromString(response);
+                                }
 
-                        if (JsonProcs.getBooleanFromJSON(jsonObjectResponse, "success")){
-
-                            JSONArray jsonArrayResponses = JsonProcs.getJsonArrayFromJsonObject(jsonObjectResponse, "responses");
-
-                            JSONObject jsonObjectItem = JsonProcs.getItemJSONArray(jsonArrayResponses, 0);
-
-                            JSONArray jsonArrayObjects = JsonProcs.getJsonArrayFromJsonObject(jsonObjectItem, "MoversService");
-
-                            for (int j = 0; j < jsonArrayObjects.length(); j++) {
-
-                                JSONObject objectItem = JsonProcs.getItemJSONArray(jsonArrayObjects, j);
-
-                                items.add(MoversService.MoversServiceFromJson(objectItem));
-
+                                adapter.notifyDataSetChanged();
                             }
-
-                            adapter.notifyDataSetChanged();
-
-                        }
-
-                    }
-
-                });
-
+                        });
 
 
             }

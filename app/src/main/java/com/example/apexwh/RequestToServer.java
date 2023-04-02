@@ -87,6 +87,49 @@ public class RequestToServer {
 
 
     }
+    public static void executeRequestUW(Context context, int method, String request, String url, JSONObject params, int type, ResponseResultInterface responseResultInterface){
+
+        DB db = new DB(context);
+        db.open();
+        String appId = db.getConstant("appId");
+        String userId = db.getConstant("userId");
+        String warehouseId = db.getConstant("warehouseId");
+        db.close();
+
+        String urlToSend = "?request=" + request + "&appId=" + appId + "&userId=" + userId + "&warehouseId=" + warehouseId + "&" + url;
+
+        execute(context, method, Connections.addrDta + urlToSend, params, new ResponseResultInterface() {
+            @Override
+            public void onResponse(JSONObject response) {
+
+                if (DefaultJson.getBoolean(response, "success", false)) {
+
+                    JSONArray responses = JsonProcs.getJsonArrayFromJsonObject(response, "responses");
+
+                    if (responses.length() > 0) {
+
+                        JSONObject response0 = JsonProcs.getItemJSONArray(responses, 0);
+
+                        if (type == 0){
+
+                            JSONObject responseR = JsonProcs.getJsonObjectFromJsonObject(response0, request.substring(3));
+
+                            responseResultInterface.onResponse(responseR);
+
+                        } else {
+
+                            responseResultInterface.onResponse(response0);
+
+                        }
+
+                    }
+                }
+
+            }
+        });
+
+
+    }
 
     public static byte[] getFileDataFromDrawable(Bitmap bitmap) {
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();

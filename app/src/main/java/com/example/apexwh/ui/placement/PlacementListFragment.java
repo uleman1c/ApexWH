@@ -116,7 +116,7 @@ public class PlacementListFragment extends ListFragment<MoversService> {
 
                         bundle.putString("record", new JSONArray(moversService.getObjectDescription()).toString());
 
-                        navController.navigate(R.id.nav_MoversServiceRecordFragment, bundle);
+                        navController.navigate(R.id.nav_placementFragment, bundle);
 
                     }
                 });

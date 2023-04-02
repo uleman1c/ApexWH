@@ -122,5 +122,10 @@
         android:name="com.example.apexwh.ui.takement.TakementListFragment"
         android:label="Взятия"
         tools:layout="@layout/fragment_takement_list" />
+    <fragment
+        android:id="@+id/nav_placementFragment"
+        android:name="com.example.apexwh.ui.placement.PlacementFragment"
+        android:label="Размещение"
+        tools:layout="@layout/fragment_placement" />
 
 </navigation>

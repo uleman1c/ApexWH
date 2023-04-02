@@ -4,6 +4,7 @@ import android.os.Bundle;
 
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.Navigation;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,11 +15,14 @@ import com.android.volley.Request;
 import com.example.apexwh.JsonProcs;
 import com.example.apexwh.R;
 import com.example.apexwh.RequestToServer;
+import com.example.apexwh.ui.Dialogs;
 import com.example.apexwh.ui.ScanShtrihcodeFragment;
 import com.example.apexwh.ui.adapters.ScanCodeSetter;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
+
+import java.util.UUID;
 
 public class PlacementFragment extends ScanShtrihcodeFragment {
 
@@ -51,7 +55,8 @@ public class PlacementFragment extends ScanShtrihcodeFragment {
 
                 if (tvCell.getText().toString().isEmpty()){
 
-                    RequestToServer.executeRequestUW(getContext(), Request.Method.GET, "getErpSkladCells", "filter=" + strCatName, new JSONObject(), 1, response -> {
+                    RequestToServer.executeRequestUW(getContext(), Request.Method.GET, "getErpSkladCells", "filter=" + strCatName, new JSONObject(),
+                            RequestToServer.TypeOfResponse.JsonObjectWithArray, response -> {
 
                         JSONArray cells = JsonProcs.getJsonArrayFromJsonObject(response, "ErpSkladCells");
 
@@ -67,6 +72,45 @@ public class PlacementFragment extends ScanShtrihcodeFragment {
                     });
 
                 } else {
+
+                    RequestToServer.executeRequestUW(getContext(), Request.Method.GET, "getErpSkladContainers", "filter=" + strCatName, new JSONObject(),
+                            RequestToServer.TypeOfResponse.JsonObjectWithArray, response -> {
+
+                        JSONArray containers = JsonProcs.getJsonArrayFromJsonObject(response, "ErpSkladContainers");
+
+                        if (containers.length() == 1){
+
+                            JSONObject container = JsonProcs.getItemJSONArray(containers, 0);
+
+                            containerRef = JsonProcs.getStringFromJSON(container, "ref");
+                            tvContainer.setText(JsonProcs.getStringFromJSON(container, "name"));
+
+                            Bundle args = new Bundle();
+                            args.putString("cellRef", cellRef);
+                            args.putString("containerRef", containerRef);
+                            args.putString("containerName", tvContainer.getText().toString());
+
+                            Dialogs.showQuestionYesNoCancel(getContext(), getActivity(), arguments -> {
+
+                                JSONObject jsonObject = new JSONObject();
+                                JsonProcs.putToJsonObject(jsonObject,"ref", UUID.randomUUID().toString());
+                                JsonProcs.putToJsonObject(jsonObject,"cellRef", arguments.getString("cellRef"));
+                                JsonProcs.putToJsonObject(jsonObject,"containerRef", arguments.getString("containerRef"));
+                                JsonProcs.putToJsonObject(jsonObject,"containerName", arguments.getString("containerName"));
+
+                                RequestToServer.executeRequestBodyUW(getContext(), Request.Method.GET, "setErpSkladPlacement", jsonObject,
+                                        RequestToServer.TypeOfResponse.JsonObjectWithArray, response1 -> {
+
+                                            navController.popBackStack();
+
+                                        });
+
+
+                            },  args, "Разместить контейнер " + tvContainer.getText().toString() + " в ячейку " + tvCell.getText().toString() + " ?", "Размещение");
+
+                        }
+
+                    });
 
 
                 }

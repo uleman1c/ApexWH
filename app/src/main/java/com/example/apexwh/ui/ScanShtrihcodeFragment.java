@@ -109,7 +109,7 @@ public class ScanShtrihcodeFragment extends Fragment {
 
     private OnCreateViewElements onCreateViewElements;
 
-    private NavController navController;
+    protected NavController navController;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,

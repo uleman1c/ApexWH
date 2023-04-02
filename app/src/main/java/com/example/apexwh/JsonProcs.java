@@ -152,5 +152,13 @@ public class JsonProcs {
     }
 
 
+    public static void putToJsonObject(JSONObject jsonObject, String parameters, JSONObject parameters1) {
 
+        try {
+            jsonObject.put(parameters, parameters1);
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
+        }
+
+    }
 }

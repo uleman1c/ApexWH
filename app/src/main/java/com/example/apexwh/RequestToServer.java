@@ -23,6 +23,10 @@ import java.util.Map;
 
 public class RequestToServer {
 
+    public interface TypeOfResponse {
+        int JsonObject = 0;
+        int JsonObjectWithArray = 1;
+    }
      public interface ResponseResultInterface{
 
         void onResponse(JSONObject response);
@@ -110,7 +114,58 @@ public class RequestToServer {
 
                         JSONObject response0 = JsonProcs.getItemJSONArray(responses, 0);
 
-                        if (type == 0){
+                        if (type == TypeOfResponse.JsonObject){
+
+                            JSONObject responseR = JsonProcs.getJsonObjectFromJsonObject(response0, request.substring(3));
+
+                            responseResultInterface.onResponse(responseR);
+
+                        } else {
+
+                            responseResultInterface.onResponse(response0);
+
+                        }
+
+                    }
+                }
+
+            }
+        });
+
+
+    }
+
+    public static void executeRequestBodyUW(Context context, int method, String request, JSONObject parameters, int type, ResponseResultInterface responseResultInterface){
+
+        DB db = new DB(context);
+        db.open();
+        String appId = db.getConstant("appId");
+        String userId = db.getConstant("userId");
+        String warehouseId = db.getConstant("warehouseId");
+
+        JsonProcs.putToJsonObject(parameters, "appId", appId);
+        JsonProcs.putToJsonObject(parameters, "userId", userId);
+        JsonProcs.putToJsonObject(parameters, "warehouseId", warehouseId);
+
+        db.close();
+
+        JSONObject jsonObject = new JSONObject();
+        JsonProcs.putToJsonObject(jsonObject,"request", request);
+        JsonProcs.putToJsonObject(jsonObject,"parameters", parameters);
+
+        execute(context, method, Connections.addrDta, jsonObject, new ResponseResultInterface() {
+            @Override
+            public void onResponse(JSONObject response) {
+
+                if (DefaultJson.getBoolean(response, "success", false)) {
+
+                    JSONArray responses = JsonProcs.getJsonArrayFromJsonObject(response, "responses");
+
+                    if (responses.length() > 0) {
+
+                        JSONObject response0 = JsonProcs.getItemJSONArray(responses, 0);
+
+                        if (type == TypeOfResponse.JsonObject){
 
                             JSONObject responseR = JsonProcs.getJsonObjectFromJsonObject(response0, request.substring(3));
 

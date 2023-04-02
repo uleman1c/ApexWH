@@ -202,7 +202,7 @@ public class PincodeActivity extends AppCompatActivity {
 
     private void testPincode(String pinCode) {
 
-        RequestToServer.execute(this, Request.Method.GET, Connections.addrMob + "auth/" + pinCode, new JSONObject(), new RequestToServer.ResponseResultInterface(){
+        RequestToServer.execute(this, Request.Method.GET, Connections.addrDta + "?request=getErpSkladAuth&pincode=" + pinCode, new JSONObject(), new RequestToServer.ResponseResultInterface(){
 
             @Override
             public void onResponse(JSONObject response) {
@@ -212,8 +212,8 @@ public class PincodeActivity extends AppCompatActivity {
                     finish();
 
                     Intent intent = new Intent(getBaseContext(), MainActivity.class);
-                    intent.putExtra("id", DefaultJson.getString(response, "User", ""));
-                    intent.putExtra("name", DefaultJson.getString(response, "UserName", ""));
+                    intent.putExtra("id", DefaultJson.getString(response, "ref", ""));
+                    intent.putExtra("name", DefaultJson.getString(response, "name", ""));
                     startActivity(intent);
 
                 } else {

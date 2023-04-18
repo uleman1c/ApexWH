@@ -19,6 +19,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 
+import com.example.apexwh.DB;
 import com.example.apexwh.HttpClient;
 import com.example.apexwh.HttpRequestInterface;
 import com.example.apexwh.JsonProcs;
@@ -83,6 +84,15 @@ public class WarehousesFragment extends Fragment {
                     bundle.putString("ref", reference.ref);
                     bundle.putString("description", reference.description);
                     bundle.putString("mode", mode);
+
+                    DB db = new DB(getContext());
+
+                    db.open();
+
+                    db.updateConstant("warehouseId", reference.ref);
+                    db.updateConstant("warehouseDescription", reference.description);
+
+                    db.close();
 
                     Navigation.findNavController(getActivity(), R.id.nav_host_fragment_content_main).popBackStack();
                     Navigation.findNavController(getActivity(), R.id.nav_host_fragment_content_main).popBackStack();

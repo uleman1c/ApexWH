@@ -21,6 +21,7 @@ import java.io.ByteArrayOutputStream;
 import java.util.HashMap;
 import java.util.Map;
 
+
 public class RequestToServer {
 
     public interface TypeOfResponse {

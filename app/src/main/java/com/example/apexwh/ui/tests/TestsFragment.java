@@ -8,6 +8,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.FragmentResultListener;
 import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 
 import com.example.apexwh.HttpClient;
 import com.example.apexwh.HttpRequestInterface;
@@ -36,48 +37,84 @@ public class TestsFragment extends ListFragment<Test>{
             @Override
             public void update(ArrayList items, ProgressBar progressBar, DataAdapter adapter, String filter) {
 
-                items.clear();
-
                 HttpClient httpClient = new HttpClient(getContext());
 
-                httpClient.request_get("/hs/dta/obj?request=getTests&warehouseId=" + getWarehouseId() + "&filter=" + filter, new HttpRequestInterface() {
-                    @Override
-                    public void setProgressVisibility(int visibility) {
+                //filter = "99871277256635567499274085817036167495";
 
-                        progressBar.setVisibility(visibility);
+                if (filter.length() >= 32){
 
-                    }
+                    httpClient.request_get("/hs/dta/obj?request=getRefByNumberValue&ref=" + filter, new HttpRequestInterface() {
+                        @Override
+                        public void setProgressVisibility(int visibility) {
 
-                    @Override
-                    public void processResponse(String response) {
-
-                        JSONObject jsonObjectResponse = JsonProcs.getJSONObjectFromString(response);
-
-                        if (JsonProcs.getBooleanFromJSON(jsonObjectResponse, "success")){
-
-                            JSONArray jsonArrayResponses = JsonProcs.getJsonArrayFromJsonObject(jsonObjectResponse, "responses");
-
-                            JSONObject jsonObjectItem = JsonProcs.getItemJSONArray(jsonArrayResponses, 0);
-
-                            JSONArray jsonArrayObjects = JsonProcs.getJsonArrayFromJsonObject(jsonObjectItem, "Tests");
-
-                            for (int j = 0; j < jsonArrayObjects.length(); j++) {
-
-                                JSONObject objectItem = JsonProcs.getItemJSONArray(jsonArrayObjects, j);
-
-                                items.add(Test.TestFromJson(objectItem));
-
-                            }
-
-                            adapter.notifyDataSetChanged();
+                            progressBar.setVisibility(visibility);
 
                         }
 
-                    }
+                        @Override
+                        public void processResponse(String response) {
 
-                });
+                            JSONObject jsonObjectResponse = JsonProcs.getJSONObjectFromString(response);
+
+                            if (JsonProcs.getBooleanFromJSON(jsonObjectResponse, "success")) {
+
+                                JSONArray jsonArrayResponses = JsonProcs.getJsonArrayFromJsonObject(jsonObjectResponse, "responses");
+
+                                JSONObject jsonObjectItem = JsonProcs.getItemJSONArray(jsonArrayResponses, 0);
+
+                                JSONObject jsonArrayObjects = JsonProcs.getJsonObjectFromJsonObject(jsonObjectItem, "RefByNumberValue");
+
+                                DoStartTest(Navigation.findNavController(getActivity(), R.id.nav_host_fragment_content_main),
+                                        JsonProcs.getStringFromJSON(jsonArrayObjects, "Имя"),
+                                        JsonProcs.getStringFromJSON(jsonArrayObjects, "Ссылка"));
 
 
+                            }
+                        }
+                    });
+                }
+                else {
+
+                    items.clear();
+
+                    httpClient.request_get("/hs/dta/obj?request=getTests&warehouseId=" + getWarehouseId() + "&filter=" + filter, new HttpRequestInterface() {
+                        @Override
+                        public void setProgressVisibility(int visibility) {
+
+                            progressBar.setVisibility(visibility);
+
+                        }
+
+                        @Override
+                        public void processResponse(String response) {
+
+                            JSONObject jsonObjectResponse = JsonProcs.getJSONObjectFromString(response);
+
+                            if (JsonProcs.getBooleanFromJSON(jsonObjectResponse, "success")) {
+
+                                JSONArray jsonArrayResponses = JsonProcs.getJsonArrayFromJsonObject(jsonObjectResponse, "responses");
+
+                                JSONObject jsonObjectItem = JsonProcs.getItemJSONArray(jsonArrayResponses, 0);
+
+                                JSONArray jsonArrayObjects = JsonProcs.getJsonArrayFromJsonObject(jsonObjectItem, "Tests");
+
+                                for (int j = 0; j < jsonArrayObjects.length(); j++) {
+
+                                    JSONObject objectItem = JsonProcs.getItemJSONArray(jsonArrayObjects, j);
+
+                                    items.add(Test.TestFromJson(objectItem));
+
+                                }
+
+                                adapter.notifyDataSetChanged();
+
+                            }
+
+                        }
+
+                    });
+
+                }
 
             }
         });
@@ -138,30 +175,7 @@ public class TestsFragment extends ListFragment<Test>{
 
                         JSONObject jsonObject = JsonProcs.getJSONObjectFromString(bundle.getString("selected"));
 
-                        HttpClient httpClient = new HttpClient(getContext());
-
-                        httpClient.request_get("/hs/dta/obj?request=setTest&type=" + JsonProcs.getStringFromJSON(jsonObject, "name")
-                                + "&ref=" + JsonProcs.getStringFromJSON(jsonObject, "ref")
-                                + "&warehouseId=" + getWarehouseId(), new HttpRequestJsonObjectInterface() {
-                            @Override
-                            public void setProgressVisibility(int visibility) {
-
-                            }
-
-                            @Override
-                            public void processResponse(JSONObject jsonObjectResponse) {
-
-                                JSONArray jsonArrayResponses = JsonProcs.getJsonArrayFromJsonObject(jsonObjectResponse, "responses");
-
-                                JSONObject jsonObjectItem = JsonProcs.getItemJSONArray(jsonArrayResponses, 0);
-
-                                String ref = JsonProcs.getStringFromJSON(jsonObjectItem, "Test");
-
-                                startTest(navController, ref);
-
-                            }
-                        });
-
+                        DoStartTest(navController, JsonProcs.getStringFromJSON(jsonObject, "name"), JsonProcs.getStringFromJSON(jsonObject, "ref"));
 
                     }
                 });
@@ -170,6 +184,35 @@ public class TestsFragment extends ListFragment<Test>{
 
             }
         });
+
+    }
+
+    private void DoStartTest(NavController navController, String name, String ref){
+
+        HttpClient httpClient = new HttpClient(getContext());
+
+        httpClient.request_get("/hs/dta/obj?request=setTest&type=" + name
+                + "&ref=" + ref
+                + "&warehouseId=" + getWarehouseId(), new HttpRequestJsonObjectInterface() {
+            @Override
+            public void setProgressVisibility(int visibility) {
+
+            }
+
+            @Override
+            public void processResponse(JSONObject jsonObjectResponse) {
+
+                JSONArray jsonArrayResponses = JsonProcs.getJsonArrayFromJsonObject(jsonObjectResponse, "responses");
+
+                JSONObject jsonObjectItem = JsonProcs.getItemJSONArray(jsonArrayResponses, 0);
+
+                String ref = JsonProcs.getStringFromJSON(jsonObjectItem, "Test");
+
+                startTest(navController, ref);
+
+            }
+        });
+
 
     }
 

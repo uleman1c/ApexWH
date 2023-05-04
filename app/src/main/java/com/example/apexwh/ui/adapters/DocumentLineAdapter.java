@@ -4,6 +4,8 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -12,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.apexwh.R;
 import com.example.apexwh.objects.Document;
 import com.example.apexwh.objects.DocumentLine;
+import com.example.apexwh.ui.products.ProductsFragment;
 
 import java.util.ArrayList;
 
@@ -22,11 +25,30 @@ public class DocumentLineAdapter extends RecyclerView.Adapter<DocumentLineAdapte
     private OnDocumentLineItemClickListener onDocumentLineItemClickListener;
     private OnDocumentLineItemLongClickListener onDocumentLineItemLongClickListener;
 
-    class DocumentLineItemViewHolder extends RecyclerView.ViewHolder {
 
-        private TextView tvProduct;
-        private TextView tvShtrihCodes;
-        private TextView tvScanned;
+
+    public interface onBindViewHolderI  {
+
+        void OnBindViewHolder(DocumentLineItemViewHolder holder, int position, ArrayList<DocumentLine> documentLines);
+
+    }
+
+    private onBindViewHolderI onBindViewHolderI;
+
+    public void setonBindViewHolderI(onBindViewHolderI onBindViewHolderI){
+
+        this.onBindViewHolderI = onBindViewHolderI;
+
+    }
+
+
+    public class DocumentLineItemViewHolder extends RecyclerView.ViewHolder {
+
+        public TextView tvProduct;
+        public TextView tvShtrihCodes;
+        public TextView tvScanned;
+
+        public LinearLayout llMain;
 
         public DocumentLineItemViewHolder(View itemView) {
             super(itemView);
@@ -34,6 +56,7 @@ public class DocumentLineAdapter extends RecyclerView.Adapter<DocumentLineAdapte
             tvProduct = (TextView) itemView.findViewById(R.id.tvProduct);
             tvShtrihCodes = (TextView) itemView.findViewById(R.id.tvShtrihCodes);
             tvScanned = (TextView) itemView.findViewById(R.id.tvScanned);
+            llMain = (LinearLayout) itemView.findViewById(R.id.llMain);
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -84,22 +107,30 @@ public class DocumentLineAdapter extends RecyclerView.Adapter<DocumentLineAdapte
 
     @Override
     public void onBindViewHolder(@NonNull DocumentLineItemViewHolder holder, int position) {
-        DocumentLine documentLine = documentLines.get(position);
 
-        holder.tvProduct.setText(documentLine.productName
-                + (documentLine.characterName.isEmpty() || documentLine.characterName.equals("Основная характеристика") ? "" : ", " + documentLine.characterName));
+        if (onBindViewHolderI != null){
 
-        String allSK = "";
-
-        for (String curSK:   documentLine.shtrihCodes          ) {
-
-            allSK = allSK + (allSK.isEmpty() ? "" : ", ") + curSK;
+            onBindViewHolderI.OnBindViewHolder(holder, position, documentLines);
 
         }
+        else {
+            DocumentLine documentLine = documentLines.get(position);
 
-        holder.tvShtrihCodes.setText(allSK);
+            holder.tvProduct.setText(documentLine.productName
+                    + (documentLine.characterName.isEmpty() || documentLine.characterName.equals("Основная характеристика") ? "" : ", " + documentLine.characterName));
 
-        holder.tvScanned.setText(documentLine.scanned.toString() + " из " + documentLine.quantity.toString());
+            String allSK = "";
+
+            for (String curSK : documentLine.shtrihCodes) {
+
+                allSK = allSK + (allSK.isEmpty() ? "" : ", ") + curSK;
+
+            }
+
+            holder.tvShtrihCodes.setText(allSK);
+
+            holder.tvScanned.setText(documentLine.scanned.toString() + " из " + documentLine.quantity.toString());
+        }
     }
 
     @Override

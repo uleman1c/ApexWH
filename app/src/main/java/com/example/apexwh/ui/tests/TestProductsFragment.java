@@ -1,5 +1,6 @@
 package com.example.apexwh.ui.tests;
 
+import android.graphics.Color;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -86,6 +87,37 @@ public class TestProductsFragment extends ProductsFragment {
         setOnCreateViewElements(new OnCreateViewElements() {
             @Override
             public void execute(View root) {
+
+                getAdapter().setonBindViewHolderI(new DocumentLineAdapter.onBindViewHolderI() {
+                    @Override
+                    public void OnBindViewHolder(DocumentLineAdapter.DocumentLineItemViewHolder holder, int position, ArrayList<DocumentLine> documentLines) {
+
+                        DocumentLine documentLine = documentLines.get(position);
+
+                        holder.tvProduct.setText(documentLine.productName
+                                + (documentLine.characterName.isEmpty() || documentLine.characterName.equals("Основная характеристика") ? "" : ", " + documentLine.characterName));
+
+                        String allSK = "";
+
+                        for (String curSK : documentLine.shtrihCodes) {
+
+                            allSK = allSK + (allSK.isEmpty() ? "" : ", ") + curSK;
+
+                        }
+
+                        holder.tvShtrihCodes.setText(allSK);
+
+                        holder.tvScanned.setText(documentLine.scanned.toString() + " из " + documentLine.quantity.toString());
+
+                        if (documentLine.scanned == documentLine.quantity){
+
+                            holder.llMain.setBackgroundColor(Color.parseColor("#00ff00"));
+
+                        }
+
+
+                    }
+                });
 
                 getAdapter().setOnDocumentLineItemClickListener(new DocumentLineAdapter.OnDocumentLineItemClickListener() {
                     @Override

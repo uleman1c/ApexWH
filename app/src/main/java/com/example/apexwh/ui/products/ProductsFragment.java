@@ -60,7 +60,7 @@ public class ProductsFragment extends Fragment {
     }
 
     protected ProgressBar progressBar;
-    protected String ref, name;
+    protected String ref, name, warehouseId;
 
     private ArrayList<DocumentLine> lines;
 
@@ -117,6 +117,7 @@ public class ProductsFragment extends Fragment {
         name = args.getString("name");
         ref = args.getString("ref");
         description = args.getString("description");
+        warehouseId = args.getString("warehouseId");
 
         getParentFragmentManager().setFragmentResultListener("selectCharacteristic", this, new FragmentResultListener() {
             @Override
@@ -605,6 +606,7 @@ public class ProductsFragment extends Fragment {
         httpClient.addParam("name1c", name);
         httpClient.addParam("id1c", ref);
         httpClient.addParam("status", "closed");
+        httpClient.addParam("warehouseId", warehouseId);
 
         httpClient.request_get("/hs/dta/obj", "setDocumentStatus", new HttpRequestInterface() {
             @Override

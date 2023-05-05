@@ -220,6 +220,7 @@ public class TestsFragment extends ListFragment<Test>{
 
         Bundle bundle = new Bundle();
         bundle.putString("ref", ref);
+        bundle.putString("warehouseId", getWarehouseId());
         bundle.putString("name", "ПроверкаДокумента");
         bundle.putString("description", "Проверка документа");
 

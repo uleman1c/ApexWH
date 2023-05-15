@@ -39,7 +39,7 @@ public class TestsFragment extends ListFragment<Test>{
 
                 HttpClient httpClient = new HttpClient(getContext());
 
-                //filter = "99871277256635567499274085817036167495";
+                //filter = "99871277256635567499274085817036167495"; //"89650479129902374946348663797674531143";
 
                 if (filter.length() >= 32){
 

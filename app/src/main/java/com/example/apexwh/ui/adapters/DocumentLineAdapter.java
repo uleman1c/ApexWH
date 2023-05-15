@@ -44,6 +44,7 @@ public class DocumentLineAdapter extends RecyclerView.Adapter<DocumentLineAdapte
 
     public class DocumentLineItemViewHolder extends RecyclerView.ViewHolder {
 
+        public TextView tvArtikul;
         public TextView tvProduct;
         public TextView tvShtrihCodes;
         public TextView tvScanned;
@@ -53,6 +54,7 @@ public class DocumentLineAdapter extends RecyclerView.Adapter<DocumentLineAdapte
         public DocumentLineItemViewHolder(View itemView) {
             super(itemView);
 
+            tvArtikul = (TextView) itemView.findViewById(R.id.tvArtikul);
             tvProduct = (TextView) itemView.findViewById(R.id.tvProduct);
             tvShtrihCodes = (TextView) itemView.findViewById(R.id.tvShtrihCodes);
             tvScanned = (TextView) itemView.findViewById(R.id.tvScanned);

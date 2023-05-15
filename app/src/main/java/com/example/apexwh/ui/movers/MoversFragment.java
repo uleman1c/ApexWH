@@ -119,6 +119,20 @@ public class MoversFragment extends ListFragment<MoversService> {
                     }
                 });
 
+                getAdapter().setOnClickListener(new DataAdapter.OnClickListener() {
+                    @Override
+                    public void onItemClick(Object document) {
+
+                    }
+                });
+
+                getAdapter().setOnLongClickListener(new DataAdapter.OnLongClickListener() {
+                    @Override
+                    public void onLongItemClick(Object document) {
+
+                    }
+                });
+
                 root.findViewById(R.id.btnAdd).setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {

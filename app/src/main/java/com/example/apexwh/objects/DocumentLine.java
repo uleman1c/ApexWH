@@ -10,15 +10,16 @@ import java.util.ArrayList;
 
 public class DocumentLine {
 
-    public String productRef, productName, characterRef, characterName, seriesRef, seriesName;
+    public String productRef, productName, productArtikul, characterRef, characterName, seriesRef, seriesName;
     public ArrayList<String> shtrihCodes;
     public Integer quantity, scanned, lineNumber;
 
 
-    public DocumentLine(String productRef, String productName, String characterRef, String characterName, String seriesRef, String seriesName,
+    public DocumentLine(String productRef, String productName, String productArtikul, String characterRef, String characterName, String seriesRef, String seriesName,
                         Integer quantity, Integer scanned, ArrayList<String> shtrihCodes, Integer lineNumber) {
         this.productRef = productRef;
         this.productName = productName;
+        this.productArtikul = productArtikul;
         this.characterRef = characterRef;
         this.characterName = characterName;
         this.seriesRef = seriesRef;
@@ -33,6 +34,7 @@ public class DocumentLine {
 
         String productRef = JsonProcs.getStringFromJSON(task_item, "productRef");
         String productName = JsonProcs.getStringFromJSON(task_item, "productName");
+        String productArtikul = JsonProcs.getStringFromJSON(task_item, "productArtikul");
         String characterRef = JsonProcs.getStringFromJSON(task_item, "characterRef");
         String characterName = JsonProcs.getStringFromJSON(task_item, "characterName");
         String seriesRef = JsonProcs.getStringFromJSON(task_item, "seriesRef");
@@ -57,7 +59,7 @@ public class DocumentLine {
 
         Integer lineNumber = JsonProcs.getIntegerFromJSON(task_item, "lineNumber");
 
-        return new DocumentLine(productRef, productName, characterRef, characterName, seriesRef,  seriesName,
+        return new DocumentLine(productRef, productName, productArtikul, characterRef, characterName, seriesRef,  seriesName,
                 quantity, scanned, shtrihCodes, lineNumber);
 
     }
@@ -66,6 +68,7 @@ public class DocumentLine {
 
         String productRef = JsonProcs.getStringFromJSON(task_item, "productRef");
         String productName = JsonProcs.getStringFromJSON(task_item, "productDescription");
+        String productArtikul = JsonProcs.getStringFromJSON(task_item, "productArtikul");
         String characterRef = JsonProcs.getStringFromJSON(task_item, "characterRef");
         String characterName = JsonProcs.getStringFromJSON(task_item, "characterDescription");
         String seriesRef = JsonProcs.getStringFromJSON(task_item, "seriesRef");
@@ -92,7 +95,7 @@ public class DocumentLine {
 
         Integer lineNumber = JsonProcs.getIntegerFromJSON(task_item, "lineNumber");
 
-        return new DocumentLine(productRef, productName, characterRef, characterName, seriesRef,  seriesName,
+        return new DocumentLine(productRef, productName, productArtikul, characterRef, characterName, seriesRef,  seriesName,
                 quantity, scanned, shtrihCodes, lineNumber);
 
     }

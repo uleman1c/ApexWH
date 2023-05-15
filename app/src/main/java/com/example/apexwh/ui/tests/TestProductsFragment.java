@@ -94,6 +94,7 @@ public class TestProductsFragment extends ProductsFragment {
 
                         DocumentLine documentLine = documentLines.get(position);
 
+                        holder.tvArtikul.setText(documentLine.productArtikul);
                         holder.tvProduct.setText(documentLine.productName
                                 + (documentLine.characterName.isEmpty() || documentLine.characterName.equals("Основная характеристика") ? "" : ", " + documentLine.characterName));
 

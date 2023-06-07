@@ -62,7 +62,10 @@ public class TakementFragment extends ScanShtrihcodeFragment {
 
                             cellRef = JsonProcs.getStringFromJSON(cell, "ref");
                             tvCell.setText(JsonProcs.getStringFromJSON(cell, "name"));
-                            tvContent.setText(JsonProcs.getStringFromJSON(cell, "container"));
+                            tvContent.setText(JsonProcs.getStringFromJSON(cell, "container")
+                                + ", " + JsonProcs.getStringFromJSON(cell, "product")
+                                + ", " + JsonProcs.getIntegerFromJSON(cell, "quantity")
+                                + " (" + JsonProcs.getIntegerFromJSON(cell, "placeQuantity") + ")" );
 
 
                         }

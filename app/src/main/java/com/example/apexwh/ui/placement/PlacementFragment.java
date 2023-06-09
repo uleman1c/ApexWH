@@ -66,8 +66,11 @@ public class PlacementFragment extends ScanShtrihcodeFragment {
                             JSONObject cell = JsonProcs.getItemJSONArray(cells, 0);
 
                             cellRef = JsonProcs.getStringFromJSON(cell, "ref");
-                            tvContent.setText(JsonProcs.getStringFromJSON(cell, "container"));
                             tvCell.setText(JsonProcs.getStringFromJSON(cell, "name"));
+                            tvContent.setText(JsonProcs.getStringFromJSON(cell, "container")
+                                    + ", " + JsonProcs.getStringFromJSON(cell, "product")
+                                    + ", " + JsonProcs.getIntegerFromJSON(cell, "quantity")
+                                    + " (" + JsonProcs.getIntegerFromJSON(cell, "placeQuantity") + ")" );
 
                         }
 

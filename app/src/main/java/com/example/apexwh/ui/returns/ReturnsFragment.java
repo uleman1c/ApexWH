@@ -123,6 +123,7 @@ public class ReturnsFragment extends Fragment {
                 bundle.putString("date", document.date);
                 bundle.putString("description", document.description); // args.getString("nameStr") + " № " + args.getString("number") + " от " + args.getString("date")
                 bundle.putString("mode", "return");
+                bundle.putString("warehouseId", warehouseId);
 
                 Navigation.findNavController(getActivity(), R.id.nav_host_fragment_content_main).navigate(R.id.nav_returnProductsFragment, bundle);
 

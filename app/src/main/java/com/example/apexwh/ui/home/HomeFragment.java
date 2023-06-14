@@ -172,6 +172,15 @@ public class HomeFragment extends Fragment {
             }
         });
 
+        binding.btnMoves.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                navController.navigate(R.id.movementListFragment, bundle);
+
+            }
+        });
+
 
         if(!DB.isSettingsExist(getContext())){
 

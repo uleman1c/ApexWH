@@ -113,7 +113,7 @@ public class MovementListFragment extends ListFragment<Placement> {
 
                         bundle.putString("record", new JSONArray(moversService.getObjectDescription()).toString());
 
-                        navController.navigate(R.id.nav_movementFragment, bundle);
+                        // navController.navigate(R.id.nav_movementFragment, bundle);
 
                     }
                 });

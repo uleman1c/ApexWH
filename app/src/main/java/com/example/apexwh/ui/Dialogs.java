@@ -321,7 +321,7 @@ public class Dialogs {
 
                 if (!strQuantity.isEmpty()) {
 
-                    if (Integer.valueOf(strQuantity) > quantity){
+                    if (quantity != null && Integer.valueOf(strQuantity) > quantity){
 
                         etQuantity.setText("");
 

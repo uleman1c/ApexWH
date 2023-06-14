@@ -15,6 +15,7 @@ import com.android.volley.Request;
 import com.example.apexwh.JsonProcs;
 import com.example.apexwh.R;
 import com.example.apexwh.RequestToServer;
+import com.example.apexwh.ui.BundleMethodInterface;
 import com.example.apexwh.ui.Dialogs;
 import com.example.apexwh.ui.ScanShtrihcodeFragment;
 import com.example.apexwh.ui.adapters.ScanCodeSetter;
@@ -78,44 +79,85 @@ public class PlacementFragment extends ScanShtrihcodeFragment {
 
                 } else {
 
-                    RequestToServer.executeRequestUW(getContext(), Request.Method.GET, "getErpSkladContainers", "filter=" + strCatName, new JSONObject(),
+                    RequestToServer.executeRequestUW(getContext(), Request.Method.GET, "getErpSkladContainersProducts", "filter=" + strCatName, new JSONObject(),
                             RequestToServer.TypeOfResponse.JsonObjectWithArray, response -> {
 
-                        JSONArray containers = JsonProcs.getJsonArrayFromJsonObject(response, "ErpSkladContainers");
+                        JSONArray containers = JsonProcs.getJsonArrayFromJsonObject(response, "ErpSkladContainersProducts");
 
                         if (containers.length() == 1){
 
                             JSONObject container = JsonProcs.getItemJSONArray(containers, 0);
 
-                            containerRef = JsonProcs.getStringFromJSON(container, "ref");
-                            tvContainer.setText(JsonProcs.getStringFromJSON(container, "name"));
+                            String type = JsonProcs.getStringFromJSON(container, "type");
 
                             Bundle args = new Bundle();
                             args.putString("cellRef", cellRef);
-                            args.putString("containerRef", containerRef);
-                            args.putString("containerName", tvContainer.getText().toString());
 
-                            Dialogs.showQuestionYesNoCancel(getContext(), getActivity(), arguments -> {
+                            if (type.equals("Контейнер")){
 
-                                JSONObject jsonObject = new JSONObject();
-                                JsonProcs.putToJsonObject(jsonObject,"ref", UUID.randomUUID().toString());
-                                JsonProcs.putToJsonObject(jsonObject,"cellRef", arguments.getString("cellRef"));
-                                JsonProcs.putToJsonObject(jsonObject,"containerRef", arguments.getString("containerRef"));
-                                JsonProcs.putToJsonObject(jsonObject,"containerName", arguments.getString("containerName"));
+                                containerRef = JsonProcs.getStringFromJSON(container, "ref");
+                                tvContainer.setText(JsonProcs.getStringFromJSON(container, "name"));
 
-                                RequestToServer.executeRequestBodyUW(getContext(), Request.Method.POST, "setErpSkladPlacement", jsonObject,
-                                        RequestToServer.TypeOfResponse.JsonObject, response1 -> {
+                                args.putString("containerRef", containerRef);
+                                args.putString("containerName", tvContainer.getText().toString());
 
-                                    if (!JsonProcs.getStringFromJSON(response1, "ref").isEmpty()){
-                                        navController.popBackStack();
-                                    }
+                                Dialogs.showQuestionYesNoCancel(getContext(), getActivity(), arguments -> {
+
+                                    JSONObject jsonObject = new JSONObject();
+                                    JsonProcs.putToJsonObject(jsonObject,"ref", UUID.randomUUID().toString());
+                                    JsonProcs.putToJsonObject(jsonObject,"cellRef", arguments.getString("cellRef"));
+                                    JsonProcs.putToJsonObject(jsonObject,"containerRef", arguments.getString("containerRef"));
+                                    JsonProcs.putToJsonObject(jsonObject,"containerName", arguments.getString("containerName"));
+
+                                    RequestToServer.executeRequestBodyUW(getContext(), Request.Method.POST, "setErpSkladPlacement", jsonObject,
+                                            RequestToServer.TypeOfResponse.JsonObject, response1 -> {
+
+                                                if (!JsonProcs.getStringFromJSON(response1, "ref").isEmpty()){
+                                                    navController.popBackStack();
+                                                }
 
 
 
-                                        });
+                                            });
 
 
-                            },  args, "Разместить контейнер " + tvContainer.getText().toString() + " в ячейку " + tvCell.getText().toString() + " ?", "Размещение");
+                                },  args, "Разместить контейнер " + tvContainer.getText().toString() + " в ячейку " + tvCell.getText().toString() + " ?", "Размещение");
+
+                            } else {
+
+                                String name = JsonProcs.getStringFromJSON(container, "name");
+
+                                containerRef = JsonProcs.getStringFromJSON(container, "ref");
+                                tvContainer.setText(name);
+
+                                args.putString("productRef", containerRef);
+
+                                Dialogs.showInputQuantity(getContext(), null, getActivity(), arguments -> {
+
+                                            JSONObject jsonObject = new JSONObject();
+                                            JsonProcs.putToJsonObject(jsonObject,"ref", UUID.randomUUID().toString());
+                                            JsonProcs.putToJsonObject(jsonObject,"cellRef", arguments.getString("cellRef"));
+                                            JsonProcs.putToJsonObject(jsonObject,"productRef", arguments.getString("productRef"));
+                                            JsonProcs.putToJsonObject(jsonObject,"quantity", arguments.getInt("quantity"));
+
+                                            RequestToServer.executeRequestBodyUW(getContext(), Request.Method.POST, "setErpSkladPlacement", jsonObject,
+                                                    RequestToServer.TypeOfResponse.JsonObject, response1 -> {
+
+                                                        if (!JsonProcs.getStringFromJSON(response1, "ref").isEmpty()){
+                                                            navController.popBackStack();
+                                                        }
+
+
+
+                                                    });
+
+
+
+                                        },
+                                        args, "Ввести вручную " + name + " ?", "Ввод количества");
+
+
+                            }
 
                         }
 

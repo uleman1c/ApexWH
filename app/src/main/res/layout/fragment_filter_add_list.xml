@@ -61,7 +61,10 @@
             android:id="@+id/btnAdd"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Добавить" />
+            android:layout_margin="14sp"
+            android:background="@drawable/back_green"
+            android:text="Добавить"
+            android:textColor="@color/ic_icon_background" />
 
     </LinearLayout>
 

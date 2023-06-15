@@ -105,12 +105,12 @@ tools:context=".ui.products.ProductsFragment">
                     android:id="@+id/textView5"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Контейнер"
+                    android:text="Источник"
                     android:textSize="24sp"
                     android:textStyle="bold" />
 
                 <TextView
-                    android:id="@+id/tvContainer"
+                    android:id="@+id/tvSource"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="32sp"
@@ -131,7 +131,7 @@ tools:context=".ui.products.ProductsFragment">
                     android:id="@+id/textView4"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Ячейка"
+                    android:text="Ячейка-приемник"
                     android:textSize="24sp"
                     android:textStyle="bold" />
 

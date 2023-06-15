@@ -13,6 +13,7 @@ import com.example.apexwh.DateStr;
 import com.example.apexwh.JsonProcs;
 import com.example.apexwh.R;
 import com.example.apexwh.RequestToServer;
+import com.example.apexwh.objects.Movement;
 import com.example.apexwh.objects.MoversService;
 import com.example.apexwh.objects.Placement;
 import com.example.apexwh.ui.adapters.DataAdapter;
@@ -52,7 +53,7 @@ public class MovementListFragment extends ListFragment<Placement> {
 
                                     JSONObject objectItem = JsonProcs.getItemJSONArray(responseItems, j);
 
-                                    items.add(Placement.FromJson(objectItem));
+                                    items.add(Movement.FromJson(objectItem));
 
                                 }
 
@@ -79,13 +80,14 @@ public class MovementListFragment extends ListFragment<Placement> {
                     }
                 });
 
-                getAdapter().setDrawViewHolder(new DataAdapter.DrawViewHolder<Placement>() {
+                getAdapter().setDrawViewHolder(new DataAdapter.DrawViewHolder<Movement>() {
                     @Override
-                    public void draw(DataAdapter.ItemViewHolder holder, Placement document) {
+                    public void draw(DataAdapter.ItemViewHolder holder, Movement document) {
 
                         ((TextView) holder.getTextViews().get(0)).setText("№ " + document.number + " от " + DateStr.FromYmdhmsToDmyhms(document.date));
                         ((TextView) holder.getTextViews().get(1)).setText(document.description);
-                        ((TextView) holder.getTextViews().get(2)).setText("Ячейка: " + document.cell + ", контейнер: " + document.container);
+                        ((TextView) holder.getTextViews().get(2)).setText("Из ячейки: " + document.cell
+                                + " в ячейку: " + document.cellDestination + ", контейнер: " + document.container);
                     }
                 });
 
@@ -113,7 +115,7 @@ public class MovementListFragment extends ListFragment<Placement> {
 
                         bundle.putString("record", new JSONArray(moversService.getObjectDescription()).toString());
 
-                        // navController.navigate(R.id.nav_movementFragment, bundle);
+                        navController.navigate(R.id.nav_movementFragment, bundle);
 
                     }
                 });

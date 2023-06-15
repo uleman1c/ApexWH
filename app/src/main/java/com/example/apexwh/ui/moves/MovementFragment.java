@@ -26,9 +26,9 @@ public class MovementFragment extends ScanShtrihcodeFragment {
         super(R.layout.fragment_scan_container_cell);
     }
 
-    private TextView tvCell, tvContent, tvContainer;
+    private TextView tvCell, tvContent, tvSource;
 
-    private String cellRef, containerRef;
+    private String cellRef, cellName, containerRef, containerName;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -40,7 +40,7 @@ public class MovementFragment extends ScanShtrihcodeFragment {
 
                 tvCell = root.findViewById(R.id.tvCell);
                 tvContent = root.findViewById(R.id.tvContent);
-                tvContainer = root.findViewById(R.id.tvContainer);
+                tvSource = root.findViewById(R.id.tvSource);
 
             }
         });
@@ -49,23 +49,43 @@ public class MovementFragment extends ScanShtrihcodeFragment {
             @Override
             public void setScanCode(String strCatName, int pos, int quantity) {
 
-                if (tvCell.getText().toString().isEmpty()){
+                if (tvSource.getText().toString().isEmpty()){
 
-                    RequestToServer.executeRequestUW(getContext(), Request.Method.GET, "getErpSkladCells", "filter=" + strCatName, new JSONObject(),
+                    RequestToServer.executeRequestUW(getContext(), Request.Method.GET, "getErpSkladCellsContainers", "filter=" + strCatName, new JSONObject(),
                             RequestToServer.TypeOfResponse.JsonObjectWithArray, response -> {
 
-                        JSONArray cells = JsonProcs.getJsonArrayFromJsonObject(response, "ErpSkladCells");
+                        JSONArray cells = JsonProcs.getJsonArrayFromJsonObject(response, "ErpSkladCellsContainers");
 
                         if (cells.length() == 1){
 
                             JSONObject cell = JsonProcs.getItemJSONArray(cells, 0);
 
-                            cellRef = JsonProcs.getStringFromJSON(cell, "ref");
-                            tvCell.setText(JsonProcs.getStringFromJSON(cell, "name"));
-                            tvContent.setText(JsonProcs.getStringFromJSON(cell, "container")
-                                    + ", " + JsonProcs.getStringFromJSON(cell, "product")
-                                    + ", " + JsonProcs.getIntegerFromJSON(cell, "quantity")
-                                    + " (" + JsonProcs.getIntegerFromJSON(cell, "placeQuantity") + ")" );
+                            String type = JsonProcs.getStringFromJSON(cell, "type");
+
+                            if (type.equals("Ячейка")){
+
+                                cellRef = JsonProcs.getStringFromJSON(cell, "ref");
+                                cellName = JsonProcs.getStringFromJSON(cell, "name");
+
+                                containerRef = JsonProcs.getStringFromJSON(cell, "containerCellRef");
+                                containerName = JsonProcs.getStringFromJSON(cell, "containerCell");
+
+                            } else {
+
+                                containerRef = JsonProcs.getStringFromJSON(cell, "ref");
+                                containerName = JsonProcs.getStringFromJSON(cell, "name");
+
+                                cellRef = JsonProcs.getStringFromJSON(cell, "containerCellRef");
+                                cellName = JsonProcs.getStringFromJSON(cell, "containerCell");
+
+
+                            }
+
+                            tvSource.setText("Ячейка: " + cellName + ", контейнер: " + containerName);
+//                            tvContent.setText(JsonProcs.getStringFromJSON(cell, "container")
+//                                    + ", " + JsonProcs.getStringFromJSON(cell, "product")
+//                                    + ", " + JsonProcs.getIntegerFromJSON(cell, "quantity")
+//                                    + " (" + JsonProcs.getIntegerFromJSON(cell, "placeQuantity") + ")" );
 
                         }
 
@@ -73,32 +93,34 @@ public class MovementFragment extends ScanShtrihcodeFragment {
 
                 } else {
 
-                    RequestToServer.executeRequestUW(getContext(), Request.Method.GET, "getErpSkladContainers", "filter=" + strCatName, new JSONObject(),
+                    RequestToServer.executeRequestUW(getContext(), Request.Method.GET, "getErpSkladCells", "filter=" + strCatName, new JSONObject(),
                             RequestToServer.TypeOfResponse.JsonObjectWithArray, response -> {
 
-                        JSONArray containers = JsonProcs.getJsonArrayFromJsonObject(response, "ErpSkladContainers");
+                        JSONArray containers = JsonProcs.getJsonArrayFromJsonObject(response, "ErpSkladCells");
 
                         if (containers.length() == 1){
 
                             JSONObject container = JsonProcs.getItemJSONArray(containers, 0);
 
-                            containerRef = JsonProcs.getStringFromJSON(container, "ref");
-                            tvContainer.setText(JsonProcs.getStringFromJSON(container, "name"));
+                            String cellDestinationRef = JsonProcs.getStringFromJSON(container, "ref");
+                            tvCell.setText(JsonProcs.getStringFromJSON(container, "name"));
 
                             Bundle args = new Bundle();
                             args.putString("cellRef", cellRef);
+                            args.putString("cellDestinationRef", cellDestinationRef);
                             args.putString("containerRef", containerRef);
-                            args.putString("containerName", tvContainer.getText().toString());
+                            args.putString("containerName", tvSource.getText().toString());
 
                             Dialogs.showQuestionYesNoCancel(getContext(), getActivity(), arguments -> {
 
                                 JSONObject jsonObject = new JSONObject();
                                 JsonProcs.putToJsonObject(jsonObject,"ref", UUID.randomUUID().toString());
                                 JsonProcs.putToJsonObject(jsonObject,"cellRef", arguments.getString("cellRef"));
+                                JsonProcs.putToJsonObject(jsonObject,"cellDestinationRef", arguments.getString("cellDestinationRef"));
                                 JsonProcs.putToJsonObject(jsonObject,"containerRef", arguments.getString("containerRef"));
                                 JsonProcs.putToJsonObject(jsonObject,"containerName", arguments.getString("containerName"));
 
-                                RequestToServer.executeRequestBodyUW(getContext(), Request.Method.POST, "setErpSkladPlacement", jsonObject,
+                                RequestToServer.executeRequestBodyUW(getContext(), Request.Method.POST, "setErpSkladMovement", jsonObject,
                                         RequestToServer.TypeOfResponse.JsonObject, response1 -> {
 
                                     if (!JsonProcs.getStringFromJSON(response1, "ref").isEmpty()){
@@ -110,7 +132,7 @@ public class MovementFragment extends ScanShtrihcodeFragment {
                                         });
 
 
-                            },  args, "Разместить контейнер " + tvContainer.getText().toString() + " в ячейку " + tvCell.getText().toString() + " ?", "Размещение");
+                            },  args, "Переместить контейнер " + containerName + " в ячейку " + tvCell.getText().toString() + " ?", "Перемещение");
 
                         }
 

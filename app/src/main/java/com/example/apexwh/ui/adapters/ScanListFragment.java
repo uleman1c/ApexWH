@@ -17,16 +17,13 @@ import androidx.navigation.Navigation;
 
 import com.example.apexwh.DB;
 import com.example.apexwh.R;
+import com.example.apexwh.ui.ShtrihCodeInput;
 
 public class ScanListFragment<T> extends ListFragment {
 
     protected String scanned;
 
-    protected EditText actvShtrihCode;
-    protected boolean shtrihCodeKeyboard = false, createdFromTsd = false;
-    protected TextView scannedText, tvBoxNumber, tvExchStatus;
-
-    Handler hSetFocus;
+    protected ShtrihCodeInput shtrihCodeInput;
 
 
     public ScanListFragment(int fragmentLayout, int itemLayout) {
@@ -51,20 +48,15 @@ public class ScanListFragment<T> extends ListFragment {
         recyclerView = root.findViewById(R.id.list);
         recyclerView.setAdapter(adapter);
 
-        super.setShtrihCodeIn
+        shtrihCodeInput = new ShtrihCodeInput(getActivity(), root, R.id.actvShtrihCode, R.id.ibKeyboard, new ShtrihCodeInput.AfterScanShtrih() {
+            @Override
+            public void Scan(String shtrihcode) {
 
-        imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                String s = "";
 
-        actvShtrihCode = root.findViewById(R.id.actvShtrihCode);
-        actvShtrihCode.requestFocus();
-
-        hSetFocus = new Handler();
-        Thread t = new Thread(new Runnable() {
-            public void run() {
-                hSetFocus.post(setFocus);
             }
         });
-        t.start();
+
 
 
 
@@ -111,22 +103,6 @@ public class ScanListFragment<T> extends ListFragment {
         return root;
     }
 
-
-    final Runnable setFocus = new Runnable() {
-        public void run() {
-
-            actvShtrihCode.requestFocus();
-
-            if (actvShtrihCode.isFocused() && !shtrihCodeKeyboard) {
-
-                imm.hideSoftInputFromWindow(actvShtrihCode.getWindowToken(), 0);
-
-            }
-
-            hSetFocus.postDelayed(setFocus, 500);
-
-        }
-    };
 
 
 

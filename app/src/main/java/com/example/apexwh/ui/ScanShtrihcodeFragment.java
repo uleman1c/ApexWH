@@ -187,6 +187,27 @@ public class ScanShtrihcodeFragment extends Fragment {
 
         ((TextView) root.findViewById(R.id.tvHeader)).setText(description);
 
+        setShtrihCodeInputs(root);
+
+        progressBar = root.findViewById(R.id.progressBar);
+
+        scannedText = root.findViewById(R.id.scannedText);
+
+        soundPlayer = new SoundPlayer(getContext(), R.raw.hrn05);
+        getActivity().setVolumeControlStream(soundPlayer.streamType);
+
+        if (onCreateViewElements != null) {
+
+            onCreateViewElements.execute(root);
+
+        }
+
+        //updateList();
+
+        return root;
+    }
+
+    protected void setShtrihCodeInputs(View root) {
         actvShtrihCode = root.findViewById(R.id.actvShtrihCode);
         actvShtrihCode.requestFocus();
 
@@ -198,14 +219,9 @@ public class ScanShtrihcodeFragment extends Fragment {
         });
         t.start();
 
-        scannedText = root.findViewById(R.id.scannedText);
-
         imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
 
         imm.hideSoftInputFromWindow(actvShtrihCode.getWindowToken(), 0);
-
-        soundPlayer = new SoundPlayer(getContext(), R.raw.hrn05);
-        getActivity().setVolumeControlStream(soundPlayer.streamType);
 
 
         actvShtrihCode.setOnKeyListener(new View.OnKeyListener() {
@@ -263,18 +279,6 @@ public class ScanShtrihcodeFragment extends Fragment {
 
             }
         });
-
-        progressBar = root.findViewById(R.id.progressBar);
-
-        if (onCreateViewElements != null) {
-
-            onCreateViewElements.execute(root);
-
-        }
-
-        //updateList();
-
-        return root;
     }
 
     private void showInputNumber(DocumentLine documentLine){

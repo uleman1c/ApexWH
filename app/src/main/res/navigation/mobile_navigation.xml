@@ -139,5 +139,13 @@
         android:id="@+id/movementListFragment"
         android:name="com.example.apexwh.ui.moves.MovementListFragment"
         android:label="Перемещения" />
+    <fragment
+        android:id="@+id/nav_productCellsListFragment"
+        android:name="com.example.apexwh.ui.product_cells.ProductCellsListFragment"
+        android:label="Где товар" />
+    <fragment
+        android:id="@+id/nav_cellContentListFragment"
+        android:name="com.example.apexwh.ui.cell_content.CellContentListFragment"
+        android:label="Что в ячейке" />
 
 </navigation>

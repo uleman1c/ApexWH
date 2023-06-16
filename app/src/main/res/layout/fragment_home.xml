@@ -194,6 +194,40 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/btnReturns" />
 
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4sp"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/btnProductCells"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="4sp"
+                    android:layout_weight="1"
+                    android:background="@drawable/back"
+                    android:padding="16sp"
+                    android:text="Где товар"
+                    android:textSize="24sp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/btnSettings" />
+
+                <Button
+                    android:id="@+id/btnCellContent"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@drawable/back"
+                    android:padding="16sp"
+                    android:text="Что в ячейке"
+                    android:textSize="24sp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/btnSettings" />
+            </LinearLayout>
+
             <Button
                 android:id="@+id/btnInvents"
                 android:layout_width="match_parent"

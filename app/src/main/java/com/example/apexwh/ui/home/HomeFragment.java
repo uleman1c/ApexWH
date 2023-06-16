@@ -181,6 +181,24 @@ public class HomeFragment extends Fragment {
             }
         });
 
+        binding.btnProductCells.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                navController.navigate(R.id.nav_productCellsListFragment, bundle);
+
+            }
+        });
+
+        binding.btnCellContent.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                navController.navigate(R.id.nav_cellContentListFragment, bundle);
+
+            }
+        });
+
 
         if(!DB.isSettingsExist(getContext())){
 

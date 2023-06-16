@@ -33,32 +33,32 @@ public class ListFragment<T> extends Fragment {
 
     }
 
-    private int fragmentLayout;
-    private int itemLayout;
+    protected int fragmentLayout;
+    protected int itemLayout;
 
-    private ProgressBar progressBar;
-    private ArrayList<T> items;
+    protected ProgressBar progressBar;
+    protected ArrayList<T> items;
 
     public DataAdapter getAdapter() {
         return adapter;
     }
 
-    private DataAdapter adapter;
-    private RecyclerView recyclerView;
-    private EditText etFilter;
-    private InputMethodManager imm;
+    protected DataAdapter adapter;
+    protected RecyclerView recyclerView;
+    protected EditText etFilter;
+    protected InputMethodManager imm;
 
     public String getWarehouseId() {
         return warehouseId;
     }
 
-    private String warehouseId;
+    protected String warehouseId;
 
     public void setListUpdater(ListUpdater listUpdater) {
         this.listUpdater = listUpdater;
     }
 
-    private ListUpdater listUpdater;
+    protected ListUpdater listUpdater;
 
     protected Bundle arguments;
 
@@ -85,7 +85,7 @@ public class ListFragment<T> extends Fragment {
         this.onCreateViewElements = onCreateViewElements;
     }
 
-    private OnCreateViewElements onCreateViewElements;
+    protected OnCreateViewElements onCreateViewElements;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,

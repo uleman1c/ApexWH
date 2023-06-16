@@ -18,6 +18,7 @@ import com.example.apexwh.objects.MoversService;
 import com.example.apexwh.objects.Placement;
 import com.example.apexwh.ui.adapters.DataAdapter;
 import com.example.apexwh.ui.adapters.ListFragment;
+import com.example.apexwh.ui.adapters.ScanListFragment;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -28,11 +29,11 @@ import java.util.GregorianCalendar;
 import java.util.TimeZone;
 import java.util.UUID;
 
-public class ProductCellsListFragment extends ListFragment<Placement> {
+public class ProductCellsListFragment extends ScanListFragment<Placement> {
 
     public ProductCellsListFragment() {
 
-        super(R.layout.fragment_filter_add_list, R.layout.movers_service_list_item);
+        super(R.layout.fragment_scan_list, R.layout.movers_service_list_item);
 
         setListUpdater(new ListUpdater() {
             @Override
@@ -94,31 +95,6 @@ public class ProductCellsListFragment extends ListFragment<Placement> {
                 getAdapter().setOnClickListener(document -> {});
 
                 getAdapter().setOnLongClickListener(document -> {});
-
-                root.findViewById(R.id.btnAdd).setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-
-                        Bundle bundle = new Bundle();
-
-                        TimeZone timeZone = TimeZone.getTimeZone("Europe/Moscow");
-
-                        Calendar calendar = new GregorianCalendar();
-                        calendar.roll(Calendar.HOUR_OF_DAY, timeZone.getRawOffset() / (3600 * 1000));
-
-                        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMddHHmmss");
-
-
-                        MoversService moversService = new MoversService(UUID.randomUUID().toString(), "",
-                                simpleDateFormat.format(calendar.getTime()),
-                                "", "", 0, 0.0, "", new ArrayList<>());
-
-                        bundle.putString("record", new JSONArray(moversService.getObjectDescription()).toString());
-
-                        navController.navigate(R.id.nav_movementFragment, bundle);
-
-                    }
-                });
 
 
 

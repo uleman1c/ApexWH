@@ -54,6 +54,8 @@ public class ProductCellsListFragment extends ScanListFragment<ProductCell> {
 
                                 JSONArray responseItems = JsonProcs.getJsonArrayFromJsonObject(response, "ErpSkladProductCells");
 
+                                tvProduct.setText(filter + " не найден");
+
                                 for (int j = 0; j < responseItems.length(); j++) {
 
                                     JSONObject objectItem = JsonProcs.getItemJSONArray(responseItems, j);

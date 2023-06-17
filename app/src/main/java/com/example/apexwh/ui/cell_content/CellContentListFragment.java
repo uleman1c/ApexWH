@@ -16,8 +16,11 @@ import com.example.apexwh.RequestToServer;
 import com.example.apexwh.objects.Movement;
 import com.example.apexwh.objects.MoversService;
 import com.example.apexwh.objects.Placement;
+import com.example.apexwh.objects.Product;
+import com.example.apexwh.objects.ProductCell;
 import com.example.apexwh.ui.adapters.DataAdapter;
 import com.example.apexwh.ui.adapters.ListFragment;
+import com.example.apexwh.ui.adapters.ScanListFragment;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -28,11 +31,13 @@ import java.util.GregorianCalendar;
 import java.util.TimeZone;
 import java.util.UUID;
 
-public class CellContentListFragment extends ListFragment<Placement> {
+public class CellContentListFragment extends ScanListFragment<ProductCell> {
+
+    TextView tvProduct;
 
     public CellContentListFragment() {
 
-        super(R.layout.fragment_filter_add_list, R.layout.movers_service_list_item);
+        super(R.layout.fragment_scan_cell_list, R.layout.product_cell_list_item);
 
         setListUpdater(new ListUpdater() {
             @Override
@@ -40,20 +45,38 @@ public class CellContentListFragment extends ListFragment<Placement> {
 
                 items.clear();
 
-                RequestToServer.executeRequestUW(getContext(), Request.Method.GET, "getErpSkladMovements", "filter=" + filter, new JSONObject(), 1,
+                RequestToServer.executeRequestUW(getContext(), Request.Method.GET, "getErpSkladCellContent", "filter=" + filter, new JSONObject(), 1,
                         new RequestToServer.ResponseResultInterface() {
                             @Override
                             public void onResponse(JSONObject response) {
 
                                 progressBar.setVisibility(View.GONE);
 
-                                JSONArray responseItems = JsonProcs.getJsonArrayFromJsonObject(response, "ErpSkladMovements");
+                                JSONArray responseItems = JsonProcs.getJsonArrayFromJsonObject(response, "ErpSkladCellContent");
+
+                                tvProduct.setText(filter + " не найден");
 
                                 for (int j = 0; j < responseItems.length(); j++) {
 
                                     JSONObject objectItem = JsonProcs.getItemJSONArray(responseItems, j);
 
-                                    items.add(Movement.FromJson(objectItem));
+                                    Product product = Product.FromJson(JsonProcs.getJsonObjectFromJsonObject(objectItem, "product"));
+
+                                    int productNumber = JsonProcs.getIntegerFromJSON(objectItem, "productNumber");
+                                    int productUnitNumber = JsonProcs.getIntegerFromJSON(objectItem, "productUnitNumber");
+                                    int containerNumber = JsonProcs.getIntegerFromJSON(objectItem, "containerNumber");
+
+                                    tvProduct.setText(product.artikul + " " + product.name + " " + productNumber + " шт (" + productUnitNumber + " упак) " + containerNumber + " конт");
+
+                                    JSONArray cells = JsonProcs.getJsonArrayFromJsonObject(objectItem, "cells");
+
+                                    for (int k = 0; k < cells.length(); k++) {
+
+                                        ProductCell productCell = ProductCell.FromJson(JsonProcs.getItemJSONArray(cells, k));
+
+                                        items.add(productCell);
+                                    }
+
 
                                 }
 
@@ -70,6 +93,8 @@ public class CellContentListFragment extends ListFragment<Placement> {
             @Override
             public void execute(View root, NavController navController) {
 
+                tvProduct = root.findViewById(R.id.tvProduct);
+
                 getAdapter().setInitViewsMaker(new DataAdapter.InitViewsMaker() {
                     @Override
                     public void init(View itemView, ArrayList<TextView> textViews) {
@@ -80,45 +105,19 @@ public class CellContentListFragment extends ListFragment<Placement> {
                     }
                 });
 
-                getAdapter().setDrawViewHolder(new DataAdapter.DrawViewHolder<Movement>() {
+                getAdapter().setDrawViewHolder(new DataAdapter.DrawViewHolder<ProductCell>() {
                     @Override
-                    public void draw(DataAdapter.ItemViewHolder holder, Movement document) {
+                    public void draw(DataAdapter.ItemViewHolder holder, ProductCell item) {
 
-                        ((TextView) holder.getTextViews().get(0)).setText("№ " + document.number + " от " + DateStr.FromYmdhmsToDmyhms(document.date));
-                        ((TextView) holder.getTextViews().get(1)).setText(document.description);
-                        ((TextView) holder.getTextViews().get(2)).setText("Из ячейки: " + document.cell
-                                + " в ячейку: " + document.cellDestination + ", контейнер: " + document.container);
+                        ((TextView) holder.getTextViews().get(0)).setText(item.cell.name);
+                        ((TextView) holder.getTextViews().get(1)).setText(item.container.name + " " + item.containerNumber + " шт");
+                        ((TextView) holder.getTextViews().get(2)).setText(item.productNumber + " шт (" + item.productUnitNumber + " упак)");
                     }
                 });
 
                 getAdapter().setOnClickListener(document -> {});
 
                 getAdapter().setOnLongClickListener(document -> {});
-
-                root.findViewById(R.id.btnAdd).setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-
-                        Bundle bundle = new Bundle();
-
-                        TimeZone timeZone = TimeZone.getTimeZone("Europe/Moscow");
-
-                        Calendar calendar = new GregorianCalendar();
-                        calendar.roll(Calendar.HOUR_OF_DAY, timeZone.getRawOffset() / (3600 * 1000));
-
-                        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMddHHmmss");
-
-
-                        MoversService moversService = new MoversService(UUID.randomUUID().toString(), "",
-                                simpleDateFormat.format(calendar.getTime()),
-                                "", "", 0, 0.0, "", new ArrayList<>());
-
-                        bundle.putString("record", new JSONArray(moversService.getObjectDescription()).toString());
-
-                        navController.navigate(R.id.nav_movementFragment, bundle);
-
-                    }
-                });
 
 
 

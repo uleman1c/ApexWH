@@ -16,6 +16,7 @@ import com.example.apexwh.RequestToServer;
 import com.example.apexwh.objects.Movement;
 import com.example.apexwh.objects.MoversService;
 import com.example.apexwh.objects.Placement;
+import com.example.apexwh.objects.Product;
 import com.example.apexwh.objects.ProductCell;
 import com.example.apexwh.ui.adapters.DataAdapter;
 import com.example.apexwh.ui.adapters.ListFragment;
@@ -57,11 +58,22 @@ public class ProductCellsListFragment extends ScanListFragment<ProductCell> {
 
                                     JSONObject objectItem = JsonProcs.getItemJSONArray(responseItems, j);
 
-                                    ProductCell productCell = ProductCell.FromJson(objectItem);
+                                    Product product = Product.FromJson(JsonProcs.getJsonObjectFromJsonObject(objectItem, "product"));
 
-                                    items.add(productCell);
+                                    int productNumber = JsonProcs.getIntegerFromJSON(objectItem, "productNumber");
+                                    int productUnitNumber = JsonProcs.getIntegerFromJSON(objectItem, "productUnitNumber");
+                                    int containerNumber = JsonProcs.getIntegerFromJSON(objectItem, "containerNumber");
 
-                                    tvProduct.setText(productCell.product.artikul + " " + productCell.product.name);
+                                    tvProduct.setText(product.artikul + " " + product.name + " " + productNumber + " шт (" + productUnitNumber + " упак) " + containerNumber + " конт");
+
+                                    JSONArray cells = JsonProcs.getJsonArrayFromJsonObject(objectItem, "cells");
+
+                                    for (int k = 0; k < cells.length(); k++) {
+
+                                        ProductCell productCell = ProductCell.FromJson(JsonProcs.getItemJSONArray(cells, k));
+
+                                        items.add(productCell);
+                                    }
 
 
                                 }
@@ -96,7 +108,7 @@ public class ProductCellsListFragment extends ScanListFragment<ProductCell> {
                     public void draw(DataAdapter.ItemViewHolder holder, ProductCell item) {
 
                         ((TextView) holder.getTextViews().get(0)).setText(item.cell.name);
-                        ((TextView) holder.getTextViews().get(1)).setText(item.container.name);
+                        ((TextView) holder.getTextViews().get(1)).setText(item.container.name + " " + item.containerNumber + " шт");
                         ((TextView) holder.getTextViews().get(2)).setText(item.productNumber + " шт (" + item.productUnitNumber + " упак)");
                     }
                 });

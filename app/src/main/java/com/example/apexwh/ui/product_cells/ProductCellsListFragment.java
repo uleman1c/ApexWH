@@ -16,6 +16,7 @@ import com.example.apexwh.RequestToServer;
 import com.example.apexwh.objects.Movement;
 import com.example.apexwh.objects.MoversService;
 import com.example.apexwh.objects.Placement;
+import com.example.apexwh.objects.ProductCell;
 import com.example.apexwh.ui.adapters.DataAdapter;
 import com.example.apexwh.ui.adapters.ListFragment;
 import com.example.apexwh.ui.adapters.ScanListFragment;
@@ -29,11 +30,13 @@ import java.util.GregorianCalendar;
 import java.util.TimeZone;
 import java.util.UUID;
 
-public class ProductCellsListFragment extends ScanListFragment<Placement> {
+public class ProductCellsListFragment extends ScanListFragment<ProductCell> {
+
+    TextView tvProduct;
 
     public ProductCellsListFragment() {
 
-        super(R.layout.fragment_scan_list, R.layout.movers_service_list_item);
+        super(R.layout.fragment_scan_list, R.layout.product_cell_list_item);
 
         setListUpdater(new ListUpdater() {
             @Override
@@ -41,20 +44,25 @@ public class ProductCellsListFragment extends ScanListFragment<Placement> {
 
                 items.clear();
 
-                RequestToServer.executeRequestUW(getContext(), Request.Method.GET, "getErpSkladMovements", "filter=" + filter, new JSONObject(), 1,
+                RequestToServer.executeRequestUW(getContext(), Request.Method.GET, "getErpSkladProductCells", "filter=" + filter, new JSONObject(), 1,
                         new RequestToServer.ResponseResultInterface() {
                             @Override
                             public void onResponse(JSONObject response) {
 
                                 progressBar.setVisibility(View.GONE);
 
-                                JSONArray responseItems = JsonProcs.getJsonArrayFromJsonObject(response, "ErpSkladMovements");
+                                JSONArray responseItems = JsonProcs.getJsonArrayFromJsonObject(response, "ErpSkladProductCells");
 
                                 for (int j = 0; j < responseItems.length(); j++) {
 
                                     JSONObject objectItem = JsonProcs.getItemJSONArray(responseItems, j);
 
-                                    items.add(Movement.FromJson(objectItem));
+                                    ProductCell productCell = ProductCell.FromJson(objectItem);
+
+                                    items.add(productCell);
+
+                                    tvProduct.setText(productCell.product.artikul + " " + productCell.product.name);
+
 
                                 }
 
@@ -71,6 +79,8 @@ public class ProductCellsListFragment extends ScanListFragment<Placement> {
             @Override
             public void execute(View root, NavController navController) {
 
+                tvProduct = root.findViewById(R.id.tvProduct);
+
                 getAdapter().setInitViewsMaker(new DataAdapter.InitViewsMaker() {
                     @Override
                     public void init(View itemView, ArrayList<TextView> textViews) {
@@ -81,14 +91,13 @@ public class ProductCellsListFragment extends ScanListFragment<Placement> {
                     }
                 });
 
-                getAdapter().setDrawViewHolder(new DataAdapter.DrawViewHolder<Movement>() {
+                getAdapter().setDrawViewHolder(new DataAdapter.DrawViewHolder<ProductCell>() {
                     @Override
-                    public void draw(DataAdapter.ItemViewHolder holder, Movement document) {
+                    public void draw(DataAdapter.ItemViewHolder holder, ProductCell item) {
 
-                        ((TextView) holder.getTextViews().get(0)).setText("№ " + document.number + " от " + DateStr.FromYmdhmsToDmyhms(document.date));
-                        ((TextView) holder.getTextViews().get(1)).setText(document.description);
-                        ((TextView) holder.getTextViews().get(2)).setText("Из ячейки: " + document.cell
-                                + " в ячейку: " + document.cellDestination + ", контейнер: " + document.container);
+                        ((TextView) holder.getTextViews().get(0)).setText(item.cell.name);
+                        ((TextView) holder.getTextViews().get(1)).setText(item.container.name);
+                        ((TextView) holder.getTextViews().get(2)).setText(item.productNumber + " шт (" + item.productUnitNumber + " упак)");
                     }
                 });
 

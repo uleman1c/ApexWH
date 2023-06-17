@@ -52,7 +52,7 @@ public class ScanListFragment<T> extends ListFragment {
             @Override
             public void Scan(String shtrihcode) {
 
-                String s = "";
+                updateList(shtrihcode);
 
             }
         });

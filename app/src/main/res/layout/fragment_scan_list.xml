@@ -96,7 +96,7 @@ tools:context=".ui.products.ProductsFragment">
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="32sp"
+                android:layout_margin="4sp"
                 android:background="@drawable/back"
                 android:orientation="vertical"
                 android:padding="12sp">
@@ -105,15 +105,15 @@ tools:context=".ui.products.ProductsFragment">
                     android:id="@+id/textView5"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Источник"
+                    android:text="Номенклатура"
                     android:textSize="24sp"
                     android:textStyle="bold" />
 
                 <TextView
-                    android:id="@+id/tvSource"
+                    android:id="@+id/tvProduct"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="32sp"
+                    android:layout_marginTop="4sp"
                     android:gravity="center"
                     android:text=""
                     android:textSize="20sp" />

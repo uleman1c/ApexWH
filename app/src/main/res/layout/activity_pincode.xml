@@ -1,161 +1,220 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_gravity="center"
+    android:layout_gravity="right"
     android:background="@color/white"
     tools:context=".PincodeActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:gravity="center"
         android:orientation="vertical">
 
-        <LinearLayout
-            android:id="@+id/llMain"
+        <ImageButton
+            android:id="@+id/ibShtrih"
+            android:layout_width="100sp"
+            android:layout_height="100sp"
+            android:layout_gravity="right"
+            android:layout_marginRight="10sp"
+            android:layout_marginBottom="80sp"
+            android:background="@drawable/back"
+            android:scaleType="fitXY"
+            app:srcCompat="@drawable/shtrih2" />
+
+        <TextView
+            android:id="@+id/textView2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="16sp"
-            android:scrollbarAlwaysDrawHorizontalTrack="false">
+            android:gravity="center"
+            android:text="Введите код" />
 
-            <TextView
-                android:id="@+id/textView3"
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:id="@+id/llShtrih"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:text="Введите код" />
+                android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/tvPincode"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:paddingTop="32sp"
-                android:password="true"
-                android:textSize="34sp" />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <Button
-                    android:id="@+id/button1"
-                    android:layout_width="wrap_content"
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="1" />
+                    android:orientation="horizontal">
 
-                <Button
-                    android:id="@+id/button2"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="8sp"
-                    android:layout_marginEnd="8sp"
-                    android:layout_weight="1"
-                    android:text="2" />
+                    <EditText
+                        android:id="@+id/actvShtrihCode"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:ems="10"
+                        android:focusable="true"
+                        android:focusableInTouchMode="true"
+                        android:focusedByDefault="true"
+                        android:hint="Штрихкод"
+                        android:inputType="textPersonName"
+                        android:text=""
+                        android:textSize="16dp" />
 
-                <Button
-                    android:id="@+id/button3"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="3" />
+                    <ImageButton
+                        android:id="@+id/ibKeyboard"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0.1"
+                        android:adjustViewBounds="false"
+                        android:baselineAlignBottom="false"
+                        android:clickable="false"
+                        app:srcCompat="@drawable/ic_keyboard_black_24dp" />
+
+                </LinearLayout>
+
+
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/llMain"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:orientation="vertical"
+                android:padding="16sp"
+                android:scrollbarAlwaysDrawHorizontalTrack="false">
 
-                <Button
-                    android:id="@+id/button4"
-                    android:layout_width="wrap_content"
+                <TextView
+                    android:id="@+id/tvPincode"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="4" />
+                    android:gravity="center"
+                    android:paddingTop="32sp"
+                    android:password="true"
+                    android:textSize="34sp" />
 
-                <Button
-                    android:id="@+id/button5"
-                    android:layout_width="wrap_content"
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="8sp"
-                    android:layout_marginEnd="8sp"
-                    android:layout_weight="1"
-                    android:text="5" />
+                    android:orientation="horizontal">
 
-                <Button
-                    android:id="@+id/button6"
-                    android:layout_width="wrap_content"
+                    <Button
+                        android:id="@+id/button1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="1" />
+
+                    <Button
+                        android:id="@+id/button2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8sp"
+                        android:layout_marginEnd="8sp"
+                        android:layout_weight="1"
+                        android:text="2" />
+
+                    <Button
+                        android:id="@+id/button3"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="3" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="6" />
-            </LinearLayout>
+                    android:orientation="horizontal">
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                    <Button
+                        android:id="@+id/button4"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="4" />
 
-                <Button
-                    android:id="@+id/button7"
-                    android:layout_width="wrap_content"
+                    <Button
+                        android:id="@+id/button5"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8sp"
+                        android:layout_marginEnd="8sp"
+                        android:layout_weight="1"
+                        android:text="5" />
+
+                    <Button
+                        android:id="@+id/button6"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="6" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="7" />
+                    android:orientation="horizontal">
 
-                <Button
-                    android:id="@+id/button8"
-                    android:layout_width="wrap_content"
+                    <Button
+                        android:id="@+id/button7"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="7" />
+
+                    <Button
+                        android:id="@+id/button8"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8sp"
+                        android:layout_marginEnd="8sp"
+                        android:layout_weight="1"
+                        android:text="8" />
+
+                    <Button
+                        android:id="@+id/button9"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="9" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="8sp"
-                    android:layout_marginEnd="8sp"
-                    android:layout_weight="1"
-                    android:text="8" />
+                    android:orientation="horizontal">
 
-                <Button
-                    android:id="@+id/button9"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="9" />
-            </LinearLayout>
+                    <Button
+                        android:id="@+id/buttonBack"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Назад"
+                        android:textStyle="bold" />
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                    <Button
+                        android:id="@+id/button0"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8sp"
+                        android:layout_marginEnd="8sp"
+                        android:layout_weight="1"
+                        android:text="0" />
 
-                <Button
-                    android:id="@+id/buttonBack"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="Назад"
-                    android:textStyle="bold" />
+                    <Button
+                        android:id="@+id/buttonEnter"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Вход"
+                        android:textStyle="bold" />
 
-                <Button
-                    android:id="@+id/button0"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="8sp"
-                    android:layout_marginEnd="8sp"
-                    android:layout_weight="1"
-                    android:text="0" />
-
-                <Button
-                    android:id="@+id/buttonEnter"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="Вход"
-                    android:textStyle="bold" />
-
+                </LinearLayout>
             </LinearLayout>
         </LinearLayout>
+
     </LinearLayout>
 
 </FrameLayout>

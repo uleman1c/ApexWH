@@ -27,6 +27,7 @@ import com.example.apexwh.MainActivity;
 import com.example.apexwh.R;
 import com.example.apexwh.RequestToServer;
 import com.example.apexwh.databinding.ActivityPincodeBinding;
+import com.example.apexwh.ui.ShtrihCodeInput;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -125,12 +126,42 @@ public class PincodeActivity extends AppCompatActivity {
 
     private TextView tvPincode;
 
+    protected ShtrihCodeInput shtrihCodeInput;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         binding = ActivityPincodeBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+
+        binding.llShtrih.setVisibility(View.GONE);
+
+        shtrihCodeInput = new ShtrihCodeInput(this, binding.getRoot(), R.id.actvShtrihCode, R.id.ibKeyboard, new ShtrihCodeInput.AfterScanShtrih() {
+            @Override
+            public void Scan(String shtrihcode) {
+
+                String pinCode = shtrihcode;
+
+                if (!pinCode.isEmpty()){
+                    testPincode(pinCode);
+                }
+
+
+            }
+        });
+
+
+        binding.ibShtrih.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                binding.llMain.setVisibility(binding.llMain.getVisibility() == View.VISIBLE ? View.GONE : View.VISIBLE);
+                binding.llShtrih.setVisibility(binding.llShtrih.getVisibility() == View.VISIBLE ? View.GONE : View.VISIBLE);
+
+                shtrihCodeInput.shtrihCodeKeyboard = false;
+            }
+        });
 
         tvPincode = binding.tvPincode;
 

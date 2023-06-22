@@ -41,6 +41,56 @@ public class TakementFragment extends ScanShtrihcodeFragment {
                 tvCell = root.findViewById(R.id.tvCell);
                 tvContent = root.findViewById(R.id.tvContent);
                 tvContainer = root.findViewById(R.id.tvContainer);
+                root.findViewById(R.id.btntake).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+
+                        RequestToServer.executeRequestUW(getContext(), Request.Method.GET, "getErpSkladContainers", "filter=" + containerRef, new JSONObject(),
+                                RequestToServer.TypeOfResponse.JsonObjectWithArray, response -> {
+
+                                    JSONArray containers = JsonProcs.getJsonArrayFromJsonObject(response, "ErpSkladContainers");
+
+                                    if (containers.length() == 1){
+
+                                        JSONObject container = JsonProcs.getItemJSONArray(containers, 0);
+
+                                        containerRef = JsonProcs.getStringFromJSON(container, "ref");
+                                        tvContainer.setText(JsonProcs.getStringFromJSON(container, "name"));
+
+                                        Bundle args = new Bundle();
+                                        args.putString("cellRef", cellRef);
+                                        args.putString("containerRef", containerRef);
+                                        args.putString("containerName", tvContainer.getText().toString());
+
+                                        Dialogs.showQuestionYesNoCancel(getContext(), getActivity(), arguments -> {
+
+                                            JSONObject jsonObject = new JSONObject();
+                                            JsonProcs.putToJsonObject(jsonObject,"ref", UUID.randomUUID().toString());
+                                            JsonProcs.putToJsonObject(jsonObject,"cellRef", arguments.getString("cellRef"));
+                                            JsonProcs.putToJsonObject(jsonObject,"containerRef", arguments.getString("containerRef"));
+                                            JsonProcs.putToJsonObject(jsonObject,"containerName", arguments.getString("containerName"));
+
+                                            RequestToServer.executeRequestBodyUW(getContext(), Request.Method.POST, "setErpSkladTakement", jsonObject,
+                                                    RequestToServer.TypeOfResponse.JsonObject, response1 -> {
+
+                                                        if (!JsonProcs.getStringFromJSON(response1, "ref").isEmpty()){
+                                                            navController.popBackStack();
+                                                        }
+
+
+
+                                                    });
+
+
+                                        },  args, "Взять контейнер " + tvContainer.getText().toString() + " из ячейки " + tvCell.getText().toString() + " ?", "Взятие");
+
+                                    }
+
+                                });
+
+
+                    }
+                });
 
             }
         });
@@ -62,7 +112,10 @@ public class TakementFragment extends ScanShtrihcodeFragment {
 
                             cellRef = JsonProcs.getStringFromJSON(cell, "ref");
                             tvCell.setText(JsonProcs.getStringFromJSON(cell, "name"));
-                            tvContent.setText(JsonProcs.getStringFromJSON(cell, "container")
+
+                            containerRef = JsonProcs.getStringFromJSON(cell, "container");
+
+                            tvContent.setText(containerRef
                                 + ", " + JsonProcs.getStringFromJSON(cell, "product")
                                 + ", " + JsonProcs.getIntegerFromJSON(cell, "quantity")
                                 + " (" + JsonProcs.getIntegerFromJSON(cell, "placeQuantity") + ")" );
@@ -124,5 +177,7 @@ public class TakementFragment extends ScanShtrihcodeFragment {
 
             }
         });
+
+
     }
 }

@@ -128,10 +128,12 @@ tools:context=".ui.products.ProductsFragment">
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/llContainer"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="32sp"
                 android:background="@drawable/back"
+                android:clickable="true"
                 android:orientation="vertical"
                 android:padding="12sp">
 

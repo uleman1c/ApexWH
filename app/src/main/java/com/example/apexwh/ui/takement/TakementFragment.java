@@ -23,7 +23,7 @@ public class TakementFragment extends ScanShtrihcodeFragment {
 
 
     public TakementFragment() {
-        super(R.layout.fragment_scan_cell_container);
+        super(R.layout.fragment_scan_cell_container_take);
     }
 
     private TextView tvCell, tvContent, tvContainer;
@@ -41,7 +41,7 @@ public class TakementFragment extends ScanShtrihcodeFragment {
                 tvCell = root.findViewById(R.id.tvCell);
                 tvContent = root.findViewById(R.id.tvContent);
                 tvContainer = root.findViewById(R.id.tvContainer);
-                root.findViewById(R.id.btntake).setOnClickListener(new View.OnClickListener() {
+                root.findViewById(R.id.llContainer).setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
 

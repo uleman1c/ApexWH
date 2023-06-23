@@ -160,6 +160,17 @@ public class PincodeActivity extends AppCompatActivity {
                 binding.llShtrih.setVisibility(binding.llShtrih.getVisibility() == View.VISIBLE ? View.GONE : View.VISIBLE);
 
                 shtrihCodeInput.shtrihCodeKeyboard = false;
+
+                if(binding.llShtrih.getVisibility() == View.VISIBLE){
+
+                    binding.ibShtrih.setImageResource(R.drawable.telephone_keypad);
+
+                } else {
+
+                    binding.ibShtrih.setImageResource(R.drawable.shtrih2);
+
+                }
+
             }
         });
 

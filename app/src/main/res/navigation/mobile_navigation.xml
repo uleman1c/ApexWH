@@ -120,7 +120,7 @@
     <fragment
         android:id="@+id/nav_takementListFragment"
         android:name="com.example.apexwh.ui.takement.TakementListFragment"
-        android:label="Взятия"
+        android:label="Взятия контейнера целиком"
         tools:layout="@layout/fragment_takement_list" />
     <fragment
         android:id="@+id/nav_placementFragment"
@@ -130,7 +130,7 @@
     <fragment
         android:id="@+id/nav_takementFragment"
         android:name="com.example.apexwh.ui.takement.TakementFragment"
-        android:label="Взятие" />
+        android:label="Взять целый контейнер" />
     <fragment
         android:id="@+id/nav_movementFragment"
         android:name="com.example.apexwh.ui.moves.MovementFragment"
@@ -147,5 +147,10 @@
         android:id="@+id/nav_cellContentListFragment"
         android:name="com.example.apexwh.ui.cell_content.CellContentListFragment"
         android:label="Что в ячейке" />
+    <fragment
+        android:id="@+id/nav_takementMenuFragment"
+        android:name="com.example.apexwh.ui.takement.TakementMenuFragment"
+        android:label="Взять из ячейки"
+        tools:layout="@layout/fragment_takement_menu" />
 
 </navigation>

@@ -115,7 +115,7 @@ public class ProductTakementFragment extends ScanListFragment<ProductCell> {
                                             JsonProcs.putToJsonObject(jsonObject,"containerRef", arguments.getString("containerRef"));
                                             JsonProcs.putToJsonObject(jsonObject,"containerName", arguments.getString("containerName"));
 
-//                                            RequestToServer.executeRequestBodyUW(getContext(), Request.Method.POST, "setErpSkladPlacement", jsonObject,
+//                                            RequestToServer.executeRequestBodyUW(getContext(), Request.Method.POST, "setErpSkladTakement", jsonObject,
 //                                                    RequestToServer.TypeOfResponse.JsonObject, response1 -> {
 //
 //                                                        if (!JsonProcs.getStringFromJSON(response1, "ref").isEmpty()){
@@ -127,44 +127,57 @@ public class ProductTakementFragment extends ScanListFragment<ProductCell> {
 //                                                    });
 
 
-                                        },  args, "Разместить контейнер " + sourceContainer.name + " в ячейку " + cell.name + " ?", "Размещение");
+                                        },  args, "Взять контейнер " + sourceContainer.name + " в ячейку " + cell.name + " ?", "Взятие");
 
                                     } else {
 
                                         Product product = Product.FromJson(container);
 
-                                        args.putString("productRef", product.ref);
+                                        int curQuantity = 0;
+                                        for (int i = 0; i < items.size(); i++) {
 
-                                        Dialogs.showInputQuantity(getContext(), null, getActivity(), arguments -> {
+                                            ProductCell cp = ((ProductCell) items.get(i));
 
-                                                    JSONObject jsonObject = new JSONObject();
-                                                    JsonProcs.putToJsonObject(jsonObject,"ref", UUID.randomUUID().toString());
-                                                    JsonProcs.putToJsonObject(jsonObject,"cellRef", arguments.getString("cellRef"));
-                                                    JsonProcs.putToJsonObject(jsonObject,"productRef", arguments.getString("productRef"));
-                                                    JsonProcs.putToJsonObject(jsonObject,"quantity", arguments.getInt("quantity"));
-
-                                                    RequestToServer.executeRequestBodyUW(getContext(), Request.Method.POST, "setErpSkladPlacement", jsonObject,
-                                                            RequestToServer.TypeOfResponse.JsonObject, response1 -> {
-
-                                                                if (!JsonProcs.getStringFromJSON(response1, "ref").isEmpty()){
-
-                                                                    String cfilter = cell.name;
-
-                                                                    cell = null;
-
-                                                                    update(items, progressBar, adapter, cfilter);
-
-                                                                }
+                                            if (cp.product.ref.equals(product.ref)){
+                                                curQuantity = cp.productNumber;
+                                            }
 
 
 
-                                                            });
+                                        }
+
+                                        if (curQuantity > 0) {
+
+                                            args.putString("productRef", product.ref);
+
+                                            Dialogs.showInputQuantity(getContext(), curQuantity, getActivity(), arguments -> {
+
+                                                        JSONObject jsonObject = new JSONObject();
+                                                        JsonProcs.putToJsonObject(jsonObject, "ref", UUID.randomUUID().toString());
+                                                        JsonProcs.putToJsonObject(jsonObject, "cellRef", arguments.getString("cellRef"));
+                                                        JsonProcs.putToJsonObject(jsonObject, "productRef", arguments.getString("productRef"));
+                                                        JsonProcs.putToJsonObject(jsonObject, "quantity", arguments.getInt("quantity"));
+
+                                                        RequestToServer.executeRequestBodyUW(getContext(), Request.Method.POST, "setErpSkladTakement", jsonObject,
+                                                                RequestToServer.TypeOfResponse.JsonObject, response1 -> {
+
+                                                                    if (!JsonProcs.getStringFromJSON(response1, "ref").isEmpty()) {
+
+                                                                        String cfilter = cell.name;
+
+                                                                        cell = null;
+
+                                                                        update(items, progressBar, adapter, cfilter);
+
+                                                                    }
 
 
+                                                                });
 
-                                                },
-                                                args, "Ввести вручную " + product.name + " ?", "Ввод количества");
 
+                                                    },
+                                                    args, "Ввести вручную " + product.name + " ?", "Ввод количества");
+                                        }
 
                                     }
 

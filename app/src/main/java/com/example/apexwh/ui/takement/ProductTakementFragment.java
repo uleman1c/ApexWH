@@ -1,4 +1,4 @@
-package com.example.apexwh.ui.placement;
+package com.example.apexwh.ui.takement;
 
 import android.os.Bundle;
 import android.view.View;
@@ -6,7 +6,6 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
 
 import com.android.volley.Request;
 import com.example.apexwh.JsonProcs;
@@ -26,14 +25,14 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.UUID;
 
-public class ProductPlacementFragment extends ScanListFragment<ProductCell> {
+public class ProductTakementFragment extends ScanListFragment<ProductCell> {
 
     TextView tvProduct;
 
     Cell cell;
     int productNumber, productUnitNumber, containerNumber;
 
-    public ProductPlacementFragment() {
+    public ProductTakementFragment() {
 
         super(R.layout.fragment_scan_cell_list, R.layout.product_cell_list_item);
 

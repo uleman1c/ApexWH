@@ -87,6 +87,16 @@ public class TakementMenuFragment extends Fragment {
             }
         });
 
+        inflate.findViewById(R.id.btnProductTakement).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                navController.navigate(R.id.nav_productTakementFragment, new Bundle());
+
+
+            }
+        });
+
         return inflate;
     }
 }

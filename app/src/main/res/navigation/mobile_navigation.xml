@@ -165,5 +165,9 @@
         android:id="@+id/nav_productTakementFragment"
         android:name="com.example.apexwh.ui.takement.ProductTakementFragment"
         android:label="Взять номенклатуру из ячейки" />
+    <fragment
+        android:id="@+id/nav_productPlacementListFragment"
+        android:name="com.example.apexwh.ui.placement.ProductPlacementListFragment"
+        android:label="Размещения номенклатуры в ячейке" />
 
 </navigation>

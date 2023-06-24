@@ -87,6 +87,15 @@ public class PlacementMenuFragment extends Fragment {
             }
         });
 
+        inflate.findViewById(R.id.btnProductPlacement).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                navController.navigate(R.id.nav_productPlacementFragment, new Bundle());
+
+
+            }
+        });
 
         return inflate;
     }

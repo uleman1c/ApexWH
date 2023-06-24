@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.takement.TakementMenuFragment">
+    tools:context=".ui.placement.PlacementMenuFragment">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -17,7 +16,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="12sp"
             android:gravity="center"
-            android:text="Взять из ячейки"
+            android:text="Разместить в ячейке"
             android:textSize="24sp" />
 
         <LinearLayout
@@ -27,7 +26,7 @@
             android:orientation="horizontal">
 
             <Button
-                android:id="@+id/btnContainerTakement"
+                android:id="@+id/btnContainerPlacement"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="6sp"
@@ -38,7 +37,7 @@
                 android:textSize="24sp" />
 
             <Button
-                android:id="@+id/btnContainerTakementList"
+                android:id="@+id/btnContainerPlacementList"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_margin="6sp"
@@ -57,7 +56,7 @@
             android:orientation="horizontal">
 
             <Button
-                android:id="@+id/btnProductTakement"
+                android:id="@+id/btnProductPlacement"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="6sp"
@@ -68,7 +67,7 @@
                 android:textSize="24sp" />
 
             <Button
-                android:id="@+id/btnProductTakementList"
+                android:id="@+id/btnProductPlacementList"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_margin="6sp"
@@ -81,5 +80,6 @@
 
 
     </LinearLayout>
+
 
 </FrameLayout>

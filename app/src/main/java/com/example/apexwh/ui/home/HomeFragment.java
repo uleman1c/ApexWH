@@ -158,7 +158,7 @@ public class HomeFragment extends Fragment {
             @Override
             public void onClick(View view) {
 
-                navController.navigate(R.id.nav_placementListFragment, bundle);
+                navController.navigate(R.id.nav_placementMenuFragment, bundle);
 
             }
         });

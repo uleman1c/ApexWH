@@ -115,7 +115,7 @@
     <fragment
         android:id="@+id/nav_placementListFragment"
         android:name="com.example.apexwh.ui.placement.PlacementListFragment"
-        android:label="Размещения"
+        android:label="Размещения контейнера целиком"
         tools:layout="@layout/fragment_placement_list" />
     <fragment
         android:id="@+id/nav_takementListFragment"
@@ -125,7 +125,7 @@
     <fragment
         android:id="@+id/nav_placementFragment"
         android:name="com.example.apexwh.ui.placement.PlacementFragment"
-        android:label="Размещение"
+        android:label="Размещение контейнера целиком"
         tools:layout="@layout/fragment_placement" />
     <fragment
         android:id="@+id/nav_takementFragment"
@@ -152,5 +152,10 @@
         android:name="com.example.apexwh.ui.takement.TakementMenuFragment"
         android:label="Взять из ячейки"
         tools:layout="@layout/fragment_takement_menu" />
+    <fragment
+        android:id="@+id/nav_placementMenuFragment"
+        android:name="com.example.apexwh.ui.placement.PlacementMenuFragment"
+        android:label="Разместить в ячейке"
+        tools:layout="@layout/fragment_placement_menu" />
 
 </navigation>

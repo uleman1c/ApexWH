@@ -219,7 +219,11 @@ public class ProductTakementFragment extends ScanListFragment<ProductCell> {
                     }
                 });
 
-                getAdapter().setOnClickListener(document -> {});
+                getAdapter().setOnClickListener(document -> {
+
+                    listUpdater.update(items, progressBar, adapter, ((ProductCell) document).product.artikul);
+
+                });
 
                 getAdapter().setOnLongClickListener(document -> {});
 

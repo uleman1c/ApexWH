@@ -148,7 +148,14 @@ public class ProductPlacementFragment extends ScanListFragment<ProductCell> {
                                                             RequestToServer.TypeOfResponse.JsonObject, response1 -> {
 
                                                                 if (!JsonProcs.getStringFromJSON(response1, "ref").isEmpty()){
-                                                                    Navigation.findNavController(getActivity(), R.id.nav_host_fragment_content_main).popBackStack();
+
+                                                                    String cfilter = cell.name;
+
+                                                                    cell = null;
+
+                                                                    update(items, progressBar, adapter, cfilter);
+
+                                                                    //Navigation.findNavController(getActivity(), R.id.nav_host_fragment_content_main).popBackStack();
                                                                 }
 
 

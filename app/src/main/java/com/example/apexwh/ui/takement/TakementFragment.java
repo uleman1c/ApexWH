@@ -45,49 +45,10 @@ public class TakementFragment extends ScanShtrihcodeFragment {
                     @Override
                     public void onClick(View view) {
 
-                        RequestToServer.executeRequestUW(getContext(), Request.Method.GET, "getErpSkladContainers", "filter=" + containerRef, new JSONObject(),
-                                RequestToServer.TypeOfResponse.JsonObjectWithArray, response -> {
+                        if (!containerRef.isEmpty()) {
 
-                                    JSONArray containers = JsonProcs.getJsonArrayFromJsonObject(response, "ErpSkladContainers");
-
-                                    if (containers.length() == 1){
-
-                                        JSONObject container = JsonProcs.getItemJSONArray(containers, 0);
-
-                                        containerRef = JsonProcs.getStringFromJSON(container, "ref");
-                                        tvContainer.setText(JsonProcs.getStringFromJSON(container, "name"));
-
-                                        Bundle args = new Bundle();
-                                        args.putString("cellRef", cellRef);
-                                        args.putString("containerRef", containerRef);
-                                        args.putString("containerName", tvContainer.getText().toString());
-
-                                        Dialogs.showQuestionYesNoCancel(getContext(), getActivity(), arguments -> {
-
-                                            JSONObject jsonObject = new JSONObject();
-                                            JsonProcs.putToJsonObject(jsonObject,"ref", UUID.randomUUID().toString());
-                                            JsonProcs.putToJsonObject(jsonObject,"cellRef", arguments.getString("cellRef"));
-                                            JsonProcs.putToJsonObject(jsonObject,"containerRef", arguments.getString("containerRef"));
-                                            JsonProcs.putToJsonObject(jsonObject,"containerName", arguments.getString("containerName"));
-
-                                            RequestToServer.executeRequestBodyUW(getContext(), Request.Method.POST, "setErpSkladTakement", jsonObject,
-                                                    RequestToServer.TypeOfResponse.JsonObject, response1 -> {
-
-                                                        if (!JsonProcs.getStringFromJSON(response1, "ref").isEmpty()){
-                                                            navController.popBackStack();
-                                                        }
-
-
-
-                                                    });
-
-
-                                        },  args, "Взять контейнер " + tvContainer.getText().toString() + " из ячейки " + tvCell.getText().toString() + " ?", "Взятие");
-
-                                    }
-
-                                });
-
+                            askFortakement(containerRef);
+                        }
 
                     }
                 });
@@ -127,48 +88,7 @@ public class TakementFragment extends ScanShtrihcodeFragment {
 
                 } else {
 
-                    RequestToServer.executeRequestUW(getContext(), Request.Method.GET, "getErpSkladContainers", "filter=" + strCatName, new JSONObject(),
-                            RequestToServer.TypeOfResponse.JsonObjectWithArray, response -> {
-
-                        JSONArray containers = JsonProcs.getJsonArrayFromJsonObject(response, "ErpSkladContainers");
-
-                        if (containers.length() == 1){
-
-                            JSONObject container = JsonProcs.getItemJSONArray(containers, 0);
-
-                            containerRef = JsonProcs.getStringFromJSON(container, "ref");
-                            tvContainer.setText(JsonProcs.getStringFromJSON(container, "name"));
-
-                            Bundle args = new Bundle();
-                            args.putString("cellRef", cellRef);
-                            args.putString("containerRef", containerRef);
-                            args.putString("containerName", tvContainer.getText().toString());
-
-                            Dialogs.showQuestionYesNoCancel(getContext(), getActivity(), arguments -> {
-
-                                JSONObject jsonObject = new JSONObject();
-                                JsonProcs.putToJsonObject(jsonObject,"ref", UUID.randomUUID().toString());
-                                JsonProcs.putToJsonObject(jsonObject,"cellRef", arguments.getString("cellRef"));
-                                JsonProcs.putToJsonObject(jsonObject,"containerRef", arguments.getString("containerRef"));
-                                JsonProcs.putToJsonObject(jsonObject,"containerName", arguments.getString("containerName"));
-
-                                RequestToServer.executeRequestBodyUW(getContext(), Request.Method.POST, "setErpSkladTakement", jsonObject,
-                                        RequestToServer.TypeOfResponse.JsonObject, response1 -> {
-
-                                    if (!JsonProcs.getStringFromJSON(response1, "ref").isEmpty()){
-                                        navController.popBackStack();
-                                    }
-
-
-
-                                        });
-
-
-                            },  args, "Взять контейнер " + tvContainer.getText().toString() + " из ячейки " + tvCell.getText().toString() + " ?", "Взятие");
-
-                        }
-
-                    });
+                    askFortakement(strCatName);
 
 
                 }
@@ -179,5 +99,56 @@ public class TakementFragment extends ScanShtrihcodeFragment {
         });
 
 
+    }
+
+    private void askFortakement(String strCatName) {
+
+        RequestToServer.executeRequestUW(getContext(), Request.Method.GET, "getErpSkladContainerCell",
+                "container=" + strCatName + "&cell=" + cellRef, new JSONObject(),
+                RequestToServer.TypeOfResponse.JsonObjectWithArray, response -> {
+
+                    JSONArray containers = JsonProcs.getJsonArrayFromJsonObject(response, "ErpSkladContainerCell");
+
+                    if (containers.length() == 1){
+
+                        JSONObject container = JsonProcs.getItemJSONArray(containers, 0);
+
+                        if (cellRef.equals(JsonProcs.getStringFromJSON(container, "cell"))) {
+
+                            containerRef = JsonProcs.getStringFromJSON(container, "ref");
+                            tvContainer.setText(JsonProcs.getStringFromJSON(container, "name")
+                                + ", остаток: " + JsonProcs.getIntegerFromJSON(container, "number"));
+
+                            Bundle args = new Bundle();
+                            args.putString("cellRef", cellRef);
+                            args.putString("containerRef", containerRef);
+                            args.putString("containerName", tvContainer.getText().toString());
+
+                            Dialogs.showQuestionYesNoCancel(getContext(), getActivity(), arguments -> {
+
+                                JSONObject jsonObject = new JSONObject();
+                                JsonProcs.putToJsonObject(jsonObject, "ref", UUID.randomUUID().toString());
+                                JsonProcs.putToJsonObject(jsonObject, "cellRef", arguments.getString("cellRef"));
+                                JsonProcs.putToJsonObject(jsonObject, "containerRef", arguments.getString("containerRef"));
+                                JsonProcs.putToJsonObject(jsonObject, "containerName", arguments.getString("containerName"));
+
+                                RequestToServer.executeRequestBodyUW(getContext(), Request.Method.POST, "setErpSkladTakement", jsonObject,
+                                        RequestToServer.TypeOfResponse.JsonObject, response1 -> {
+
+                                            if (!JsonProcs.getStringFromJSON(response1, "ref").isEmpty()) {
+                                                navController.popBackStack();
+                                            }
+
+
+                                        });
+
+
+                            }, args, "Взять контейнер " + tvContainer.getText().toString() + " из ячейки " + tvCell.getText().toString() + " ?", "Взятие");
+
+                        }
+
+                    }
+
+                });
     }
 }

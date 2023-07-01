@@ -19,8 +19,6 @@ import com.example.apexwh.objects.MoversService;
 import com.example.apexwh.objects.Placement;
 import com.example.apexwh.objects.Product;
 import com.example.apexwh.objects.ProductCell;
-import com.example.apexwh.ui.BundleMethodInterface;
-import com.example.apexwh.ui.Dialogs;
 import com.example.apexwh.ui.adapters.DataAdapter;
 import com.example.apexwh.ui.adapters.ListFragment;
 import com.example.apexwh.ui.adapters.ScanListFragment;
@@ -37,12 +35,10 @@ import java.util.UUID;
 public class CellContentListFragment extends ScanListFragment<ProductCell> {
 
     TextView tvProduct;
-    Cell cell;
-
 
     public CellContentListFragment() {
 
-        super(R.layout.fragment_scan_cell_list_clear, R.layout.product_cell_list_item);
+        super(R.layout.fragment_scan_cell_list, R.layout.product_cell_list_item);
 
         setListUpdater(new ListUpdater() {
             @Override
@@ -65,7 +61,7 @@ public class CellContentListFragment extends ScanListFragment<ProductCell> {
 
                                     JSONObject objectItem = JsonProcs.getItemJSONArray(responseItems, j);
 
-                                    cell = Cell.FromJson(JsonProcs.getJsonObjectFromJsonObject(objectItem, "cell"));
+                                    Cell cell = Cell.FromJson(JsonProcs.getJsonObjectFromJsonObject(objectItem, "cell"));
 
                                     int productNumber = JsonProcs.getIntegerFromJSON(objectItem, "productNumber");
                                     int productUnitNumber = JsonProcs.getIntegerFromJSON(objectItem, "productUnitNumber");
@@ -99,37 +95,6 @@ public class CellContentListFragment extends ScanListFragment<ProductCell> {
             public void execute(View root, NavController navController) {
 
                 tvProduct = root.findViewById(R.id.tvProduct);
-
-                root.findViewById(R.id.llCell).setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-
-                        String cellName = tvProduct.getText().toString();
-
-                        if (!cellName.isEmpty() && items.size() > 0) {
-
-                            Bundle args = new Bundle();
-                            args.putString("ref", UUID.randomUUID().toString());
-                            Dialogs.showQuestionYesNoCancel(getContext(), getActivity(), new BundleMethodInterface() {
-                                @Override
-                                public void callMethod(Bundle arguments) {
-
-                                    RequestToServer.executeRequestUW(getContext(), Request.Method.GET,
-                                            "setErpSkladCellClear", "cell=" + cell.ref + "&ref=" + arguments.getString("ref"), new JSONObject(),
-                                            RequestToServer.TypeOfResponse.JsonObjectWithArray, response -> {
-
-                                                JSONObject res = JsonProcs.getJsonObjectFromJsonObject(response, "ErpSkladCellClear");
-
-                                                listUpdater.update(items, progressBar, adapter, cell.name);
-
-                                            });
-
-
-                                }
-                            }, args, "Очистить ячейку ?", "Очищение");
-                        }
-                    }
-                });
 
                 getAdapter().setInitViewsMaker(new DataAdapter.InitViewsMaker() {
                     @Override

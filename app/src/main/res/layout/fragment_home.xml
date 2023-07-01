@@ -38,209 +38,227 @@
                 android:textSize="24sp" />
 
             <LinearLayout
+                android:id="@+id/llSettings"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:orientation="vertical">
 
-                <Button
-                    android:id="@+id/btnAcceptment"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginRight="4sp"
-                    android:layout_weight="1"
-                    android:background="@drawable/back"
-                    android:padding="16sp"
-                    android:text="Приемка"
-                    android:textSize="24sp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/btnSettings" />
-
-                <Button
-                    android:id="@+id/btnShipment"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:background="@drawable/back"
-                    android:padding="16sp"
-                    android:text="Отгрузка"
-                    android:textSize="24sp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/btnSettings" />
             </LinearLayout>
-
-            <Button
-                android:id="@+id/btnReturns"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="4sp"
-                android:background="@drawable/back"
-                android:padding="16sp"
-                android:text="Возвраты к поступлению"
-                android:textSize="24sp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/btnSettings" />
 
             <LinearLayout
+                android:id="@+id/llStandart"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="4sp"
-                android:gravity="center|top"
-                android:orientation="horizontal">
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <Button
+                        android:id="@+id/btnAcceptment"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="4sp"
+                        android:layout_weight="1"
+                        android:background="@drawable/back"
+                        android:padding="16sp"
+                        android:text="Приемка"
+                        android:textSize="24sp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/btnSettings" />
+
+                    <Button
+                        android:id="@+id/btnShipment"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:background="@drawable/back"
+                        android:padding="16sp"
+                        android:text="Отгрузка"
+                        android:textSize="24sp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/btnSettings" />
+                </LinearLayout>
 
                 <Button
-                    android:id="@+id/btnTest"
-                    android:layout_width="wrap_content"
+                    android:id="@+id/btnReturns"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
+                    android:layout_marginTop="4sp"
                     android:background="@drawable/back"
                     android:padding="16sp"
-                    android:text="Проверка"
+                    android:text="Возвраты к поступлению"
                     android:textSize="24sp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/btnInvents" />
+                    app:layout_constraintTop_toBottomOf="@+id/btnSettings" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4sp"
+                    android:gravity="center|top"
+                    android:orientation="horizontal">
+
+                    <Button
+                        android:id="@+id/btnTest"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:background="@drawable/back"
+                        android:padding="16sp"
+                        android:text="Проверка"
+                        android:textSize="24sp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/btnInvents" />
+                </LinearLayout>
+
+                <Button
+                    android:id="@+id/btnReturnsOfProducts"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4sp"
+                    android:width="300sp"
+                    android:background="@drawable/back"
+                    android:padding="16sp"
+                    android:text="Возвраты товаров"
+                    android:textSize="24sp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/btnReturns" />
+
+                <Button
+                    android:id="@+id/btnMovers"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4sp"
+                    android:width="300sp"
+                    android:background="@drawable/back"
+                    android:padding="16sp"
+                    android:text="Грузчики"
+                    android:textSize="24sp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/btnTest" />
+
+                <Button
+                    android:id="@+id/btnOrderToChangeCharacteristic"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4sp"
+                    android:width="300sp"
+                    android:background="@drawable/back"
+                    android:padding="16sp"
+                    android:text="Заявки на корректировку характеристик"
+                    android:textSize="24sp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/btnReturns" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4sp"
+                    android:orientation="horizontal">
+
+                    <Button
+                        android:id="@+id/btnPlacement"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="4sp"
+                        android:layout_weight="1"
+                        android:background="@drawable/back"
+                        android:padding="16sp"
+                        android:text="Разместить"
+                        android:textSize="24sp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/btnSettings" />
+
+                    <Button
+                        android:id="@+id/btnTakement"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:background="@drawable/back"
+                        android:padding="16sp"
+                        android:text="Взять"
+                        android:textSize="24sp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/btnSettings" />
+                </LinearLayout>
+
+                <Button
+                    android:id="@+id/btnMoves"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4sp"
+                    android:width="300sp"
+                    android:background="@drawable/back"
+                    android:padding="16sp"
+                    android:text="Перемещения"
+                    android:textSize="24sp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/btnReturns" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4sp"
+                    android:orientation="horizontal">
+
+                    <Button
+                        android:id="@+id/btnProductCells"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="4sp"
+                        android:layout_weight="1"
+                        android:background="@drawable/back"
+                        android:padding="16sp"
+                        android:text="Где товар"
+                        android:textSize="24sp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/btnSettings" />
+
+                    <Button
+                        android:id="@+id/btnCellContent"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:background="@drawable/back"
+                        android:padding="16sp"
+                        android:text="Что в ячейке"
+                        android:textSize="24sp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/btnSettings" />
+                </LinearLayout>
+
+                <Button
+                    android:id="@+id/btnInvents"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4sp"
+                    android:width="300sp"
+                    android:background="@drawable/back"
+                    android:padding="16sp"
+                    android:text="Инвентаризация"
+                    android:textSize="24sp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/btnReturns" />
+
+
+
             </LinearLayout>
-
-            <Button
-                android:id="@+id/btnReturnsOfProducts"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="4sp"
-                android:width="300sp"
-                android:background="@drawable/back"
-                android:padding="16sp"
-                android:text="Возвраты товаров"
-                android:textSize="24sp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/btnReturns" />
-
-            <Button
-                android:id="@+id/btnMovers"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="4sp"
-                android:width="300sp"
-                android:background="@drawable/back"
-                android:padding="16sp"
-                android:text="Грузчики"
-                android:textSize="24sp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/btnTest" />
-
-            <Button
-                android:id="@+id/btnOrderToChangeCharacteristic"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="4sp"
-                android:width="300sp"
-                android:background="@drawable/back"
-                android:padding="16sp"
-                android:text="Заявки на корректировку характеристик"
-                android:textSize="24sp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/btnReturns" />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="4sp"
-                android:orientation="horizontal">
-
-                <Button
-                    android:id="@+id/btnPlacement"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginRight="4sp"
-                    android:layout_weight="1"
-                    android:background="@drawable/back"
-                    android:padding="16sp"
-                    android:text="Разместить"
-                    android:textSize="24sp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/btnSettings" />
-
-                <Button
-                    android:id="@+id/btnTakement"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:background="@drawable/back"
-                    android:padding="16sp"
-                    android:text="Взять"
-                    android:textSize="24sp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/btnSettings" />
-            </LinearLayout>
-
-            <Button
-                android:id="@+id/btnMoves"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="4sp"
-                android:width="300sp"
-                android:background="@drawable/back"
-                android:padding="16sp"
-                android:text="Перемещения"
-                android:textSize="24sp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/btnReturns" />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="4sp"
-                android:orientation="horizontal">
-
-                <Button
-                    android:id="@+id/btnProductCells"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginRight="4sp"
-                    android:layout_weight="1"
-                    android:background="@drawable/back"
-                    android:padding="16sp"
-                    android:text="Где товар"
-                    android:textSize="24sp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/btnSettings" />
-
-                <Button
-                    android:id="@+id/btnCellContent"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:background="@drawable/back"
-                    android:padding="16sp"
-                    android:text="Что в ячейке"
-                    android:textSize="24sp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/btnSettings" />
-            </LinearLayout>
-
-            <Button
-                android:id="@+id/btnInvents"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="4sp"
-                android:width="300sp"
-                android:background="@drawable/back"
-                android:padding="16sp"
-                android:text="Инвентаризация"
-                android:textSize="24sp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/btnReturns" />
 
         </LinearLayout>
     </ScrollView>

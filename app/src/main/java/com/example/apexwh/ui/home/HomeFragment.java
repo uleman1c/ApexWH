@@ -72,159 +72,174 @@ public class HomeFragment extends Fragment {
             bundle.putString("appId", appId);
         }
 
+        if (true){
 
-        binding.btnSettings.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+            Button button = (Button) inflater.inflate(R.layout.menu_button, null);
+            binding.llSettings.addView(button);
+            button.setText("Test");
+            button.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
 
-                navController.navigate(R.id.nav_settings, bundle);
+                }
+            });
 
-            }
-        });
+            binding.llStandart.setVisibility(View.GONE);
 
-        binding.btnAcceptment.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+        } else {
 
-                navController.navigate(R.id.nav_acceptmentFragment, bundle);
+            binding.btnSettings.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
 
-            }
-        });
+                    navController.navigate(R.id.nav_settings, bundle);
 
-        binding.btnShipment.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+                }
+            });
 
-                navController.navigate(R.id.nav_BuierOrdersFragment, bundle);
+            binding.btnAcceptment.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
 
-            }
-        });
+                    navController.navigate(R.id.nav_acceptmentFragment, bundle);
 
-        binding.btnReturns.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+                }
+            });
 
-                navController.navigate(R.id.nav_returns, bundle);
+            binding.btnShipment.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
 
-            }
-        });
+                    navController.navigate(R.id.nav_BuierOrdersFragment, bundle);
 
-        binding.btnReturnsOfProducts.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+                }
+            });
 
-                navController.navigate(R.id.nav_returnsOfProductsFragment, bundle);
+            binding.btnReturns.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
 
-            }
-        });
+                    navController.navigate(R.id.nav_returns, bundle);
 
-        binding.btnInvents.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+                }
+            });
 
-                navController.navigate(R.id.nav_inventarizations, bundle);
+            binding.btnReturnsOfProducts.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
 
-            }
-        });
+                    navController.navigate(R.id.nav_returnsOfProductsFragment, bundle);
 
-        binding.btnTest.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+                }
+            });
 
-                navController.navigate(R.id.nav_tests, bundle);
+            binding.btnInvents.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
 
-            }
-        });
+                    navController.navigate(R.id.nav_inventarizations, bundle);
 
-        binding.btnMovers.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+                }
+            });
 
-                navController.navigate(R.id.nav_movers, bundle);
+            binding.btnTest.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
 
-            }
-        });
+                    navController.navigate(R.id.nav_tests, bundle);
 
-        binding.btnOrderToChangeCharacteristic.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+                }
+            });
 
-                navController.navigate(R.id.nav_ordersToChangeCharacteristicFragment, bundle);
+            binding.btnMovers.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
 
-            }
-        });
+                    navController.navigate(R.id.nav_movers, bundle);
 
-        binding.btnPlacement.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+                }
+            });
 
-                navController.navigate(R.id.nav_placementMenuFragment, bundle);
+            binding.btnOrderToChangeCharacteristic.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
 
-            }
-        });
+                    navController.navigate(R.id.nav_ordersToChangeCharacteristicFragment, bundle);
 
-        binding.btnTakement.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+                }
+            });
 
-                navController.navigate(R.id.nav_takementMenuFragment, bundle);
+            binding.btnPlacement.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
 
-            }
-        });
+                    navController.navigate(R.id.nav_placementMenuFragment, bundle);
 
-        binding.btnMoves.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+                }
+            });
 
-                navController.navigate(R.id.movementListFragment, bundle);
+            binding.btnTakement.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
 
-            }
-        });
+                    navController.navigate(R.id.nav_takementMenuFragment, bundle);
 
-        binding.btnProductCells.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+                }
+            });
 
-                navController.navigate(R.id.nav_productCellsListFragment, bundle);
+            binding.btnMoves.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
 
-            }
-        });
+                    navController.navigate(R.id.movementListFragment, bundle);
 
-        binding.btnCellContent.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+                }
+            });
 
-                navController.navigate(R.id.nav_cellContentListFragment, bundle);
+            binding.btnProductCells.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
 
-            }
-        });
+                    navController.navigate(R.id.nav_productCellsListFragment, bundle);
+
+                }
+            });
+
+            binding.btnCellContent.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+
+                    navController.navigate(R.id.nav_cellContentListFragment, bundle);
+
+                }
+            });
 
 
-        if(!DB.isSettingsExist(getContext())){
+            if (!DB.isSettingsExist(getContext())) {
 
-            ArrayList<Button> buttons = new ArrayList<>();
-            buttons.add(binding.btnAcceptment);
-            buttons.add(binding.btnShipment);
-            buttons.add(binding.btnReturns);
-            buttons.add(binding.btnTest);
-            buttons.add(binding.btnReturnsOfProducts);
-            buttons.add(binding.btnMovers);
-            buttons.add(binding.btnOrderToChangeCharacteristic);
-            buttons.add(binding.btnPlacement);
-            buttons.add(binding.btnTakement);
-            buttons.add(binding.btnInvents);
+                ArrayList<Button> buttons = new ArrayList<>();
+                buttons.add(binding.btnAcceptment);
+                buttons.add(binding.btnShipment);
+                buttons.add(binding.btnReturns);
+                buttons.add(binding.btnTest);
+                buttons.add(binding.btnReturnsOfProducts);
+                buttons.add(binding.btnMovers);
+                buttons.add(binding.btnOrderToChangeCharacteristic);
+                buttons.add(binding.btnPlacement);
+                buttons.add(binding.btnTakement);
+                buttons.add(binding.btnInvents);
 
-            for (Button curBtn: buttons
-                 ) {
+                for (Button curBtn : buttons
+                ) {
 
-                curBtn.setBackgroundColor(getResources().getColor(R.color.gray, null));
-                curBtn.setTextColor(getResources().getColor(R.color.light_gray, null));
-                curBtn.setClickable(false);
+                    curBtn.setBackgroundColor(getResources().getColor(R.color.gray, null));
+                    curBtn.setTextColor(getResources().getColor(R.color.light_gray, null));
+                    curBtn.setClickable(false);
+                }
+
             }
 
         }
-
-
 //        final TextView textView = binding.textHome;
 //        homeViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
         return root;

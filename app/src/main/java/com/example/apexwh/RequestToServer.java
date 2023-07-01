@@ -6,6 +6,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.Response;
@@ -20,6 +21,7 @@ import org.json.JSONObject;
 import java.io.ByteArrayOutputStream;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 
 public class RequestToServer {
@@ -28,7 +30,7 @@ public class RequestToServer {
         int JsonObject = 0;
         int JsonObjectWithArray = 1;
     }
-     public interface ResponseResultInterface{
+    public interface ResponseResultInterface{
 
         void onResponse(JSONObject response);
 
@@ -50,6 +52,8 @@ public class RequestToServer {
             public void onErrorResponse(VolleyError error) {
 
             }
+
+
         };
 
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(method, url, params, listener, errorListener){
@@ -62,33 +66,41 @@ public class RequestToServer {
 
 
         };
+
+        jsonObjectRequest.setRetryPolicy(new DefaultRetryPolicy(
+                (int) TimeUnit.SECONDS.toMillis(200), //After the set time elapses the request will timeout
+                0,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+
+
         Volley.newRequestQueue(context).add(jsonObjectRequest);
+
 
 
     }
     public static void executeRequest(Context context, int method, String request, String url, JSONObject params, ResponseResultInterface responseResultInterface){
 
-         execute(context, method, Connections.addrDta + "?request=" + request + "&" + url, params, new ResponseResultInterface() {
-             @Override
-             public void onResponse(JSONObject response) {
+        execute(context, method, Connections.addrDta + "?request=" + request + "&" + url, params, new ResponseResultInterface() {
+            @Override
+            public void onResponse(JSONObject response) {
 
-                 if (DefaultJson.getBoolean(response, "success", false)) {
+                if (DefaultJson.getBoolean(response, "success", false)) {
 
-                     JSONArray responses = JsonProcs.getJsonArrayFromJsonObject(response, "responses");
+                    JSONArray responses = JsonProcs.getJsonArrayFromJsonObject(response, "responses");
 
-                     if (responses.length() > 0) {
+                    if (responses.length() > 0) {
 
-                         JSONObject response0 = JsonProcs.getItemJSONArray(responses, 0);
+                        JSONObject response0 = JsonProcs.getItemJSONArray(responses, 0);
 
-                         JSONObject responseR = JsonProcs.getJsonObjectFromJsonObject(response0, request.substring(3));
+                        JSONObject responseR = JsonProcs.getJsonObjectFromJsonObject(response0, request.substring(3));
 
-                         responseResultInterface.onResponse(responseR);
+                        responseResultInterface.onResponse(responseR);
 
-                     }
-                 }
+                    }
+                }
 
-             }
-         });
+            }
+        });
 
 
     }

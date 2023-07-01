@@ -38,6 +38,8 @@ public class HomeFragment extends Fragment {
 
     Bundle bundle;
 
+    String nil = "00000000-0000-0000-0000-000000000000";
+
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
 //        HomeViewModel homeViewModel =
@@ -49,7 +51,7 @@ public class HomeFragment extends Fragment {
 
         View root = binding.getRoot();
 
-        parent = "00000000-0000-0000-0000-000000000000";
+        parent = nil;
 
         menuItems = new ArrayList<>();
 
@@ -86,6 +88,20 @@ public class HomeFragment extends Fragment {
             bundle.putString("appId", appId);
         }
 
+        getMenuItems(inflater, binding2);
+
+
+        return root;
+    }
+
+    private void getMenuItems(@NonNull LayoutInflater inflater, FragmentHomeBinding binding2) {
+
+        menuItems.clear();
+
+        binding2.llSettings.removeViews(1, binding2.llSettings.getChildCount() - 1);
+
+        binding2.btnBack.setVisibility(parent == nil ? View.GONE : View.VISIBLE);
+
         RequestToServer.executeRequestUW(getContext(), Request.Method.GET, "getErpSkladMenuSettings", "parent=" + parent, new JSONObject(), 1,
                 new RequestToServer.ResponseResultInterface() {
                     @Override
@@ -105,10 +121,6 @@ public class HomeFragment extends Fragment {
 
                     }
                 });
-
-
-
-        return root;
     }
 
     public void onGetMenuItems(LayoutInflater inflater, FragmentHomeBinding binding){
@@ -117,7 +129,9 @@ public class HomeFragment extends Fragment {
 
         if (menuItems.size() > 0){
 
-            //LayoutInflater inflater = getLayoutInflater();
+            //for (int i = 0; i < binding.llSettings.getChildCount(); i++) {
+
+            //}
 
             for (MenuItem menuItem: menuItems) {
 
@@ -128,12 +142,32 @@ public class HomeFragment extends Fragment {
                     @Override
                     public void onClick(View view) {
 
+                        for (MenuItem menuItem1: menuItems) {
+
+                            if (menuItem1.button == view){
+
+                                if (menuItem1.isGroup){
+
+                                    parent = menuItem1.ref;
+
+                                    getMenuItems(inflater, binding);
+
+                                    break;
+
+                                }
+
+                            }
+
+                        }
+
                     }
                 });
 
-                binding.llStandart.setVisibility(View.GONE);
-
             }
+
+
+            binding.llStandart.setVisibility(View.GONE);
+
         }
         else {
 

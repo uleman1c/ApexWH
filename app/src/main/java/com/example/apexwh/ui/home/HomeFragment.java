@@ -5,19 +5,20 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
+import com.android.volley.Request;
 import com.example.apexwh.DB;
 import com.example.apexwh.JsonProcs;
 import com.example.apexwh.R;
+import com.example.apexwh.RequestToServer;
 import com.example.apexwh.databinding.FragmentHomeBinding;
+import com.example.apexwh.objects.MenuItem;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -26,10 +27,16 @@ import java.util.ArrayList;
 
 public class HomeFragment extends Fragment {
 
-    private FragmentHomeBinding binding;
+    protected FragmentHomeBinding binding;
 
     private String appId, id;
     NavController navController;
+
+    private ArrayList<MenuItem> menuItems;
+
+    private String parent;
+
+    Bundle bundle;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -37,9 +44,16 @@ public class HomeFragment extends Fragment {
 //                new ViewModelProvider(this).get(HomeViewModel.class);
 
         binding = FragmentHomeBinding.inflate(inflater, container, false);
+
+        FragmentHomeBinding binding2 = binding;
+
         View root = binding.getRoot();
 
-        Bundle bundle = getArguments();
+        parent = "00000000-0000-0000-0000-000000000000";
+
+        menuItems = new ArrayList<>();
+
+        bundle = getArguments();
 
         if (bundle != null){
 
@@ -72,21 +86,56 @@ public class HomeFragment extends Fragment {
             bundle.putString("appId", appId);
         }
 
-        if (true){
+        RequestToServer.executeRequestUW(getContext(), Request.Method.GET, "getErpSkladMenuSettings", "parent=" + parent, new JSONObject(), 1,
+                new RequestToServer.ResponseResultInterface() {
+                    @Override
+                    public void onResponse(JSONObject response) {
 
-            Button button = (Button) inflater.inflate(R.layout.menu_button, null);
-            binding.llSettings.addView(button);
-            button.setText("Test");
-            button.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
+                        JSONArray responseItems = JsonProcs.getJsonArrayFromJsonObject(response, "ErpSkladMenuSettings");
 
-                }
-            });
+                        for (int j = 0; j < responseItems.length(); j++) {
 
-            binding.llStandart.setVisibility(View.GONE);
+                            JSONObject objectItem = JsonProcs.getItemJSONArray(responseItems, j);
 
-        } else {
+                            menuItems.add(MenuItem.FromJson(objectItem));
+
+                        }
+
+                        onGetMenuItems(inflater, binding2);
+
+                    }
+                });
+
+
+
+        return root;
+    }
+
+    public void onGetMenuItems(LayoutInflater inflater, FragmentHomeBinding binding){
+
+        //FragmentHomeBinding binding = FragmentHomeBinding.inflate(inflater, container, false);
+
+        if (menuItems.size() > 0){
+
+            //LayoutInflater inflater = getLayoutInflater();
+
+            for (MenuItem menuItem: menuItems) {
+
+                menuItem.button = (Button) inflater.inflate(R.layout.menu_button, null);
+                binding.llSettings.addView(menuItem.button);
+                menuItem.button.setText(menuItem.name);
+                menuItem.button.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+
+                    }
+                });
+
+                binding.llStandart.setVisibility(View.GONE);
+
+            }
+        }
+        else {
 
             binding.btnSettings.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -240,9 +289,21 @@ public class HomeFragment extends Fragment {
             }
 
         }
+
 //        final TextView textView = binding.textHome;
 //        homeViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
-        return root;
+
+
+
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        Bundle bundle = getArguments();
+
+
     }
 
     @Override

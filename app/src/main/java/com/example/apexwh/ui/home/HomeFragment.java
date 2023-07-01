@@ -33,6 +33,7 @@ public class HomeFragment extends Fragment {
     NavController navController;
 
     private ArrayList<MenuItem> menuItems;
+    private ArrayList<String> menuStack;
 
     private String parent;
 
@@ -54,6 +55,7 @@ public class HomeFragment extends Fragment {
         parent = nil;
 
         menuItems = new ArrayList<>();
+        menuStack = new ArrayList<>();
 
         bundle = getArguments();
 
@@ -87,6 +89,19 @@ public class HomeFragment extends Fragment {
 
             bundle.putString("appId", appId);
         }
+
+        binding.btnBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                parent = menuStack.get(menuStack.size() - 1);
+
+                menuStack.remove(menuStack.size() - 1);
+
+                getMenuItems(inflater, binding);
+
+            }
+        });
 
         getMenuItems(inflater, binding2);
 
@@ -147,6 +162,8 @@ public class HomeFragment extends Fragment {
                             if (menuItem1.button == view){
 
                                 if (menuItem1.isGroup){
+
+                                    menuStack.add(parent);
 
                                     parent = menuItem1.ref;
 

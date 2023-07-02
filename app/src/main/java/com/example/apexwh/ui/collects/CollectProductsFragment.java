@@ -33,6 +33,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.UUID;
 
 /**
@@ -40,7 +41,7 @@ import java.util.UUID;
  * Use the  factory method to
  * create an instance of this fragment.
  */
-public class CollectProductsFragment extends ScanListFragment<ProductCell> {
+public class CollectProductsFragment extends ScanListFragment<ProductCellContainerOutcome> {
 
     String name, ref, order;
 
@@ -62,7 +63,7 @@ public class CollectProductsFragment extends ScanListFragment<ProductCell> {
 
     public CollectProductsFragment() {
 
-        super(R.layout.fragment_scan_cell_list_clear, R.layout.product_cell_list_item);
+        super(R.layout.fragment_scan_list_clear, R.layout.product_cell_border_list_item);
 
         setListUpdater(new ListFragment.ListUpdater() {
             @Override
@@ -86,27 +87,16 @@ public class CollectProductsFragment extends ScanListFragment<ProductCell> {
 
                                     JSONObject objectItem = JsonProcs.getItemJSONArray(responseItems, j);
 
-                                    productCellContainerOutcomes.add(ProductCellContainerOutcome.FromJson(objectItem));
-
-//                                    cell = Cell.FromJson(JsonProcs.getJsonObjectFromJsonObject(objectItem, "cell"));
-//
-//                                    int productNumber = JsonProcs.getIntegerFromJSON(objectItem, "productNumber");
-//                                    int productUnitNumber = JsonProcs.getIntegerFromJSON(objectItem, "productUnitNumber");
-//                                    int containerNumber = JsonProcs.getIntegerFromJSON(objectItem, "containerNumber");
-//
-//                                    tvProduct.setText(cell.name + " " + productNumber + " шт (" + productUnitNumber + " упак) " + containerNumber + " конт");
-//
-//                                    JSONArray products = JsonProcs.getJsonArrayFromJsonObject(objectItem, "products");
-//
-//                                    for (int k = 0; k < products.length(); k++) {
-//
-//                                        ProductCell productCell = ProductCell.FromJson(JsonProcs.getItemJSONArray(products, k));
-//
-//                                        items.add(productCell);
-//                                    }
-
+                                    items.add(ProductCellContainerOutcome.FromJson(objectItem));
 
                                 }
+
+                                items.sort(new Comparator() {
+                                    @Override
+                                    public int compare(Object o, Object t1) {
+                                        return ((ProductCellContainerOutcome) o).cell.name.compareTo(((ProductCellContainerOutcome) t1).cell.name);
+                                    }
+                                });
 
                                 adapter.notifyDataSetChanged();
                             }
@@ -164,13 +154,13 @@ public class CollectProductsFragment extends ScanListFragment<ProductCell> {
                     }
                 });
 
-                getAdapter().setDrawViewHolder(new DataAdapter.DrawViewHolder<ProductCell>() {
+                getAdapter().setDrawViewHolder(new DataAdapter.DrawViewHolder<ProductCellContainerOutcome>() {
                     @Override
-                    public void draw(DataAdapter.ItemViewHolder holder, ProductCell item) {
+                    public void draw(DataAdapter.ItemViewHolder holder, ProductCellContainerOutcome item) {
 
-                        ((TextView) holder.getTextViews().get(0)).setText(item.product.artikul + " " + item.product.name);
-                        ((TextView) holder.getTextViews().get(1)).setText(item.container.name + " " + item.containerNumber + " шт");
-                        ((TextView) holder.getTextViews().get(2)).setText(item.productNumber + " шт (" + item.productUnitNumber + " упак)");
+                        ((TextView) holder.getTextViews().get(0)).setText("Ячейка: " + item.cell.name);
+                        ((TextView) holder.getTextViews().get(1)).setText(item.product.artikul + " " + item.product.name + ", " + item.number + " шт");
+                        ((TextView) holder.getTextViews().get(2)).setText(item.container.name);
                     }
                 });
 

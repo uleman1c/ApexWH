@@ -21,7 +21,24 @@ public class DataAdapter<T> extends RecyclerView.Adapter<DataAdapter<T>.ItemView
     private OnClickListener onClickListener;
     private OnLongClickListener onLongClickListener;
 
+    public void setOnGetItemViewType(OnGetItemViewType onGetItemViewType) {
+        this.onGetItemViewType = onGetItemViewType;
+    }
+
+    private OnGetItemViewType onGetItemViewType;
+
+    public void setBeforeEndOnCreateViewHolder(BeforeEndOnCreateViewHolder beforeEndOnCreateViewHolder) {
+        this.beforeEndOnCreateViewHolder = beforeEndOnCreateViewHolder;
+    }
+
+    private BeforeEndOnCreateViewHolder beforeEndOnCreateViewHolder;
+
     public class ItemViewHolder extends RecyclerView.ViewHolder {
+
+         public final int getItemViewType(int position){
+
+             return position;
+         }
 
         public ArrayList<TextView> getTextViews() {
             return textViews;
@@ -53,6 +70,8 @@ public class DataAdapter<T> extends RecyclerView.Adapter<DataAdapter<T>.ItemView
                 }
             });
         }
+
+
 
     }
 
@@ -100,6 +119,13 @@ public class DataAdapter<T> extends RecyclerView.Adapter<DataAdapter<T>.ItemView
     public ItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
         View view = inflater.inflate(layout, parent, false);
+
+        if (beforeEndOnCreateViewHolder != null){
+
+            view = beforeEndOnCreateViewHolder.Do(inflater, parent, viewType);
+
+        }
+
         return new ItemViewHolder(view);
     }
 
@@ -109,6 +135,14 @@ public class DataAdapter<T> extends RecyclerView.Adapter<DataAdapter<T>.ItemView
         this.drawViewHolder.draw(holder, items.get(position));
 
     }
+
+    @Override
+    public int getItemViewType(int position) {
+
+        return onGetItemViewType == null ? 0 : onGetItemViewType.Do(position);
+
+    }
+
 
     @Override
     public int getItemCount() {

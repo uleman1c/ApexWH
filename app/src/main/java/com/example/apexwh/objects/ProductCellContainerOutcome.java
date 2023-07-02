@@ -16,6 +16,10 @@ public class ProductCellContainerOutcome {
     public int productNumber;
     public int productUnitNumber;
 
+    public int mode;
+
+    // 0 - default, 1 - cell selected
+
     public ProductCellContainerOutcome(Product product, Characteristic characteristic, int number, Cell cell,
                                        Container container, int containerNumber, int productNumber, int productUnitNumber) {
         this.product = product;
@@ -26,6 +30,7 @@ public class ProductCellContainerOutcome {
         this.containerNumber = containerNumber;
         this.productNumber = productNumber;
         this.productUnitNumber = productUnitNumber;
+        this.mode = 0;
     }
 
     public static ProductCellContainerOutcome FromJson(JSONObject task_item) {

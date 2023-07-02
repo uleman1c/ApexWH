@@ -1,8 +1,9 @@
 package com.example.apexwh.ui.collects;
 
-import android.graphics.Color;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -11,23 +12,18 @@ import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 
 import com.android.volley.Request;
-import com.example.apexwh.HttpClient;
-import com.example.apexwh.HttpRequestJsonObjectInterface;
 import com.example.apexwh.JsonProcs;
 import com.example.apexwh.R;
 import com.example.apexwh.RequestToServer;
 import com.example.apexwh.objects.Cell;
-import com.example.apexwh.objects.DocumentLine;
-import com.example.apexwh.objects.ProductCell;
 import com.example.apexwh.objects.ProductCellContainerOutcome;
 import com.example.apexwh.ui.BundleMethodInterface;
 import com.example.apexwh.ui.Dialogs;
+import com.example.apexwh.ui.adapters.BeforeEndOnCreateViewHolder;
 import com.example.apexwh.ui.adapters.DataAdapter;
-import com.example.apexwh.ui.adapters.DocumentLineAdapter;
 import com.example.apexwh.ui.adapters.ListFragment;
+import com.example.apexwh.ui.adapters.OnGetItemViewType;
 import com.example.apexwh.ui.adapters.ScanListFragment;
-import com.example.apexwh.ui.adapters.ScanProductsFragment;
-import com.example.apexwh.ui.products.ProductsFragment;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -69,40 +65,76 @@ public class CollectProductsFragment extends ScanListFragment<ProductCellContain
             @Override
             public void update(ArrayList items, ProgressBar progressBar, DataAdapter adapter, String filter) {
 
-                items.clear();
+                if (filter.isEmpty()) {
 
-                productCellContainerOutcomes.clear();
+                    items.clear();
 
-                RequestToServer.executeRequestUW(getContext(), Request.Method.GET, "getErpSkladProductsToOutcome",
-                        "name=" + name + "&ref=" + ref, new JSONObject(), 1,
-                        new RequestToServer.ResponseResultInterface() {
-                            @Override
-                            public void onResponse(JSONObject response) {
+                    productCellContainerOutcomes.clear();
 
-                                progressBar.setVisibility(View.GONE);
+                    RequestToServer.executeRequestUW(getContext(), Request.Method.GET, "getErpSkladProductsToOutcome",
+                            "name=" + name + "&ref=" + ref, new JSONObject(), 1,
+                            new RequestToServer.ResponseResultInterface() {
+                                @Override
+                                public void onResponse(JSONObject response) {
 
-                                JSONArray responseItems = JsonProcs.getJsonArrayFromJsonObject(response, "ErpSkladProductsToOutcome");
+                                    progressBar.setVisibility(View.GONE);
 
-                                for (int j = 0; j < responseItems.length(); j++) {
+                                    JSONArray responseItems = JsonProcs.getJsonArrayFromJsonObject(response, "ErpSkladProductsToOutcome");
 
-                                    JSONObject objectItem = JsonProcs.getItemJSONArray(responseItems, j);
+                                    for (int j = 0; j < responseItems.length(); j++) {
 
-                                    items.add(ProductCellContainerOutcome.FromJson(objectItem));
+                                        JSONObject objectItem = JsonProcs.getItemJSONArray(responseItems, j);
 
-                                }
+                                        items.add(ProductCellContainerOutcome.FromJson(objectItem));
 
-                                items.sort(new Comparator() {
-                                    @Override
-                                    public int compare(Object o, Object t1) {
-                                        return ((ProductCellContainerOutcome) o).cell.name.compareTo(((ProductCellContainerOutcome) t1).cell.name);
                                     }
-                                });
 
-                                adapter.notifyDataSetChanged();
-                            }
-                        });
+                                    items.sort(new Comparator() {
+                                        @Override
+                                        public int compare(Object o, Object t1) {
+                                            return ((ProductCellContainerOutcome) o).cell.name.compareTo(((ProductCellContainerOutcome) t1).cell.name);
+                                        }
+                                    });
 
+                                    adapter.notifyDataSetChanged();
+                                }
+                            });
 
+                }
+                else {
+
+                    ProductCellContainerOutcome foundPCCO = null;
+                    for (int i = 0; i < items.size() && foundPCCO == null; i++) {
+
+                        ProductCellContainerOutcome curPCCO = ((ProductCellContainerOutcome) items.get(i));
+
+                        if (filter.toLowerCase().equals(curPCCO.cell.name.toLowerCase())){
+
+                            foundPCCO = curPCCO;
+
+                        }
+
+                    }
+
+                    if (foundPCCO != null){
+
+                        for (int i = 0; i < items.size(); i++) {
+
+                            ProductCellContainerOutcome curPCCO = ((ProductCellContainerOutcome) items.get(i));
+
+                            curPCCO.mode = curPCCO == foundPCCO ? 1 : 0;
+
+                        }
+
+                        items.remove(items.indexOf(foundPCCO));
+
+                        items.add(0 , foundPCCO);
+
+                    }
+
+                    getAdapter().notifyDataSetChanged();
+
+                }
             }
         });
 
@@ -143,6 +175,34 @@ public class CollectProductsFragment extends ScanListFragment<ProductCellContain
                         }
                     }
                 });
+
+                getAdapter().setOnGetItemViewType(new OnGetItemViewType() {
+                    @Override
+                    public int Do(int position) {
+                        return ((ProductCellContainerOutcome)items.get(position)).mode;
+                    }
+                });
+
+                getAdapter().setBeforeEndOnCreateViewHolder(new BeforeEndOnCreateViewHolder() {
+                    @Override
+                    public View Do(LayoutInflater inflater, ViewGroup parent, int viewType) {
+
+                        View view = null;
+
+                        if (viewType == 0) {
+
+                            view = inflater.inflate(R.layout.product_cell_border_list_item, parent, false);
+                        }
+                        else {
+
+                            view = inflater.inflate(R.layout.product_cell_border2_list_item, parent, false);
+                        }
+
+                        return view;
+
+                    }
+                });
+
 
                 getAdapter().setInitViewsMaker(new DataAdapter.InitViewsMaker() {
                     @Override

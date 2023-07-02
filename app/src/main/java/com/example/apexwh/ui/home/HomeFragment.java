@@ -104,6 +104,10 @@ public class HomeFragment extends Fragment {
             }
         });
 
+        binding.llStandart.setVisibility(View.GONE);
+        binding.llSettings.setVisibility(View.GONE);
+
+
         getMenuItems(inflater, binding2);
 
 
@@ -191,6 +195,16 @@ public class HomeFragment extends Fragment {
                                 navController.navigate(R.id.nav_movementFragment, bundle);
 
                             }
+                            else if (foundMenuItem.navigation.equals("CellContent")){
+
+                                navController.navigate(R.id.nav_cellContentListFragment, bundle);
+
+                            }
+                            else if (foundMenuItem.navigation.equals("ProductCells")){
+
+                                navController.navigate(R.id.nav_productCellsListFragment, bundle);
+
+                            }
 
                         }
 
@@ -201,10 +215,12 @@ public class HomeFragment extends Fragment {
             }
 
 
-            binding.llStandart.setVisibility(View.GONE);
+            binding.llSettings.setVisibility(View.VISIBLE);
 
         }
         else {
+
+            binding.llStandart.setVisibility(View.VISIBLE);
 
             binding.btnSettings.setOnClickListener(new View.OnClickListener() {
                 @Override

@@ -205,6 +205,11 @@ public class HomeFragment extends Fragment {
                                 navController.navigate(R.id.nav_productCellsListFragment, bundle);
 
                             }
+                            else if (foundMenuItem.navigation.equals("Collect")){
+
+                                navController.navigate(R.id.nav_tests, bundle);
+
+                            }
 
                         }
 

@@ -145,10 +145,6 @@ public class HomeFragment extends Fragment {
 
         if (menuItems.size() > 0){
 
-            //for (int i = 0; i < binding.llSettings.getChildCount(); i++) {
-
-            //}
-
             for (MenuItem menuItem: menuItems) {
 
                 menuItem.button = (Button) inflater.inflate(R.layout.menu_button, null);
@@ -162,27 +158,44 @@ public class HomeFragment extends Fragment {
                     @Override
                     public void onClick(View view) {
 
-                        for (MenuItem menuItem1: menuItems) {
+                        MenuItem foundMenuItem = null;
+                        for (int i = 0; i < menuItems.size() && foundMenuItem == null; i++) {
 
-                            if (menuItem1.button == view){
+                            MenuItem currentMenuItem = menuItems.get(i);
 
-                                if (menuItem1.isGroup){
+                            if (currentMenuItem.button == view) {
 
-                                    menuStack.add(parent);
+                                foundMenuItem = currentMenuItem;
+                            }
 
-                                    parent = menuItem1.ref;
+                        }
 
-                                    getMenuItems(inflater, binding);
+                        if (foundMenuItem.isGroup){
 
-                                    break;
+                            menuStack.add(parent);
 
-                                }
+                            parent = foundMenuItem.ref;
+
+                            getMenuItems(inflater, binding);
+
+                        }
+                        else {
+
+                            if (foundMenuItem.navigation.equals("Placement")){
+
+                                navController.navigate(R.id.nav_placementMenuFragment, bundle);
+
+                            }
+                            else if (foundMenuItem.navigation.equals("Movement")){
+
+                                navController.navigate(R.id.nav_movementFragment, bundle);
 
                             }
 
                         }
 
                     }
+
                 });
 
             }

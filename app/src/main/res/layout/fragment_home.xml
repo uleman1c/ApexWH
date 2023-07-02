@@ -23,7 +23,8 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:text="Складской сотрудник"
-                android:textSize="24sp" />
+                android:textSize="24sp"
+                android:visibility="gone" />
 
             <LinearLayout
                 android:id="@+id/llStandart"

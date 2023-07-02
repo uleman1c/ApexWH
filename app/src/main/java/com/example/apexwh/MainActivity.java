@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.view.WindowManager;
+import android.widget.TextView;
 
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.navigation.NavigationView;
@@ -70,6 +71,8 @@ public class MainActivity extends AppCompatActivity {
         bundle.putString("id", intent.getStringExtra("id"));
         bundle.putString("name", intent.getStringExtra("name"));
         bundle.putString("warehouses", intent.getStringExtra("warehouses"));
+
+        ((TextView) navigationView.getHeaderView(0).findViewById(R.id.tvSettings)).setText(intent.getStringExtra("name"));
 
         navController.navigate(R.id.nav_home, bundle);
 

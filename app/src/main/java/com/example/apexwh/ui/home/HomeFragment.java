@@ -207,7 +207,7 @@ public class HomeFragment extends Fragment {
                             }
                             else if (foundMenuItem.navigation.equals("Collect")){
 
-                                navController.navigate(R.id.nav_tests, bundle);
+                                navController.navigate(R.id.nav_collectListFragment, bundle);
 
                             }
 

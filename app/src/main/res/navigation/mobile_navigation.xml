@@ -173,5 +173,9 @@
         android:id="@+id/nav_productTakementListFragment"
         android:name="com.example.apexwh.ui.takement.ProductTakementListFragment"
         android:label="Взятия номенклатуры из ячейки" />
+    <fragment
+        android:id="@+id/nav_collectListFragment"
+        android:name="com.example.apexwh.ui.collects.CollectListFragment"
+        android:label="Отбор товара" />
 
 </navigation>

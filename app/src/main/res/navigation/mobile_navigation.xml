@@ -177,5 +177,9 @@
         android:id="@+id/nav_collectListFragment"
         android:name="com.example.apexwh.ui.collects.CollectListFragment"
         android:label="Отбор товара" />
+    <fragment
+        android:id="@+id/nav_collectProductsFragment"
+        android:name="com.example.apexwh.ui.collects.CollectProductsFragment"
+        android:label="Отбор товаров" />
 
 </navigation>

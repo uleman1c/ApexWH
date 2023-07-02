@@ -4,16 +4,29 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.NavController;
 
+import com.android.volley.Request;
 import com.example.apexwh.HttpClient;
 import com.example.apexwh.HttpRequestJsonObjectInterface;
 import com.example.apexwh.JsonProcs;
+import com.example.apexwh.R;
+import com.example.apexwh.RequestToServer;
+import com.example.apexwh.objects.Cell;
 import com.example.apexwh.objects.DocumentLine;
+import com.example.apexwh.objects.ProductCell;
+import com.example.apexwh.objects.ProductCellContainerOutcome;
 import com.example.apexwh.ui.BundleMethodInterface;
 import com.example.apexwh.ui.Dialogs;
+import com.example.apexwh.ui.adapters.DataAdapter;
 import com.example.apexwh.ui.adapters.DocumentLineAdapter;
+import com.example.apexwh.ui.adapters.ListFragment;
+import com.example.apexwh.ui.adapters.ScanListFragment;
+import com.example.apexwh.ui.adapters.ScanProductsFragment;
 import com.example.apexwh.ui.products.ProductsFragment;
 
 import org.json.JSONArray;
@@ -24,197 +37,154 @@ import java.util.UUID;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link CollectProductsFragment#newInstance} factory method to
+ * Use the  factory method to
  * create an instance of this fragment.
  */
-public class CollectProductsFragment extends ProductsFragment {
+public class CollectProductsFragment extends ScanListFragment<ProductCell> {
+
+    String name, ref, order;
+
+    TextView tvProduct;
+    Cell cell;
+
+    ArrayList<ProductCellContainerOutcome> productCellContainerOutcomes;
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        name = getArguments().getString("name");
+        ref = getArguments().getString("ref");
+        order = getArguments().getString("order");
 
-        setListUpdater(new ListUpdater() {
-            @Override
-            public void update(String name, String ref, ArrayList<DocumentLine> lines, ProgressBar progressBar, DocumentLineAdapter adapter) {
-
-                lines.clear();
-
-                HttpClient httpClient = new HttpClient(getContext());
-
-                httpClient.request_get("/hs/dta/obj?request=getLinesToTest&name=" + name + "&id=" + ref, new HttpRequestJsonObjectInterface() {
-
-                    @Override
-                    public void setProgressVisibility(int visibility) {
-
-                        progressBar.setVisibility(visibility);
-
-                    }
-
-                    @Override
-                    public void processResponse(JSONObject jsonObjectResponse) {
-
-                        JSONArray jsonArrayResponses = JsonProcs.getJsonArrayFromJsonObject(jsonObjectResponse, "responses");
-
-                        JSONObject jsonObjectItem = JsonProcs.getItemJSONArray(jsonArrayResponses, 0);
-
-                        JSONArray jsonArrayObjects = JsonProcs.getJsonArrayFromJsonObject(jsonObjectItem, "LinesToTest");
-
-                        for (int j = 0; j < jsonArrayObjects.length(); j++) {
-
-                            JSONObject objectItem = JsonProcs.getItemJSONArray(jsonArrayObjects, j);
-
-                            lines.add(DocumentLine.DocumentLineFromJson(objectItem));
-
-                        }
-
-                        adapter.notifyDataSetChanged();
-
-                    }
-
-                });
-
-
-
-            }
-        });
-
-        setOnCreateViewElements(new OnCreateViewElements() {
-            @Override
-            public void execute(View root) {
-
-                getAdapter().setonBindViewHolderI(new DocumentLineAdapter.onBindViewHolderI() {
-                    @Override
-                    public void OnBindViewHolder(DocumentLineAdapter.DocumentLineItemViewHolder holder, int position, ArrayList<DocumentLine> documentLines) {
-
-                        DocumentLine documentLine = documentLines.get(position);
-
-                        holder.tvArtikul.setText(documentLine.productArtikul);
-                        holder.tvProduct.setText(documentLine.productName
-                                + (documentLine.characterName.isEmpty() || documentLine.characterName.equals("Основная характеристика") ? "" : ", " + documentLine.characterName));
-
-                        String allSK = "";
-
-                        for (String curSK : documentLine.shtrihCodes) {
-
-                            allSK = allSK + (allSK.isEmpty() ? "" : ", ") + curSK;
-
-                        }
-
-                        holder.tvShtrihCodes.setText(allSK);
-
-                        holder.tvScanned.setText(documentLine.scanned.toString() + " из " + documentLine.quantity.toString());
-
-                        if (documentLine.scanned == documentLine.quantity){
-
-                            holder.llMain.setBackgroundColor(Color.parseColor("#00ff00"));
-
-                        }
-
-
-                    }
-                });
-
-                getAdapter().setOnDocumentLineItemClickListener(new DocumentLineAdapter.OnDocumentLineItemClickListener() {
-                    @Override
-                    public void onDocumentLineItemClick(DocumentLine documentLine) {
-
-                        //curdocumentLine = documentLine;
-
-                        Bundle bundle = new Bundle();
-//                        bundle.putString("productRef", documentLine.productRef);
-//                        bundle.putString("productName", documentLine.productName);
-//                        bundle.putString("characterRef", documentLine.characterRef);
-//                        bundle.putString("characterName", documentLine.characterName);
-
-                        Dialogs.showQuestionYesNoCancel(getContext(), getActivity(), new BundleMethodInterface() {
-                            @Override
-                            public void callMethod(Bundle arguments) {
-
-                                sendScanned(documentLine, 1);
-
-                            }
-                        }, bundle, "Ввести вручную "
-                                + documentLine.productName
-                                + (documentLine.characterName.equals("Основная характеристика") ? "" :
-                                    " (" + documentLine.characterName + ")" ) + " ?", "Ввод");
-
-
-                    }
-                });
-
-                getAdapter().setOnDocumentLineItemLongClickListener(new DocumentLineAdapter.OnDocumentLineItemLongClickListener() {
-                    @Override
-                    public void onDocumentLineItemLongClick(DocumentLine documentLine) {
-
-                        Bundle bundle = new Bundle();
-
-                        Dialogs.showInputQuantity(getContext(), documentLine.quantity - documentLine.scanned, getActivity(), new BundleMethodInterface() {
-                            @Override
-                            public void callMethod(Bundle arguments) {
-
-                                sendScanned(documentLine, arguments.getInt("quantity"));
-
-                            }
-                        }, bundle, "Ввести вручную "
-                                + documentLine.productName
-                                + (documentLine.characterName.equals("Основная характеристика") ? "" :
-                                " (" + documentLine.characterName + ")" ) + " ?", "Ввод количества");
-
-
-
-                    }
-                });
-
-            }
-        });
+        productCellContainerOutcomes = new ArrayList<>();
 
     }
 
-    private void sendScanned(DocumentLine documentLine, int quantity) {
+    public CollectProductsFragment() {
 
-        final HttpClient httpClient = new HttpClient(getContext());
-        httpClient.addParam("id", UUID.randomUUID().toString());
-        httpClient.addParam("shtrihCode", "");
-        httpClient.addParam("appId", httpClient.getDbConstant("appId"));
-        httpClient.addParam("quantity", quantity);
-        httpClient.addParam("type1c", "doc");
-        httpClient.addParam("name1c", name);
-        httpClient.addParam("id1c", ref);
-        httpClient.addParam("productRef", documentLine.productRef);
-        httpClient.addParam("characterRef", documentLine.characterRef);
-        httpClient.addParam("characterName", documentLine.characterName);
-        httpClient.addParam("comment", "");
+        super(R.layout.fragment_scan_cell_list_clear, R.layout.product_cell_list_item);
 
-        httpClient.request_get("/hs/dta/obj", "setTestProduct", new HttpRequestJsonObjectInterface() {
+        setListUpdater(new ListFragment.ListUpdater() {
             @Override
-            public void setProgressVisibility(int visibility) {
+            public void update(ArrayList items, ProgressBar progressBar, DataAdapter adapter, String filter) {
 
-                progressBar.setVisibility(visibility);
-            }
+                items.clear();
 
-            @Override
-            public void processResponse(JSONObject response) {
+                productCellContainerOutcomes.clear();
 
-                setScanned(documentLine, quantity);
+                RequestToServer.executeRequestUW(getContext(), Request.Method.GET, "getErpSkladProductsToOutcome",
+                        "name=" + name + "&ref=" + ref, new JSONObject(), 1,
+                        new RequestToServer.ResponseResultInterface() {
+                            @Override
+                            public void onResponse(JSONObject response) {
 
-                if (allScanned()){
+                                progressBar.setVisibility(View.GONE);
 
-                    Dialogs.showQuestionYesNoCancel(getContext(), getActivity(), new BundleMethodInterface() {
-                        @Override
-                        public void callMethod(Bundle arguments) {
+                                JSONArray responseItems = JsonProcs.getJsonArrayFromJsonObject(response, "ErpSkladProductsToOutcome");
 
-                            setDocumentStatus();
+                                for (int j = 0; j < responseItems.length(); j++) {
 
-                        }
-                    }, new Bundle(), "Завершить проверку?", "Вопрос");
+                                    JSONObject objectItem = JsonProcs.getItemJSONArray(responseItems, j);
 
-                }
+                                    productCellContainerOutcomes.add(ProductCellContainerOutcome.FromJson(objectItem));
+
+//                                    cell = Cell.FromJson(JsonProcs.getJsonObjectFromJsonObject(objectItem, "cell"));
+//
+//                                    int productNumber = JsonProcs.getIntegerFromJSON(objectItem, "productNumber");
+//                                    int productUnitNumber = JsonProcs.getIntegerFromJSON(objectItem, "productUnitNumber");
+//                                    int containerNumber = JsonProcs.getIntegerFromJSON(objectItem, "containerNumber");
+//
+//                                    tvProduct.setText(cell.name + " " + productNumber + " шт (" + productUnitNumber + " упак) " + containerNumber + " конт");
+//
+//                                    JSONArray products = JsonProcs.getJsonArrayFromJsonObject(objectItem, "products");
+//
+//                                    for (int k = 0; k < products.length(); k++) {
+//
+//                                        ProductCell productCell = ProductCell.FromJson(JsonProcs.getItemJSONArray(products, k));
+//
+//                                        items.add(productCell);
+//                                    }
+
+
+                                }
+
+                                adapter.notifyDataSetChanged();
+                            }
+                        });
+
 
             }
         });
 
 
+        setOnCreateViewElements(new ListFragment.OnCreateViewElements() {
+            @Override
+            public void execute(View root, NavController navController) {
+
+                tvProduct = root.findViewById(R.id.tvProduct);
+
+                root.findViewById(R.id.llCell).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+
+                        String cellName = tvProduct.getText().toString();
+
+                        if (!cellName.isEmpty() && items.size() > 0) {
+
+                            Bundle args = new Bundle();
+                            args.putString("ref", UUID.randomUUID().toString());
+                            Dialogs.showQuestionYesNoCancel(getContext(), getActivity(), new BundleMethodInterface() {
+                                @Override
+                                public void callMethod(Bundle arguments) {
+
+                                    RequestToServer.executeRequestUW(getContext(), Request.Method.GET,
+                                            "setErpSkladCellClear", "cell=" + cell.ref + "&ref=" + arguments.getString("ref"), new JSONObject(),
+                                            RequestToServer.TypeOfResponse.JsonObjectWithArray, response -> {
+
+                                                JSONObject res = JsonProcs.getJsonObjectFromJsonObject(response, "ErpSkladCellClear");
+
+                                                listUpdater.update(items, progressBar, adapter, cell.name);
+
+                                            });
+
+
+                                }
+                            }, args, "Очистить ячейку ?", "Очищение");
+                        }
+                    }
+                });
+
+                getAdapter().setInitViewsMaker(new DataAdapter.InitViewsMaker() {
+                    @Override
+                    public void init(View itemView, ArrayList<TextView> textViews) {
+
+                        textViews.add(itemView.findViewById(R.id.tvNumberDate));
+                        textViews.add(itemView.findViewById(R.id.tvDescription));
+                        textViews.add(itemView.findViewById(R.id.tvStatus));
+                    }
+                });
+
+                getAdapter().setDrawViewHolder(new DataAdapter.DrawViewHolder<ProductCell>() {
+                    @Override
+                    public void draw(DataAdapter.ItemViewHolder holder, ProductCell item) {
+
+                        ((TextView) holder.getTextViews().get(0)).setText(item.product.artikul + " " + item.product.name);
+                        ((TextView) holder.getTextViews().get(1)).setText(item.container.name + " " + item.containerNumber + " шт");
+                        ((TextView) holder.getTextViews().get(2)).setText(item.productNumber + " шт (" + item.productUnitNumber + " упак)");
+                    }
+                });
+
+                getAdapter().setOnClickListener(document -> {});
+
+                getAdapter().setOnLongClickListener(document -> {});
+
+                updateList("");
+
+            }
+        });
+
 
     }
+
 
 }

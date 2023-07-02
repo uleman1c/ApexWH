@@ -40,7 +40,7 @@ public class CollectListFragment extends ListFragment<Outcome> {
             @Override
             public void update(ArrayList items, ProgressBar progressBar, DataAdapter adapter, String filter) {
 
-                filter = "50112947106042934464887810848535730503";
+                filter = "334942186980041030224284193605956262215";
 
                 if (filter.length() >= 32){
 
@@ -59,7 +59,7 @@ public class CollectListFragment extends ListFragment<Outcome> {
                                     bundle.putString("order", JsonProcs.getStringFromJSON(responseItem, "Ордер"));
 
                                     Navigation.findNavController(getActivity(), R.id.nav_host_fragment_content_main)
-                                            .navigate(R.id.nav_testProductsFragment, bundle);
+                                            .navigate(R.id.nav_collectProductsFragment, bundle);
 
                                 }
                             });

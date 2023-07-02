@@ -21,6 +21,12 @@ public class Characteristic extends Reference {
 
     }
 
+    public static Characteristic FromJson(JSONObject objectItem) {
+
+        return new Characteristic(Reference.ReferenceFromJson(objectItem));
+
+    }
+
 
 
 

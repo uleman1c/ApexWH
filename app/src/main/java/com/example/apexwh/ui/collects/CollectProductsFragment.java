@@ -104,6 +104,7 @@ public class CollectProductsFragment extends ScanListFragment<ProductCellContain
                 else {
 
                     ProductCellContainerOutcome foundPCCO = null;
+                    ProductCellContainerOutcome foundProduct = null;
                     for (int i = 0; i < items.size() && foundPCCO == null; i++) {
 
                         ProductCellContainerOutcome curPCCO = ((ProductCellContainerOutcome) items.get(i));
@@ -112,11 +113,34 @@ public class CollectProductsFragment extends ScanListFragment<ProductCellContain
 
                             foundPCCO = curPCCO;
 
+                        } else if (curPCCO.mode == 1) {
+
+                            if (filter.toLowerCase().equals(curPCCO.product.artikul.toLowerCase())){
+
+                                foundPCCO = curPCCO;
+                                foundProduct = curPCCO;
+
+                            }
+                            else {
+
+                                for (int j = 0; j < curPCCO.product.shtrihCodes.size() && foundProduct == null; j++) {
+
+                                    if (filter.toLowerCase().equals(curPCCO.product.shtrihCodes.get(j))){
+
+                                        foundPCCO = curPCCO;
+                                        foundProduct = curPCCO;
+
+                                    }
+
+                                }
+
+                            }
+
                         }
 
                     }
 
-                    if (foundPCCO != null){
+                    if (foundPCCO != null && foundProduct == null){
 
                         for (int i = 0; i < items.size(); i++) {
 
@@ -129,6 +153,25 @@ public class CollectProductsFragment extends ScanListFragment<ProductCellContain
                         items.remove(items.indexOf(foundPCCO));
 
                         items.add(0 , foundPCCO);
+
+                    }
+
+                    if (foundProduct != null){
+
+                        Bundle bundle = new Bundle();
+                        bundle.putString("ref", ref);
+                        bundle.putString("name", name);
+                        bundle.putString("order", order);
+                        bundle.putString("product", foundProduct.product.ref);
+
+                        Dialogs.showInputQuantity(getContext(), foundProduct.number, getActivity(), new BundleMethodInterface() {
+                            @Override
+                            public void callMethod(Bundle arguments) {
+
+                                doCollect(arguments);
+
+                            }
+                        }, bundle, "Введите количество " + foundProduct.product.artikul + " " + foundProduct.product.name, "Ввод количества");
 
                     }
 
@@ -232,6 +275,13 @@ public class CollectProductsFragment extends ScanListFragment<ProductCellContain
 
             }
         });
+
+
+    }
+
+    void doCollect(Bundle bundle){
+
+//        bundle.getInt("quantity")
 
 
     }

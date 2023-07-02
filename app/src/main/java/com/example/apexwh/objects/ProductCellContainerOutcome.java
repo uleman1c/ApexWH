@@ -35,7 +35,7 @@ public class ProductCellContainerOutcome {
 
     public static ProductCellContainerOutcome FromJson(JSONObject task_item) {
 
-        Product product = Product.FromJson(JsonProcs.getJsonObjectFromJsonObject(task_item, "product"));
+        Product product = Product.FromJsonWS(JsonProcs.getJsonObjectFromJsonObject(task_item, "product"));
         Characteristic characteristic = Characteristic.FromJson(JsonProcs.getJsonObjectFromJsonObject(task_item, "characteristic"));
         Cell cell = Cell.FromJson(JsonProcs.getJsonObjectFromJsonObject(task_item, "cell"));
         Container container = Container.FromJson(JsonProcs.getJsonObjectFromJsonObject(task_item, "container"));

@@ -162,6 +162,8 @@ public class CollectProductsFragment extends ScanListFragment<ProductCellContain
                         bundle.putString("ref", ref);
                         bundle.putString("name", name);
                         bundle.putString("order", order);
+                        bundle.putString("cell", foundProduct.cell.ref);
+                        bundle.putString("container", foundProduct.container.ref);
                         bundle.putString("product", foundProduct.product.ref);
 
                         Dialogs.showInputQuantity(getContext(), foundProduct.number, getActivity(), new BundleMethodInterface() {
@@ -281,8 +283,19 @@ public class CollectProductsFragment extends ScanListFragment<ProductCellContain
 
     void doCollect(Bundle bundle){
 
-//        bundle.getInt("quantity")
+        RequestToServer.executeRequestUW(getContext(), Request.Method.GET, "setErpSkladProductsToOutcome",
+                "doc=" + UUID.randomUUID().toString() + "&cell=" + bundle.getString("cell")
+                        + "&container=" + bundle.getString("container")
+                        + "&name=" + name + "&ref=" + ref + "&product=" + bundle.getString("product") + "&quantity=" + bundle.getInt("quantity"), new JSONObject(), 1,
+                new RequestToServer.ResponseResultInterface() {
+                    @Override
+                    public void onResponse(JSONObject response) {
 
+                        progressBar.setVisibility(View.GONE);
+
+                        updateList("");
+                    }
+                });
 
     }
 

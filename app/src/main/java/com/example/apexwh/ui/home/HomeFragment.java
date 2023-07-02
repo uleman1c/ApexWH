@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -151,6 +152,10 @@ public class HomeFragment extends Fragment {
             for (MenuItem menuItem: menuItems) {
 
                 menuItem.button = (Button) inflater.inflate(R.layout.menu_button, null);
+
+                LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+                layoutParams.setMargins(0, 0, 0, 20);
+                menuItem.button.setLayoutParams(layoutParams);
                 binding.llSettings.addView(menuItem.button);
                 menuItem.button.setText(menuItem.name);
                 menuItem.button.setOnClickListener(new View.OnClickListener() {

@@ -43,7 +43,14 @@ public class ListFragment<T> extends Fragment {
         return adapter;
     }
 
+
+
     protected DataAdapter adapter;
+
+    public RecyclerView getRecyclerView() {
+        return recyclerView;
+    }
+
     protected RecyclerView recyclerView;
     protected EditText etFilter;
     protected InputMethodManager imm;

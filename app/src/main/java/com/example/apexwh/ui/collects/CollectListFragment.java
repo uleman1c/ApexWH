@@ -18,6 +18,8 @@ import com.example.apexwh.RequestToServer;
 import com.example.apexwh.objects.MoversService;
 import com.example.apexwh.objects.Outcome;
 import com.example.apexwh.objects.Placement;
+import com.example.apexwh.ui.BundleMethodInterface;
+import com.example.apexwh.ui.Dialogs;
 import com.example.apexwh.ui.adapters.DataAdapter;
 import com.example.apexwh.ui.adapters.ListFragment;
 
@@ -40,7 +42,7 @@ public class CollectListFragment extends ListFragment<Outcome> {
             @Override
             public void update(ArrayList items, ProgressBar progressBar, DataAdapter adapter, String filter) {
 
-                filter = "334942186980041030224284193605956262215";
+                //filter = "334942186980041030224284193605956262215";
 
                 if (filter.length() >= 32){
 
@@ -63,37 +65,6 @@ public class CollectListFragment extends ListFragment<Outcome> {
 
                                 }
                             });
-
-
-//                    httpClient.request_get("/hs/dta/obj?request=getRefByNumberValue&ref=" + filter, new HttpRequestInterface() {
-//                        @Override
-//                        public void setProgressVisibility(int visibility) {
-//
-//                            progressBar.setVisibility(visibility);
-//
-//                        }
-//
-//                        @Override
-//                        public void processResponse(String response) {
-//
-//                            JSONObject jsonObjectResponse = JsonProcs.getJSONObjectFromString(response);
-//
-//                            if (JsonProcs.getBooleanFromJSON(jsonObjectResponse, "success")) {
-//
-//                                JSONArray jsonArrayResponses = JsonProcs.getJsonArrayFromJsonObject(jsonObjectResponse, "responses");
-//
-//                                JSONObject jsonObjectItem = JsonProcs.getItemJSONArray(jsonArrayResponses, 0);
-//
-//                                JSONObject jsonArrayObjects = JsonProcs.getJsonObjectFromJsonObject(jsonObjectItem, "RefByNumberValue");
-//
-//                                DoStartTest(Navigation.findNavController(getActivity(), R.id.nav_host_fragment_content_main),
-//                                        JsonProcs.getStringFromJSON(jsonArrayObjects, "Имя"),
-//                                        JsonProcs.getStringFromJSON(jsonArrayObjects, "Ссылка"));
-//
-//
-//                            }
-//                        }
-//                    });
                 }
                 else {
 
@@ -150,7 +121,26 @@ public class CollectListFragment extends ListFragment<Outcome> {
                     }
                 });
 
-                getAdapter().setOnClickListener(document -> {});
+                getAdapter().setOnClickListener(document -> {
+
+                    Outcome curOutcome = ((Outcome) document);
+
+                    Bundle bundle = new Bundle();
+                    bundle.putString("name", curOutcome.orderType);
+                    bundle.putString("ref", curOutcome.order);
+                    bundle.putString("order", "");
+
+                    Dialogs.showQuestionYesNoCancel(getContext(), getActivity(), new BundleMethodInterface() {
+                        @Override
+                        public void callMethod(Bundle arguments) {
+
+                            Navigation.findNavController(getActivity(), R.id.nav_host_fragment_content_main)
+                                    .navigate(R.id.nav_collectProductsFragment, arguments);
+
+                        }
+                    }, bundle, "Начать отбор " + curOutcome.orderDescription + "?", "Начать отбор");
+
+                });
 
                 getAdapter().setOnLongClickListener(document -> {});
 

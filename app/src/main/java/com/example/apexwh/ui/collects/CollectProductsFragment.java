@@ -269,7 +269,23 @@ public class CollectProductsFragment extends ScanListFragment<ProductCellContain
                     }
                 });
 
-                getAdapter().setOnClickListener(document -> {});
+                getAdapter().setOnClickListener(document -> {
+
+                    ProductCellContainerOutcome curPCCO = ((ProductCellContainerOutcome)document);
+
+                    if (curPCCO.mode == 0) {
+
+                        Bundle bundle = new Bundle();
+                        Dialogs.showQuestionYesNoCancel(getContext(), getActivity(), new BundleMethodInterface() {
+                            @Override
+                            public void callMethod(Bundle arguments) {
+
+                            }
+                        }, bundle, "Начать отбор из ячейки " + curPCCO.cell.name + "?", "Начать отбор");
+
+                    }
+
+                });
 
                 getAdapter().setOnLongClickListener(document -> {});
 

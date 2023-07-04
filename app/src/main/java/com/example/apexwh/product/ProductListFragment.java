@@ -7,6 +7,7 @@ import android.widget.TextView;
 
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
+import androidx.navigation.fragment.NavHostFragment;
 
 import com.android.volley.Request;
 import com.example.apexwh.DateStr;
@@ -19,6 +20,7 @@ import com.example.apexwh.ui.BundleMethodInterface;
 import com.example.apexwh.ui.Dialogs;
 import com.example.apexwh.ui.adapters.DataAdapter;
 import com.example.apexwh.ui.adapters.ListFragment;
+import com.example.apexwh.ui.shtrihcode_product.ShtrihcodeProductFragment;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -116,22 +118,18 @@ public class ProductListFragment extends ListFragment<Product> {
 
                 getAdapter().setOnClickListener(document -> {
 
-                    Outcome curOutcome = ((Outcome) document);
+                    Product product = ((Product) document);
 
                     Bundle bundle = new Bundle();
-                    bundle.putString("name", curOutcome.orderType);
-                    bundle.putString("ref", curOutcome.order);
-                    bundle.putString("order", "");
+                    bundle.putString("ref", product.ref);
+                    bundle.putString("name", product.name);
+                    bundle.putString("artikul", product.artikul);
 
-                    Dialogs.showQuestionYesNoCancel(getContext(), getActivity(), new BundleMethodInterface() {
-                        @Override
-                        public void callMethod(Bundle arguments) {
+                    getParentFragmentManager().setFragmentResult("selectProduct", bundle);
 
-                            Navigation.findNavController(getActivity(), R.id.nav_host_fragment_content_main)
-                                    .navigate(R.id.nav_collectProductsFragment, arguments);
+                    NavHostFragment.findNavController(ProductListFragment.this).popBackStack();
 
-                        }
-                    }, bundle, "Начать отбор " + curOutcome.orderDescription + "?", "Начать отбор");
+
 
                 });
 

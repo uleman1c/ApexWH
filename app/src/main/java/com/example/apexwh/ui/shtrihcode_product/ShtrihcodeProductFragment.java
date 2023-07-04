@@ -1,11 +1,18 @@
 package com.example.apexwh.ui.shtrihcode_product;
 
+import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.FragmentResultListener;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
+import androidx.navigation.fragment.NavHostFragment;
 
 import com.android.volley.Request;
 import com.example.apexwh.JsonProcs;
@@ -16,6 +23,7 @@ import com.example.apexwh.objects.ProductCell;
 import com.example.apexwh.objects.Shtrihcode;
 import com.example.apexwh.ui.adapters.DataAdapter;
 import com.example.apexwh.ui.adapters.ScanListFragment;
+import com.example.apexwh.ui.characteristics.CharacteristicsFragment;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -25,6 +33,23 @@ import java.util.ArrayList;
 public class ShtrihcodeProductFragment extends ScanListFragment<Shtrihcode> {
 
     TextView tvProduct;
+
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View view = super.onCreateView(inflater, container, savedInstanceState);
+        getParentFragmentManager().setFragmentResultListener("selectProduct", this, new FragmentResultListener() {
+
+            @Override
+            public void onFragmentResult(@NonNull String requestKey, @NonNull Bundle result) {
+
+                String b = "";
+
+            }
+        });
+
+        return view;
+
+    }
 
     public ShtrihcodeProductFragment() {
 
@@ -121,7 +146,9 @@ public class ShtrihcodeProductFragment extends ScanListFragment<Shtrihcode> {
                     }
                 });
 
-                getAdapter().setOnClickListener(document -> {});
+                getAdapter().setOnClickListener(document -> {
+
+                });
 
                 getAdapter().setOnLongClickListener(document -> {});
 

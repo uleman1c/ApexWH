@@ -353,6 +353,14 @@ public class HomeFragment extends Fragment {
                 }
             });
 
+            binding.btnShtrihcodeProduct.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+
+                    navController.navigate(R.id.nav_shtrihcodeProductFragment, bundle);
+
+                }
+            });
 
             if (!DB.isSettingsExist(getContext())) {
 

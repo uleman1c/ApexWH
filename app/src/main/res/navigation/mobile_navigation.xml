@@ -181,5 +181,9 @@
         android:id="@+id/nav_collectProductsFragment"
         android:name="com.example.apexwh.ui.collects.CollectProductsFragment"
         android:label="Отбор товаров" />
+    <fragment
+        android:id="@+id/nav_shtrihcodeProductFragment"
+        android:name="com.example.apexwh.ui.shtrihcode_product.ShtrihcodeProductFragment"
+        android:label="Штрихкодирование" />
 
 </navigation>

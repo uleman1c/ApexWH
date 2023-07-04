@@ -5,6 +5,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 
 import com.android.volley.Request;
 import com.example.apexwh.JsonProcs;
@@ -12,6 +13,7 @@ import com.example.apexwh.R;
 import com.example.apexwh.RequestToServer;
 import com.example.apexwh.objects.Product;
 import com.example.apexwh.objects.ProductCell;
+import com.example.apexwh.objects.Shtrihcode;
 import com.example.apexwh.ui.adapters.DataAdapter;
 import com.example.apexwh.ui.adapters.ScanListFragment;
 
@@ -20,7 +22,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-public class ShtrihcodeProductFragment extends ScanListFragment<ProductCell> {
+public class ShtrihcodeProductFragment extends ScanListFragment<Shtrihcode> {
 
     TextView tvProduct;
 
@@ -69,6 +71,13 @@ public class ShtrihcodeProductFragment extends ScanListFragment<ProductCell> {
 
                                 }
 
+                                if (responseItems.length() == 0){
+
+                                    items.add(new Shtrihcode(filter, true));
+
+                                }
+
+
                                 adapter.notifyDataSetChanged();
                             }
                         });
@@ -84,6 +93,16 @@ public class ShtrihcodeProductFragment extends ScanListFragment<ProductCell> {
 
                 tvProduct = root.findViewById(R.id.tvProduct);
 
+                root.findViewById(R.id.llProduct).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+
+                        Navigation.findNavController(getActivity(), R.id.nav_host_fragment_content_main)
+                                .navigate(R.id.nav_productListFragment);
+
+                    }
+                });
+
                 getAdapter().setInitViewsMaker(new DataAdapter.InitViewsMaker() {
                     @Override
                     public void init(View itemView, ArrayList<TextView> textViews) {
@@ -94,13 +113,11 @@ public class ShtrihcodeProductFragment extends ScanListFragment<ProductCell> {
                     }
                 });
 
-                getAdapter().setDrawViewHolder(new DataAdapter.DrawViewHolder<ProductCell>() {
+                getAdapter().setDrawViewHolder(new DataAdapter.DrawViewHolder<Shtrihcode>() {
                     @Override
-                    public void draw(DataAdapter.ItemViewHolder holder, ProductCell item) {
+                    public void draw(DataAdapter.ItemViewHolder holder, Shtrihcode item) {
 
-                        ((TextView) holder.getTextViews().get(0)).setText(item.cell.name);
-                        ((TextView) holder.getTextViews().get(1)).setText(item.container.name + " " + item.containerNumber + " шт");
-                        ((TextView) holder.getTextViews().get(2)).setText(item.productNumber + " шт (" + item.productUnitNumber + " упак)");
+                        ((TextView) holder.getTextViews().get(0)).setText(item.value);
                     }
                 });
 

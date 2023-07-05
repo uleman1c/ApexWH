@@ -21,6 +21,8 @@ import com.example.apexwh.RequestToServer;
 import com.example.apexwh.objects.Product;
 import com.example.apexwh.objects.ProductCell;
 import com.example.apexwh.objects.Shtrihcode;
+import com.example.apexwh.ui.BundleMethodInterface;
+import com.example.apexwh.ui.Dialogs;
 import com.example.apexwh.ui.adapters.DataAdapter;
 import com.example.apexwh.ui.adapters.ScanListFragment;
 import com.example.apexwh.ui.characteristics.CharacteristicsFragment;
@@ -34,6 +36,9 @@ public class ShtrihcodeProductFragment extends ScanListFragment<Shtrihcode> {
 
     TextView tvProduct;
 
+    Product product;
+    Shtrihcode shtrihcode;
+
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = super.onCreateView(inflater, container, savedInstanceState);
@@ -42,7 +47,21 @@ public class ShtrihcodeProductFragment extends ScanListFragment<Shtrihcode> {
             @Override
             public void onFragmentResult(@NonNull String requestKey, @NonNull Bundle result) {
 
-                String b = "";
+                product = new Product(result.getString("ref"), result.getString("name"), result.getString("artikul"));
+                tvProduct.setText(product.artikul + " " + product.name);
+
+                Bundle bundle = new Bundle();
+                bundle.putString("product", product.ref);
+                bundle.putString("shtrihcode", shtrihcode.value);
+                Dialogs.showQuestionYesNoCancel(getContext(), getActivity(), new BundleMethodInterface() {
+                    @Override
+                    public void callMethod(Bundle arguments) {
+
+
+
+
+                    }
+                }, bundle, "Установить " + product.artikul + " " + product.name + " штрихкод " + shtrihcode.value + "?" , "Установка штрихкода");
 
             }
         });
@@ -98,7 +117,9 @@ public class ShtrihcodeProductFragment extends ScanListFragment<Shtrihcode> {
 
                                 if (responseItems.length() == 0){
 
-                                    items.add(new Shtrihcode(filter, true));
+                                    shtrihcode = new Shtrihcode(filter, true);
+
+                                    items.add(shtrihcode);
 
                                 }
 
@@ -116,7 +137,7 @@ public class ShtrihcodeProductFragment extends ScanListFragment<Shtrihcode> {
             @Override
             public void execute(View root, NavController navController) {
 
-                tvProduct = root.findViewById(R.id.tvProduct);
+                tvProduct = (TextView) root.findViewById(R.id.tvProduct);
 
                 root.findViewById(R.id.llProduct).setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -132,9 +153,9 @@ public class ShtrihcodeProductFragment extends ScanListFragment<Shtrihcode> {
                     @Override
                     public void init(View itemView, ArrayList<TextView> textViews) {
 
-                        textViews.add(itemView.findViewById(R.id.tvNumberDate));
-                        textViews.add(itemView.findViewById(R.id.tvDescription));
-                        textViews.add(itemView.findViewById(R.id.tvStatus));
+                        textViews.add((TextView) itemView.findViewById(R.id.tvNumberDate));
+                        textViews.add((TextView) itemView.findViewById(R.id.tvDescription));
+                        textViews.add((TextView) itemView.findViewById(R.id.tvStatus));
                     }
                 });
 
@@ -142,7 +163,9 @@ public class ShtrihcodeProductFragment extends ScanListFragment<Shtrihcode> {
                     @Override
                     public void draw(DataAdapter.ItemViewHolder holder, Shtrihcode item) {
 
-                        ((TextView) holder.getTextViews().get(0)).setText(item.value);
+                        ((TextView) holder.getTextViews().get(0)).setText("Штрихкод");
+                        ((TextView) holder.getTextViews().get(1)).setText(item.value);
+                        ((TextView) holder.getTextViews().get(2)).setText(item.isNew ? "новый" : "");
                     }
                 });
 

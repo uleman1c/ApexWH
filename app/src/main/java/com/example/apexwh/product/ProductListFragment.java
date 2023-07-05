@@ -65,20 +65,20 @@ public class ProductListFragment extends ListFragment<Product> {
 
                     items.clear();
 
-                    RequestToServer.executeRequestUW(getContext(), Request.Method.GET, "getErpSkladOutcome", "filter=" + filter, new JSONObject(), 1,
+                    RequestToServer.executeRequestUW(getContext(), Request.Method.GET, "getErpSkladProducts", "filter=" + filter, new JSONObject(), 1,
                             new RequestToServer.ResponseResultInterface() {
                                 @Override
                                 public void onResponse(JSONObject response) {
 
                                     progressBar.setVisibility(View.GONE);
 
-                                    JSONArray responseItems = JsonProcs.getJsonArrayFromJsonObject(response, "ErpSkladOutcome");
+                                    JSONArray responseItems = JsonProcs.getJsonArrayFromJsonObject(response, "ErpSkladProducts");
 
                                     for (int j = 0; j < responseItems.length(); j++) {
 
                                         JSONObject objectItem = JsonProcs.getItemJSONArray(responseItems, j);
 
-                                        items.add(Outcome.FromJson(objectItem));
+                                        items.add(Product.FromJson(objectItem));
 
                                     }
 
@@ -99,20 +99,19 @@ public class ProductListFragment extends ListFragment<Product> {
                     @Override
                     public void init(View itemView, ArrayList<TextView> textViews) {
 
-                        textViews.add(itemView.findViewById(R.id.tvNumberDate));
-                        textViews.add(itemView.findViewById(R.id.tvDescription));
-                        textViews.add(itemView.findViewById(R.id.tvStatus));
+                        textViews.add((TextView) itemView.findViewById(R.id.tvNumberDate));
+                        textViews.add((TextView) itemView.findViewById(R.id.tvDescription));
+                        textViews.add((TextView) itemView.findViewById(R.id.tvStatus));
                     }
                 });
 
-                getAdapter().setDrawViewHolder(new DataAdapter.DrawViewHolder<Outcome>() {
+                getAdapter().setDrawViewHolder(new DataAdapter.DrawViewHolder<Product>() {
                     @Override
-                    public void draw(DataAdapter.ItemViewHolder holder, Outcome document) {
+                    public void draw(DataAdapter.ItemViewHolder holder, Product document) {
 
-                        ((TextView) holder.getTextViews().get(0)).setText("№ " + document.number + " от " + DateStr.FromYmdhmsToDmyhms(document.date));
-                        ((TextView) holder.getTextViews().get(1)).setText(document.receiver + ", " + document.orderDescription
-                                + (document.comment.isEmpty() ? "" : ", " + document.comment) );
-                        ((TextView) holder.getTextViews().get(2)).setText(document.status);
+                        ((TextView) holder.getTextViews().get(0)).setText("");
+                        ((TextView) holder.getTextViews().get(1)).setText(document.artikul);
+                        ((TextView) holder.getTextViews().get(2)).setText(document.name);
                     }
                 });
 

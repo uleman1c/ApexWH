@@ -42,6 +42,8 @@ public class HomeFragment extends Fragment {
 
     String nil = "00000000-0000-0000-0000-000000000000";
 
+    protected Boolean isSettingsExist;
+
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
 //        HomeViewModel homeViewModel =
@@ -121,6 +123,8 @@ public class HomeFragment extends Fragment {
         binding2.llSettings.removeViews(1, binding2.llSettings.getChildCount() - 1);
 
         binding2.btnBack.setVisibility(parent == nil ? View.GONE : View.VISIBLE);
+
+        isSettingsExist = DB.isSettingsExist(getContext());
 
         RequestToServer.executeRequestUW(getContext(), Request.Method.GET, "getErpSkladMenuSettings", "parent=" + parent, new JSONObject(), 1,
                 new RequestToServer.ResponseResultInterface() {
@@ -362,7 +366,7 @@ public class HomeFragment extends Fragment {
                 }
             });
 
-            if (!DB.isSettingsExist(getContext())) {
+            if (!isSettingsExist) {
 
                 ArrayList<Button> buttons = new ArrayList<>();
                 buttons.add(binding.btnAcceptment);
@@ -379,8 +383,8 @@ public class HomeFragment extends Fragment {
                 for (Button curBtn : buttons
                 ) {
 
-                    curBtn.setBackgroundColor(getResources().getColor(R.color.gray, null));
-                    curBtn.setTextColor(getResources().getColor(R.color.light_gray, null));
+                    curBtn.setBackgroundColor(getResources().getColor(R.color.gray));
+                    curBtn.setTextColor(getResources().getColor(R.color.light_gray));
                     curBtn.setClickable(false);
                 }
 

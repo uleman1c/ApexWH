@@ -214,6 +214,11 @@ public class HomeFragment extends Fragment {
                                 navController.navigate(R.id.nav_collectListFragment, bundle);
 
                             }
+                            else if (foundMenuItem.navigation.equals("ShtrihcodeProduct")){
+
+                                navController.navigate(R.id.nav_shtrihcodeProductFragment, bundle);
+
+                            }
 
                         }
 

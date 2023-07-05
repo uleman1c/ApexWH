@@ -57,7 +57,19 @@ public class ShtrihcodeProductFragment extends ScanListFragment<Shtrihcode> {
                     @Override
                     public void callMethod(Bundle arguments) {
 
+                        RequestToServer.executeRequestUW(getContext(), Request.Method.GET, "setErpSkladProductShtrihcode",
+                                "product=" + arguments.getString("product") + "&shtrihcode=" + arguments.getString("shtrihcode"), new JSONObject(), 1,
+                                new RequestToServer.ResponseResultInterface() {
+                                    @Override
+                                    public void onResponse(JSONObject response) {
 
+                                        progressBar.setVisibility(View.GONE);
+
+                                        Navigation.findNavController(getActivity(), R.id.nav_host_fragment_content_main)
+                                                .popBackStack();
+
+                                    }
+                                });
 
 
                     }

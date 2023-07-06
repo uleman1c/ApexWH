@@ -108,7 +108,7 @@ public class CharacteristicsFragment extends Fragment {
             }
         });
 
-        recyclerView = root.findViewById(R.id.list);
+        recyclerView = (RecyclerView) root.findViewById(R.id.list);
         recyclerView.setAdapter(adapter);
 
         updateList();

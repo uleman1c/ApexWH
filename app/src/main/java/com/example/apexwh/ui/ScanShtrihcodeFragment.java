@@ -189,9 +189,9 @@ public class ScanShtrihcodeFragment extends Fragment {
 
         setShtrihCodeInputs(root);
 
-        progressBar = root.findViewById(R.id.progressBar);
+        progressBar = (ProgressBar) root.findViewById(R.id.progressBar);
 
-        scannedText = root.findViewById(R.id.scannedText);
+        scannedText = (TextView) root.findViewById(R.id.scannedText);
 
         soundPlayer = new SoundPlayer(getContext(), R.raw.hrn05);
         getActivity().setVolumeControlStream(soundPlayer.streamType);
@@ -208,7 +208,7 @@ public class ScanShtrihcodeFragment extends Fragment {
     }
 
     protected void setShtrihCodeInputs(View root) {
-        actvShtrihCode = root.findViewById(R.id.actvShtrihCode);
+        actvShtrihCode = (EditText) root.findViewById(R.id.actvShtrihCode);
         actvShtrihCode.requestFocus();
 
         hSetFocus = new Handler();

@@ -92,14 +92,14 @@ public class ShtrihcodeProductFragment extends ScanListFragment<Shtrihcode> {
 
                 items.clear();
 
-                RequestToServer.executeRequestUW(getContext(), Request.Method.GET, "getErpSkladProductCells", "filter=" + filter, new JSONObject(), 1,
+                RequestToServer.executeRequestUW(getContext(), Request.Method.GET, "getErpSkladProductShtrihcodes", "filter=" + filter, new JSONObject(), 1,
                         new RequestToServer.ResponseResultInterface() {
                             @Override
                             public void onResponse(JSONObject response) {
 
                                 progressBar.setVisibility(View.GONE);
 
-                                JSONArray responseItems = JsonProcs.getJsonArrayFromJsonObject(response, "ErpSkladProductCells");
+                                JSONArray responseItems = JsonProcs.getJsonArrayFromJsonObject(response, "ErpSkladProductShtrihcodes");
 
                                 tvProduct.setText(filter + " не найден");
 
@@ -107,27 +107,25 @@ public class ShtrihcodeProductFragment extends ScanListFragment<Shtrihcode> {
 
                                     JSONObject objectItem = JsonProcs.getItemJSONArray(responseItems, j);
 
-                                    Product product = Product.FromJson(JsonProcs.getJsonObjectFromJsonObject(objectItem, "product"));
+                                    product = Product.FromJson(JsonProcs.getJsonObjectFromJsonObject(objectItem, "product"));
 
-                                    int productNumber = JsonProcs.getIntegerFromJSON(objectItem, "productNumber");
-                                    int productUnitNumber = JsonProcs.getIntegerFromJSON(objectItem, "productUnitNumber");
-                                    int containerNumber = JsonProcs.getIntegerFromJSON(objectItem, "containerNumber");
+                                    tvProduct.setText(product.artikul + " " + product.name);
 
-                                    tvProduct.setText(product.artikul + " " + product.name + " " + productNumber + " шт (" + productUnitNumber + " упак) " + containerNumber + " конт");
-
-                                    JSONArray cells = JsonProcs.getJsonArrayFromJsonObject(objectItem, "cells");
+                                    JSONArray cells = JsonProcs.getJsonArrayFromJsonObject(objectItem, "shtrihcodes");
 
                                     for (int k = 0; k < cells.length(); k++) {
 
-                                        ProductCell productCell = ProductCell.FromJson(JsonProcs.getItemJSONArray(cells, k));
+                                        JSONObject productCell = JsonProcs.getItemJSONArray(cells, k);
 
-                                        items.add(productCell);
+                                        items.add(new Shtrihcode(JsonProcs.getStringFromJSON(productCell, "shtrihcode"), false));
                                     }
 
 
                                 }
 
                                 if (responseItems.length() == 0){
+
+                                    product = null;
 
                                     shtrihcode = new Shtrihcode(filter, true);
 
@@ -155,8 +153,12 @@ public class ShtrihcodeProductFragment extends ScanListFragment<Shtrihcode> {
                     @Override
                     public void onClick(View view) {
 
-                        Navigation.findNavController(getActivity(), R.id.nav_host_fragment_content_main)
-                                .navigate(R.id.nav_productListFragment);
+                        if (product == null){
+
+                            Navigation.findNavController(getActivity(), R.id.nav_host_fragment_content_main)
+                                    .navigate(R.id.nav_productListFragment);
+
+                        }
 
                     }
                 });

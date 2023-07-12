@@ -46,6 +46,8 @@ public class JsonProcs {
             response = (JSONObject) readerArray.get(name);
         } catch (JSONException e) {
             e.printStackTrace();
+        } catch (ClassCastException classCastException) {
+
         }
         return response;
     }

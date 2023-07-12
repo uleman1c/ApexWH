@@ -44,6 +44,8 @@ public class CollectListFragment extends ListFragment<Outcome> {
 
                 //filter = "334942186980041030224284193605956262215";
 
+                progressBar.setVisibility(View.VISIBLE);
+
                 if (filter.length() >= 32){
 
                     RequestToServer.executeRequestUW(getContext(), Request.Method.GET, "getErpSkladRefByNumberValue", "ref=" + filter, new JSONObject(), 1,
@@ -55,14 +57,18 @@ public class CollectListFragment extends ListFragment<Outcome> {
 
                                     JSONObject responseItem = JsonProcs.getJsonObjectFromJsonObject(response, "ErpSkladRefByNumberValue");
 
-                                    Bundle bundle = new Bundle();
-                                    bundle.putString("name", JsonProcs.getStringFromJSON(responseItem, "Имя"));
-                                    bundle.putString("ref", JsonProcs.getStringFromJSON(responseItem, "Ссылка"));
-                                    bundle.putString("order", JsonProcs.getStringFromJSON(responseItem, "Ордер"));
+                                    String order = JsonProcs.getStringFromJSON(responseItem, "Ордер");
 
-                                    Navigation.findNavController(getActivity(), R.id.nav_host_fragment_content_main)
-                                            .navigate(R.id.nav_collectProductsFragment, bundle);
+                                    if (!order.isEmpty()) {
 
+                                        Bundle bundle = new Bundle();
+                                        bundle.putString("name", JsonProcs.getStringFromJSON(responseItem, "Имя"));
+                                        bundle.putString("ref", JsonProcs.getStringFromJSON(responseItem, "Ссылка"));
+                                        bundle.putString("order", order);
+
+                                        Navigation.findNavController(getActivity(), R.id.nav_host_fragment_content_main)
+                                                .navigate(R.id.nav_collectProductsFragment, bundle);
+                                    }
                                 }
                             });
                 }

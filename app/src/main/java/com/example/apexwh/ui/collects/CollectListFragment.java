@@ -1,6 +1,7 @@
 package com.example.apexwh.ui.collects;
 
-import android.icu.text.SimpleDateFormat;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ProgressBar;
@@ -68,6 +69,22 @@ public class CollectListFragment extends ListFragment<Outcome> {
 
                                         Navigation.findNavController(getActivity(), R.id.nav_host_fragment_content_main)
                                                 .navigate(R.id.nav_collectProductsFragment, bundle);
+
+                                    } else {
+
+                                        AlertDialog.Builder builder=new AlertDialog.Builder(getActivity());
+                                        builder.setTitle("Внимание")
+                                                .setMessage("Документ " + filter + " не найден")
+                                                .setPositiveButton("ОК", new DialogInterface.OnClickListener() {
+                                                    @Override
+                                                    public void onClick(DialogInterface dialog, int which) {
+
+                                                        etFilter.setText("");
+
+                                                        dialog.cancel();
+
+                                                    }
+                                                }).create().show();
                                     }
                                 }
                             });
@@ -110,9 +127,9 @@ public class CollectListFragment extends ListFragment<Outcome> {
                     @Override
                     public void init(View itemView, ArrayList<TextView> textViews) {
 
-                        textViews.add(itemView.findViewById(R.id.tvNumberDate));
-                        textViews.add(itemView.findViewById(R.id.tvDescription));
-                        textViews.add(itemView.findViewById(R.id.tvStatus));
+                        textViews.add((TextView) itemView.findViewById(R.id.tvNumberDate));
+                        textViews.add((TextView) itemView.findViewById(R.id.tvDescription));
+                        textViews.add((TextView) itemView.findViewById(R.id.tvStatus));
                     }
                 });
 

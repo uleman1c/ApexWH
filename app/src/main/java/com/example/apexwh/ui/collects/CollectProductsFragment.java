@@ -95,7 +95,11 @@ public class CollectProductsFragment extends ScanListFragment<ProductCellContain
                                     items.sort(new Comparator() {
                                         @Override
                                         public int compare(Object o, Object t1) {
-                                            return ((ProductCellContainerOutcome) o).cell.name.compareTo(((ProductCellContainerOutcome) t1).cell.name);
+
+                                            String cl1 = ((ProductCellContainerOutcome) o).cell.level + ((ProductCellContainerOutcome) o).cell.name;
+                                            String cl2 = ((ProductCellContainerOutcome) t1).cell.level + ((ProductCellContainerOutcome) t1).cell.name;
+
+                                            return cl1.compareTo(cl2);
                                         }
                                     });
 

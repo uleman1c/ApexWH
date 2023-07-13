@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -42,6 +43,8 @@ public class CollectProductsFragment extends ScanListFragment<ProductCellContain
     String name, ref, order;
 
     TextView tvProduct;
+
+    LinearLayout linearLayout;
     Cell cell;
 
     ArrayList<ProductCellContainerOutcome> productCellContainerOutcomes;
@@ -190,6 +193,9 @@ public class CollectProductsFragment extends ScanListFragment<ProductCellContain
 
                 tvProduct = root.findViewById(R.id.tvProduct);
 
+                linearLayout = root.findViewById(R.id.LinearLayout);
+
+
                 root.findViewById(R.id.llCell).setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -273,44 +279,47 @@ public class CollectProductsFragment extends ScanListFragment<ProductCellContain
 
                     ProductCellContainerOutcome curPCCO = ((ProductCellContainerOutcome)document);
 
-                    if (curPCCO.mode == 0) {
+                    if (curPCCO.mode == 0 ) {
 
-                        Bundle bundle = new Bundle();
-                        bundle.putInt("index", items.indexOf(curPCCO));
-                        Dialogs.showQuestionYesNoCancel(getContext(), getActivity(), new BundleMethodInterface() {
-                            @Override
-                            public void callMethod(Bundle arguments) {
+                        if (curPCCO.cell.name.isEmpty()) {
 
-                                ProductCellContainerOutcome foundPCCO = null;
+                            Bundle bundle = new Bundle();
+                            bundle.putInt("index", items.indexOf(curPCCO));
+                            Dialogs.showQuestionYesNoCancel(getContext(), getActivity(), new BundleMethodInterface() {
+                                @Override
+                                public void callMethod(Bundle arguments) {
 
-                                for (int i = 0; i < items.size(); i++) {
+                                    ProductCellContainerOutcome foundPCCO = null;
 
-                                    ProductCellContainerOutcome curPCCO = ((ProductCellContainerOutcome) items.get(i));
+                                    for (int i = 0; i < items.size(); i++) {
 
-                                    if (i == arguments.getInt("index")){
+                                        ProductCellContainerOutcome curPCCO = ((ProductCellContainerOutcome) items.get(i));
 
-                                        foundPCCO = curPCCO;
+                                        if (i == arguments.getInt("index")) {
+
+                                            foundPCCO = curPCCO;
+
+                                        }
+
+
+                                        curPCCO.mode = i == arguments.getInt("index") ? 1 : 0;
 
                                     }
 
+                                    items.remove(items.indexOf(foundPCCO));
 
-                                    curPCCO.mode = i == arguments.getInt("index") ? 1 : 0;
+                                    items.add(0, foundPCCO);
+
+                                    getAdapter().notifyDataSetChanged();
+
+                                    getRecyclerView().smoothScrollToPosition(0);
 
                                 }
-
-                                items.remove(items.indexOf(foundPCCO));
-
-                                items.add(0 , foundPCCO);
-
-                                getAdapter().notifyDataSetChanged();
-
-                                getRecyclerView().smoothScrollToPosition(0);
-
-                            }
-                        }, bundle, "Начать отбор из ячейки " + curPCCO.cell.name + "?", "Начать отбор из ячейки");
+                            }, bundle, "Начать отбор из ячейки " + curPCCO.cell.name + "?", "Начать отбор из ячейки");
+                        }
 
                     }
-                    else {
+                    else if (false && curPCCO.product.shtrihCodes.size() == 0){
 
                         Bundle bundle = new Bundle();
                         bundle.putInt("index", items.indexOf(curPCCO));
@@ -358,6 +367,12 @@ public class CollectProductsFragment extends ScanListFragment<ProductCellContain
 
     void doCollect(Bundle bundle){
 
+
+        linearLayout.setVisibility(View.GONE);
+
+        progressBar.setVisibility(View.VISIBLE);
+
+
         RequestToServer.executeRequestUW(getContext(), Request.Method.GET, "setErpSkladProductsToOutcome",
                 "doc=" + UUID.randomUUID().toString() + "&cell=" + bundle.getString("cell")
                         + "&container=" + bundle.getString("container")
@@ -367,6 +382,8 @@ public class CollectProductsFragment extends ScanListFragment<ProductCellContain
                     public void onResponse(JSONObject response) {
 
                         progressBar.setVisibility(View.GONE);
+
+                        linearLayout.setVisibility(View.VISIBLE);
 
                         updateList("");
                     }

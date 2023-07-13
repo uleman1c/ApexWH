@@ -91,6 +91,8 @@ public class CollectListFragment extends ListFragment<Outcome> {
                 }
                 else {
 
+                    int removed = items.size();
+
                     items.clear();
 
                     RequestToServer.executeRequestUW(getContext(), Request.Method.GET, "getErpSkladOutcome", "filter=" + filter, new JSONObject(), 1,
@@ -110,7 +112,9 @@ public class CollectListFragment extends ListFragment<Outcome> {
 
                                     }
 
-                                    adapter.notifyDataSetChanged();
+                                    adapter.notifyItemRemoved(removed);
+
+                                    adapter.notifyItemInserted(items.size());
                                 }
                             });
                 }

@@ -96,8 +96,10 @@ public class CollectProductsFragment extends ScanListFragment<ProductCellContain
                                         @Override
                                         public int compare(Object o, Object t1) {
 
-                                            String cl1 = ((ProductCellContainerOutcome) o).cell.level + ((ProductCellContainerOutcome) o).cell.name;
-                                            String cl2 = ((ProductCellContainerOutcome) t1).cell.level + ((ProductCellContainerOutcome) t1).cell.name;
+                                            String l1 = ((ProductCellContainerOutcome) o).cell.level;
+                                            String l2 = ((ProductCellContainerOutcome) t1).cell.level;
+                                            String cl1 = (l1.equals("P") ? "0" : "") + l1 + ((ProductCellContainerOutcome) o).cell.name;
+                                            String cl2 = (l2.equals("P") ? "0" : "") + l2 + ((ProductCellContainerOutcome) t1).cell.name;
 
                                             return cl1.compareTo(cl2);
                                         }

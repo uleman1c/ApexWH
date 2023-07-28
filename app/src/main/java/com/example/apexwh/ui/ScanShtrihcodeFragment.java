@@ -223,7 +223,7 @@ public class ScanShtrihcodeFragment extends Fragment {
 
                 String strCatName = intent.getStringExtra("EXTRA_BARCODE_DECODING_DATA");
 
-                scanCodeSetter.setScanCode(strCatName.substring(0, strCatName.length()-1), -1, 1);
+                scanCodeSetter.setScanCode(strCatName.replaceAll("\n", ""), -1, 1);
 
             }
         };

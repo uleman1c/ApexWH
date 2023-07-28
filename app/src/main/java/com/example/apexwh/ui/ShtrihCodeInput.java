@@ -42,7 +42,7 @@ public class ShtrihCodeInput {
 
                 String strCatName = intent.getStringExtra("EXTRA_BARCODE_DECODING_DATA");
 
-                afterScanShtrih.Scan(strCatName.substring(0, strCatName.length()-1));
+                afterScanShtrih.Scan(strCatName.replaceAll("\n", ""));
 
             }
         };

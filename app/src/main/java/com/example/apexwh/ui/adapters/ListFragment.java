@@ -1,6 +1,9 @@
 package com.example.apexwh.ui.adapters;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -13,6 +16,7 @@ import android.widget.ProgressBar;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.RecyclerView;
@@ -69,6 +73,8 @@ public class ListFragment<T> extends Fragment {
 
     protected Bundle arguments;
 
+    public BroadcastReceiver broadcastReceiver;
+
 //    public void setInitViewsMaker(DataAdapter.InitViewsMaker initViewsMaker) {
 //        this.initViewsMaker = initViewsMaker;
 //    }
@@ -99,6 +105,17 @@ public class ListFragment<T> extends Fragment {
                              @Nullable Bundle savedInstanceState) {
         View root = inflater.inflate(fragmentLayout, container, false);
 
+        broadcastReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+
+                String strCatName = intent.getStringExtra("EXTRA_BARCODE_DECODING_DATA");
+
+                updateList(strCatName.replaceAll("\n", ""));
+
+            }
+        };
+
         arguments = getArguments();
 
         Bundle settings = DB.getSettings(getContext());
@@ -109,46 +126,6 @@ public class ListFragment<T> extends Fragment {
 
         adapter = new DataAdapter<T>(getContext(), items, itemLayout);
 
-//        adapter.setInitViewsMaker(initViewsMaker);
-//
-//        adapter.setDrawViewHolder(drawViewHolder);
-
-//        adapter.setOnItemClickListener(new DocumentDataAdapter.OnDocumentItemClickListener() {
-//            @Override
-//            public void onDocumentItemClick(Document document) {
-//
-//                Bundle bundle = new Bundle();
-//                bundle.putString("ref", document.ref);
-//                bundle.putString("name", document.name);
-//                bundle.putString("nameStr", document.nameStr);
-//                bundle.putString("number", document.number);
-//                bundle.putString("date", document.date);
-//                bundle.putString("description", document.description);
-//                bundle.putString("mode", "return");
-//
-//                Navigation.findNavController(getActivity(), R.id.nav_host_fragment_content_main).navigate(R.id.nav_products, bundle);
-//
-//            }
-//
-//        });
-//        adapter.setOnDocumentItemLongClickListener(new DocumentDataAdapter.OnDocumentItemLongClickListener() {
-//            @Override
-//            public void onDocumentLongItemClick(Document document) {
-//
-//                name = document.name;
-//                ref = document.ref;
-//
-//                if (getFoto.intent != null){
-//
-//                    startActivityForResult(getFoto.intent, CAMERA_REQUEST_FOTO);
-//
-//                }
-//
-//
-//
-//            }
-//        });
-//
         recyclerView = root.findViewById(R.id.list);
         recyclerView.setAdapter(adapter);
 
@@ -209,6 +186,17 @@ public class ListFragment<T> extends Fragment {
 
     }
 
+    public void RegisterReceiver(FragmentActivity fragmentActivity){
+
+        fragmentActivity.registerReceiver(broadcastReceiver, new IntentFilter("com.xcheng.scanner.action.BARCODE_DECODING_BROADCAST"));
+
+    }
+
+    public void UnRegisterReceiver(FragmentActivity fragmentActivity){
+
+        fragmentActivity.unregisterReceiver(broadcastReceiver);
+
+    }
 
 
 }

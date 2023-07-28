@@ -177,5 +177,21 @@ public class CollectListFragment extends ListFragment<Outcome> {
 
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        RegisterReceiver(getActivity());
+
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+
+        UnRegisterReceiver(getActivity());
+
+    }
+
 
 }

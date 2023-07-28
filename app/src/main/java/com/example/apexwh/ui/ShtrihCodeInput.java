@@ -1,12 +1,16 @@
 package com.example.apexwh.ui;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 
 import android.os.Handler;
+import android.widget.Toast;
 
 import androidx.fragment.app.FragmentActivity;
 
@@ -19,6 +23,9 @@ public class ShtrihCodeInput {
     public InputMethodManager imm;
     public Boolean shtrihCodeKeyboard;
 
+    public BroadcastReceiver broadcastReceiver;
+
+
     public interface AfterScanShtrih{
 
         void Scan(String shtrihcode);
@@ -28,6 +35,17 @@ public class ShtrihCodeInput {
 
 
     public ShtrihCodeInput(FragmentActivity fragmentActivity, View root, int RidactvShtrihCode, int RidibKeyboard, AfterScanShtrih afterScanShtrih) {
+
+        broadcastReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+
+                String strCatName = intent.getStringExtra("EXTRA_BARCODE_DECODING_DATA");
+
+                afterScanShtrih.Scan(strCatName.substring(0, strCatName.length()-1));
+
+            }
+        };
 
         actvShtrihCode = root.findViewById(RidactvShtrihCode);
 
@@ -110,4 +128,11 @@ public class ShtrihCodeInput {
         });
 
     }
+
+    public void RegisterReceiver(FragmentActivity fragmentActivity){
+
+        fragmentActivity.registerReceiver(broadcastReceiver, new IntentFilter("com.xcheng.scanner.action.BARCODE_DECODING_BROADCAST"));
+
+    }
+
 }

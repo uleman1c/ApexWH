@@ -57,40 +57,6 @@ public class ScanListFragment<T> extends ListFragment {
             }
         });
 
-
-
-
-//        etFilter = root.findViewById(R.id.etFilter);
-//        etFilter.setOnKeyListener(new View.OnKeyListener() {
-//            @Override
-//            public boolean onKey(View view, int keyCode, KeyEvent keyEvent) {
-//
-//                if (keyEvent.getAction() == KeyEvent.ACTION_DOWN &&
-//                        (keyCode == KeyEvent.KEYCODE_ENTER)) {
-//
-//                    String strCatName = etFilter.getText().toString();
-//
-//                    imm.hideSoftInputFromWindow(etFilter.getWindowToken(), 0);
-//
-//                    updateList(strCatName);
-//
-//                    return true;
-//                }
-//
-//                return false;
-//            }
-//        });
-//
-//        root.findViewById(R.id.btnClear).setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//
-//                etFilter.setText("");
-//                updateList(etFilter.getText().toString());
-//
-//            }
-//        });
-
         if (onCreateViewElements != null){
 
             onCreateViewElements.execute(root, Navigation.findNavController(getActivity(), R.id.nav_host_fragment_content_main));
@@ -103,7 +69,11 @@ public class ScanListFragment<T> extends ListFragment {
         return root;
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
 
+        shtrihCodeInput.RegisterReceiver(getActivity());
 
-
+    }
 }

@@ -60,6 +60,11 @@ public class CollectProductsFragment extends ScanListFragment<ProductCellContain
 
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+    }
+
     public CollectProductsFragment() {
 
         super(R.layout.fragment_scan_list_clear, R.layout.product_cell_border_list_item);

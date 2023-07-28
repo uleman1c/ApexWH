@@ -135,4 +135,10 @@ public class ShtrihCodeInput {
 
     }
 
+    public void UnRegisterReceiver(FragmentActivity fragmentActivity){
+
+        fragmentActivity.unregisterReceiver(broadcastReceiver);
+
+    }
+
 }

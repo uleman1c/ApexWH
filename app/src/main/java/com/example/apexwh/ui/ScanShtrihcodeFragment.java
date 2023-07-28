@@ -1,6 +1,9 @@
 package com.example.apexwh.ui;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.KeyEvent;
@@ -15,6 +18,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentResultListener;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
@@ -84,6 +88,8 @@ public class ScanShtrihcodeFragment extends Fragment {
     Handler hSetFocus;
     private SoundPlayer soundPlayer;
 
+    public BroadcastReceiver broadcastReceiver;
+
     public interface ListUpdater{
 
         void update(String name, String ref, ArrayList<DocumentLine> lines, ProgressBar progressBar, DocumentLineAdapter adapter);
@@ -93,6 +99,8 @@ public class ScanShtrihcodeFragment extends Fragment {
     public void setListUpdater(ListUpdater listUpdater) {
         this.listUpdater = listUpdater;
     }
+
+
 
     private ListUpdater listUpdater;
 
@@ -208,6 +216,18 @@ public class ScanShtrihcodeFragment extends Fragment {
     }
 
     protected void setShtrihCodeInputs(View root) {
+
+        broadcastReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+
+                String strCatName = intent.getStringExtra("EXTRA_BARCODE_DECODING_DATA");
+
+                scanCodeSetter.setScanCode(strCatName.substring(0, strCatName.length()-1), -1, 1);
+
+            }
+        };
+
         actvShtrihCode = (EditText) root.findViewById(R.id.actvShtrihCode);
         actvShtrihCode.requestFocus();
 
@@ -280,6 +300,19 @@ public class ScanShtrihcodeFragment extends Fragment {
             }
         });
     }
+
+    public void RegisterReceiver(FragmentActivity fragmentActivity){
+
+        fragmentActivity.registerReceiver(broadcastReceiver, new IntentFilter("com.xcheng.scanner.action.BARCODE_DECODING_BROADCAST"));
+
+    }
+
+    public void UnRegisterReceiver(FragmentActivity fragmentActivity){
+
+        fragmentActivity.unregisterReceiver(broadcastReceiver);
+
+    }
+
 
     private void showInputNumber(DocumentLine documentLine){
 

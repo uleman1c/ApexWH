@@ -146,4 +146,22 @@ public class MovementFragment extends ScanShtrihcodeFragment {
             }
         });
     }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        RegisterReceiver(getActivity());
+
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+
+        UnRegisterReceiver(getActivity());
+
+    }
+
+
 }

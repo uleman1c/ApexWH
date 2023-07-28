@@ -76,4 +76,12 @@ public class ScanListFragment<T> extends ListFragment {
         shtrihCodeInput.RegisterReceiver(getActivity());
 
     }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+
+        shtrihCodeInput.UnRegisterReceiver(getActivity());
+
+    }
 }

@@ -6,7 +6,10 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -128,6 +131,7 @@ public class PincodeActivity extends AppCompatActivity {
 
     protected ShtrihCodeInput shtrihCodeInput;
 
+    private BroadcastReceiver broadcastReceiver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -137,6 +141,18 @@ public class PincodeActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
 
         binding.llShtrih.setVisibility(View.GONE);
+
+        broadcastReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+
+                String strCatName = intent.getStringExtra("EXTRA_BARCODE_DECODING_DATA");
+
+                testPincode(strCatName.replaceAll("\n", ""));
+
+
+            }
+        };
 
         shtrihCodeInput = new ShtrihCodeInput(this, binding.getRoot(), R.id.actvShtrihCode, R.id.ibKeyboard, new ShtrihCodeInput.AfterScanShtrih() {
             @Override
@@ -327,5 +343,22 @@ public class PincodeActivity extends AppCompatActivity {
     private void delayedHide(int delayMillis) {
         mHideHandler.removeCallbacks(mHideRunnable);
         mHideHandler.postDelayed(mHideRunnable, delayMillis);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        registerReceiver(broadcastReceiver, new IntentFilter("com.xcheng.scanner.action.BARCODE_DECODING_BROADCAST"));
+
+
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        unregisterReceiver(broadcastReceiver);
+
     }
 }

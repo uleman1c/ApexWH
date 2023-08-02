@@ -170,24 +170,9 @@ public class CollectProductsFragment extends ScanListFragment<ProductCellContain
 
                     }
 
-                    if (foundProduct != null){
+                    if (foundProduct != null && askQuantityAfterProductScan){
 
-                        Bundle bundle = new Bundle();
-                        bundle.putString("ref", ref);
-                        bundle.putString("name", name);
-                        bundle.putString("order", order);
-                        bundle.putString("cell", foundProduct.cell.ref);
-                        bundle.putString("container", foundProduct.container.ref);
-                        bundle.putString("product", foundProduct.product.ref);
-
-                        Dialogs.showInputQuantity(getContext(), foundProduct.number, getActivity(), new BundleMethodInterface() {
-                            @Override
-                            public void callMethod(Bundle arguments) {
-
-                                doCollect(arguments);
-
-                            }
-                        }, bundle, "Введите количество " + foundProduct.product.artikul + " " + foundProduct.product.name, "Ввод количества");
+                        askQuantity(foundProduct);
 
                     }
 
@@ -340,22 +325,7 @@ public class CollectProductsFragment extends ScanListFragment<ProductCellContain
 
                                 ProductCellContainerOutcome foundProduct = ((ProductCellContainerOutcome) items.get(arguments.getInt("index")));
 
-                                Bundle bundle = new Bundle();
-                                bundle.putString("ref", ref);
-                                bundle.putString("name", name);
-                                bundle.putString("order", order);
-                                bundle.putString("cell", foundProduct.cell.ref);
-                                bundle.putString("container", foundProduct.container.ref);
-                                bundle.putString("product", foundProduct.product.ref);
-
-                                Dialogs.showInputQuantity(getContext(), foundProduct.number, getActivity(), new BundleMethodInterface() {
-                                    @Override
-                                    public void callMethod(Bundle arguments) {
-
-                                        doCollect(arguments);
-
-                                    }
-                                }, bundle, "Введите количество " + foundProduct.product.artikul + " " + foundProduct.product.name, "Ввод количества");
+                                askQuantity(foundProduct);
 
                             }
                         }, bundle, "Начать отбор номенклатуры " + curPCCO.product.name + "?", "Начать отбор номенклатуры");
@@ -366,7 +336,15 @@ public class CollectProductsFragment extends ScanListFragment<ProductCellContain
 
                 });
 
-                getAdapter().setOnLongClickListener(document -> {});
+                getAdapter().setOnLongClickListener(document -> {
+
+                    if (!askQuantityAfterProductScan){
+
+                        askQuantity((ProductCellContainerOutcome) document);
+
+                    }
+
+                });
 
                 updateList("");
 
@@ -374,6 +352,25 @@ public class CollectProductsFragment extends ScanListFragment<ProductCellContain
         });
 
 
+    }
+
+    private void askQuantity(ProductCellContainerOutcome foundProduct) {
+        Bundle bundle = new Bundle();
+        bundle.putString("ref", ref);
+        bundle.putString("name", name);
+        bundle.putString("order", order);
+        bundle.putString("cell", foundProduct.cell.ref);
+        bundle.putString("container", foundProduct.container.ref);
+        bundle.putString("product", foundProduct.product.ref);
+
+        Dialogs.showInputQuantity(getContext(), foundProduct.number, getActivity(), new BundleMethodInterface() {
+            @Override
+            public void callMethod(Bundle arguments) {
+
+                doCollect(arguments);
+
+            }
+        }, bundle, "Введите количество " + foundProduct.product.artikul + " " + foundProduct.product.name, "Ввод количества");
     }
 
     void doCollect(Bundle bundle){

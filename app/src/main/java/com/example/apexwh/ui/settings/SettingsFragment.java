@@ -13,6 +13,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.Switch;
 import android.widget.TextView;
 
 import com.example.apexwh.DB;
@@ -35,7 +37,21 @@ public class SettingsFragment extends Fragment {
 
         TextView tvWarehouse = root.findViewById(R.id.tvWarehouse);
         String warehouseDescription = settings.getString("warehouseDescription");
-        tvWarehouse.setText("Склад: " + (warehouseDescription ==  null ? "" : warehouseDescription));
+        tvWarehouse.setText("Склад: " + warehouseDescription);
+
+        Switch askQuantityAfterProductScan = root.findViewById(R.id.askQuantityAfterProductScan);
+        askQuantityAfterProductScan.setChecked(settings.getString("askQuantityAfterProductScan").equals("1"));
+        askQuantityAfterProductScan.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                DB db = new DB(getContext());
+                db.open();
+                db.updateConstant("askQuantityAfterProductScan", askQuantityAfterProductScan.isChecked() ? "1" : "0");
+                db.close();
+
+            }
+        });
 
         root.findViewById(R.id.btnSelectWarehouse).setOnClickListener(new View.OnClickListener() {
             @Override

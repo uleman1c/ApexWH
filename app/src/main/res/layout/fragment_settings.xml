@@ -33,6 +33,21 @@
                 android:text="Выбрать" />
         </LinearLayout>
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20sp"
+            android:orientation="horizontal">
+
+            <Switch
+                android:id="@+id/askQuantityAfterProductScan"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Запрашивать количество после сканирования штрихкода товара"
+                android:textSize="20sp" />
+        </LinearLayout>
+
     </LinearLayout>
 
 </FrameLayout>

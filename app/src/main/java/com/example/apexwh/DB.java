@@ -47,6 +47,8 @@ public class DB {
     public boolean requested;
     public String error;
 
+    public static String nil = "00000000-0000-0000-0000-000000000000";
+
 //    private TextView tvExchangeInGrogress;
 
     public DB(Context ctx) {
@@ -614,6 +616,9 @@ public class DB {
 
             appId = UUID.randomUUID().toString();
             db.updateConstant("appId", appId);
+            db.updateConstant("warehouseId", nil);
+            db.updateConstant("warehouseDescription", "");
+            db.updateConstant("askQuantityAfterProductScan", "1");
 
         }
 
@@ -646,6 +651,7 @@ public class DB {
 
         result.putString("warehouseId", db.getConstant("warehouseId"));
         result.putString("warehouseDescription", db.getConstant("warehouseDescription"));
+        result.putString("askQuantityAfterProductScan", db.getConstant("askQuantityAfterProductScan"));
 
         db.close();
 

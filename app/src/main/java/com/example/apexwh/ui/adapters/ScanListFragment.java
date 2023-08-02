@@ -24,6 +24,7 @@ public class ScanListFragment<T> extends ListFragment {
     protected String scanned;
 
     protected ShtrihCodeInput shtrihCodeInput;
+    protected Boolean askQuantityAfterProductScan;
 
 
     public ScanListFragment(int fragmentLayout, int itemLayout) {
@@ -40,6 +41,7 @@ public class ScanListFragment<T> extends ListFragment {
         Bundle settings = DB.getSettings(getContext());
 
         warehouseId = settings.getString("warehouseId");
+        askQuantityAfterProductScan = settings.getString("askQuantityAfterProductScan").equals("1");
 
         progressBar = root.findViewById(R.id.progressBar);
 

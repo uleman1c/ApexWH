@@ -36,6 +36,8 @@ public class JsonProcs {
             response = (JSONArray) readerArray.get(name);
         } catch (JSONException e) {
             e.printStackTrace();
+        } catch (ClassCastException classCastException){
+
         }
         return response;
     }
@@ -47,7 +49,7 @@ public class JsonProcs {
         } catch (JSONException e) {
             e.printStackTrace();
         } catch (ClassCastException classCastException) {
-
+            classCastException.printStackTrace();
         }
         return response;
     }

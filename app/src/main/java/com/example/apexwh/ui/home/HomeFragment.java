@@ -224,9 +224,19 @@ public class HomeFragment extends Fragment {
                                 navController.navigate(R.id.nav_placementMenuFragment, bundle);
 
                             }
+                            else if (foundMenuItem.navigation.equals("Collect")){
+
+                                navController.navigate(R.id.nav_collectListFragment, bundle);
+
+                            }
                             else if (foundMenuItem.navigation.equals("Movement")){
 
                                 navController.navigate(R.id.nav_movementFragment, bundle);
+
+                            }
+                            else if (foundMenuItem.navigation.equals("Moves")){
+
+                                navController.navigate(R.id.movementListFragment, bundle);
 
                             }
                             else if (foundMenuItem.navigation.equals("CellContent")){
@@ -239,9 +249,9 @@ public class HomeFragment extends Fragment {
                                 navController.navigate(R.id.nav_productCellsListFragment, bundle);
 
                             }
-                            else if (foundMenuItem.navigation.equals("Collect")){
+                            else if (foundMenuItem.navigation.equals("Invents")){
 
-                                navController.navigate(R.id.nav_collectListFragment, bundle);
+                                navController.navigate(R.id.nav_inventarizations, bundle);
 
                             }
                             else if (foundMenuItem.navigation.equals("ShtrihcodeProduct")){

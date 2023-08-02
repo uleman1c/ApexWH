@@ -230,6 +230,21 @@ public class TestsFragment extends ListFragment<Test>{
     }
 
 
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        RegisterReceiver(getActivity());
+
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+
+        UnRegisterReceiver(getActivity());
+
+    }
 
 
 }

@@ -433,9 +433,9 @@ public class HomeFragment extends Fragment {
                 for (Button curBtn : buttons
                 ) {
 
-                    curBtn.setBackgroundColor(getResources().getColor(R.color.gray));
-                    curBtn.setTextColor(getResources().getColor(R.color.light_gray));
-                    curBtn.setClickable(false);
+//                    curBtn.setBackgroundColor(getResources().getColor(R.color.gray));
+//                    curBtn.setTextColor(getResources().getColor(R.color.light_gray));
+//                    curBtn.setClickable(false);
                 }
 
             }

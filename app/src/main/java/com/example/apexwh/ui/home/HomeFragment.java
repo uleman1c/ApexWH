@@ -224,6 +224,11 @@ public class HomeFragment extends Fragment {
                                 navController.navigate(R.id.nav_placementMenuFragment, bundle);
 
                             }
+                            else if (foundMenuItem.navigation.equals("Takement")){
+
+                                navController.navigate(R.id.nav_takementMenuFragment, bundle);
+
+                            }
                             else if (foundMenuItem.navigation.equals("Collect")){
 
                                 navController.navigate(R.id.nav_collectListFragment, bundle);

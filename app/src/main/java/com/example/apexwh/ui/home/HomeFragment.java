@@ -189,7 +189,37 @@ public class HomeFragment extends Fragment {
                         }
                         else {
 
-                            if (foundMenuItem.navigation.equals("Placement")){
+                            if (foundMenuItem.navigation.equals("Acceptment")){
+
+                                navController.navigate(R.id.nav_acceptmentFragment, bundle);
+
+                            }
+                            else if (foundMenuItem.navigation.equals("Shipment")){
+
+                                navController.navigate(R.id.nav_BuierOrdersFragment, bundle);
+
+                            }
+                            else if (foundMenuItem.navigation.equals("Returns")){
+
+                                navController.navigate(R.id.nav_returns, bundle);
+
+                            }
+                            else if (foundMenuItem.navigation.equals("Tests")){
+
+                                navController.navigate(R.id.nav_tests, bundle);
+
+                            }
+                            else if (foundMenuItem.navigation.equals("ReturnsOfProducts")){
+
+                                navController.navigate(R.id.nav_returnsOfProductsFragment, bundle);
+
+                            }
+                            else if (foundMenuItem.navigation.equals("OrdersToChangeCharacteristic")){
+
+                                navController.navigate(R.id.nav_ordersToChangeCharacteristicFragment, bundle);
+
+                            }
+                            else if (foundMenuItem.navigation.equals("Placement")){
 
                                 navController.navigate(R.id.nav_placementMenuFragment, bundle);
 

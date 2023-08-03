@@ -611,15 +611,20 @@ public class DB {
 
         db.open();
 
-        String appId = db.getConstant("appId");
-        if (appId == null) {
+        if (db.getConstant("appId") == null) {
+            db.updateConstant("appId", UUID.randomUUID().toString());
+        }
 
-            appId = UUID.randomUUID().toString();
-            db.updateConstant("appId", appId);
+        if (db.getConstant("warehouseId") == null){
             db.updateConstant("warehouseId", nil);
-            db.updateConstant("warehouseDescription", "");
-            db.updateConstant("askQuantityAfterProductScan", "1");
+        }
 
+        if (db.getConstant("warehouseDescription") == null){
+            db.updateConstant("warehouseDescription", "");
+        }
+
+        if (db.getConstant("askQuantityAfterProductScan") == null){
+            db.updateConstant("askQuantityAfterProductScan", "1");
         }
 
         db.close();

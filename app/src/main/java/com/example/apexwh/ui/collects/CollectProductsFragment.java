@@ -75,6 +75,8 @@ public class CollectProductsFragment extends ScanListFragment<ProductCellContain
 
                 if (filter.isEmpty()) {
 
+                    shtrihCodeInput.actvShtrihCode.setHint("Штрихкод ячейки");
+
                     items.clear();
 
                     productCellContainerOutcomes.clear();
@@ -111,6 +113,12 @@ public class CollectProductsFragment extends ScanListFragment<ProductCellContain
                                     });
 
                                     adapter.notifyDataSetChanged();
+
+                                    if (showScannedProducts){
+
+                                        addScannedProducts();
+
+                                    }
                                 }
                             });
 
@@ -123,7 +131,7 @@ public class CollectProductsFragment extends ScanListFragment<ProductCellContain
 
                         ProductCellContainerOutcome curPCCO = ((ProductCellContainerOutcome) items.get(i));
 
-                        if (filter.toLowerCase().equals(curPCCO.cell.name.toLowerCase())){
+                        if (curPCCO.mode == 0 && filter.toLowerCase().equals(curPCCO.cell.name.toLowerCase())){
 
                             foundPCCO = curPCCO;
 
@@ -160,8 +168,11 @@ public class CollectProductsFragment extends ScanListFragment<ProductCellContain
 
                             ProductCellContainerOutcome curPCCO = ((ProductCellContainerOutcome) items.get(i));
 
-                            curPCCO.mode = curPCCO == foundPCCO ? 1 : 0;
+                            if (curPCCO.mode < 2) {
 
+                                curPCCO.mode = curPCCO == foundPCCO ? 1 : 0;
+                                shtrihCodeInput.actvShtrihCode.setHint("Штрихкод ячейки или товара");
+                            }
                         }
 
                         items.remove(items.indexOf(foundPCCO));
@@ -170,9 +181,28 @@ public class CollectProductsFragment extends ScanListFragment<ProductCellContain
 
                     }
 
-                    if (foundProduct != null && askQuantityAfterProductScan){
+                    if (foundProduct != null){
 
-                        askQuantity(foundProduct);
+                        if (askQuantityAfterProductScan){
+
+                                askQuantity(foundProduct);
+                        }
+                        else {
+
+                            Bundle bundle = new Bundle();
+                            bundle.putString("ref", ref);
+                            bundle.putString("name", name);
+                            bundle.putString("order", order);
+                            bundle.putString("cell", foundProduct.cell.ref);
+                            bundle.putString("container", foundProduct.container.ref);
+                            bundle.putString("product", foundProduct.product.ref);
+                            bundle.putInt("quantity", 1);
+
+                             doCollect(bundle);
+
+
+                        }
+
 
                     }
 
@@ -240,9 +270,13 @@ public class CollectProductsFragment extends ScanListFragment<ProductCellContain
 
                             view = inflater.inflate(R.layout.product_cell_border_list_item, parent, false);
                         }
-                        else {
+                        else if (viewType == 1) {
 
                             view = inflater.inflate(R.layout.product_cell_border2_list_item, parent, false);
+                        }
+                        else {
+
+                            view = inflater.inflate(R.layout.product_cell_border3_list_item, parent, false);
                         }
 
                         return view;
@@ -350,6 +384,39 @@ public class CollectProductsFragment extends ScanListFragment<ProductCellContain
 
             }
         });
+
+
+    }
+
+    private void addScannedProducts() {
+
+        RequestToServer.executeRequestUW(getContext(), Request.Method.GET, "getErpSkladProductsToOutcomeScanned",
+                "name=" + name + "&ref=" + ref, new JSONObject(), 1,
+                new RequestToServer.ResponseResultInterface() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+
+                        progressBar.setVisibility(View.GONE);
+
+                        JSONArray responseItems = JsonProcs.getJsonArrayFromJsonObject(response, "ErpSkladProductsToOutcomeScanned");
+
+                        for (int j = 0; j < responseItems.length(); j++) {
+
+                            JSONObject objectItem = JsonProcs.getItemJSONArray(responseItems, j);
+
+                            ProductCellContainerOutcome pcco = ProductCellContainerOutcome.FromJson(objectItem);
+
+                            pcco.mode = 2;
+
+                            items.add(pcco);
+
+                        }
+
+                        adapter.notifyDataSetChanged();
+
+                    }
+                });
+
 
 
     }

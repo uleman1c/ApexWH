@@ -24,7 +24,7 @@ public class ScanListFragment<T> extends ListFragment {
     protected String scanned;
 
     protected ShtrihCodeInput shtrihCodeInput;
-    protected Boolean askQuantityAfterProductScan;
+    protected Boolean askQuantityAfterProductScan, showScannedProducts;
 
 
     public ScanListFragment(int fragmentLayout, int itemLayout) {
@@ -42,6 +42,7 @@ public class ScanListFragment<T> extends ListFragment {
 
         warehouseId = settings.getString("warehouseId");
         askQuantityAfterProductScan = settings.getString("askQuantityAfterProductScan").equals("1");
+        showScannedProducts = settings.getString("showScannedProducts").equals("1");
 
         progressBar = root.findViewById(R.id.progressBar);
 

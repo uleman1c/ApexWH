@@ -55,6 +55,19 @@ public class SettingsFragment extends Fragment {
 
             }
         });
+        Switch showScannedProducts = root.findViewById(R.id.showScannedProducts);
+        showScannedProducts.setChecked(settings.getString("showScannedProducts").equals("1"));
+        showScannedProducts.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                DB db = new DB(getContext());
+                db.open();
+                db.updateConstant("showScannedProducts", showScannedProducts.isChecked() ? "1" : "0");
+                db.close();
+
+            }
+        });
 
         root.findViewById(R.id.btnSelectWarehouse).setOnClickListener(new View.OnClickListener() {
             @Override

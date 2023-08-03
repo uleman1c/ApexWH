@@ -627,6 +627,10 @@ public class DB {
             db.updateConstant("askQuantityAfterProductScan", "1");
         }
 
+        if (db.getConstant("showScannedProducts") == null){
+            db.updateConstant("showScannedProducts", "0");
+        }
+
         db.close();
 
     }
@@ -658,6 +662,7 @@ public class DB {
         result.putString("warehouseId", db.getConstant("warehouseId"));
         result.putString("warehouseDescription", db.getConstant("warehouseDescription"));
         result.putString("askQuantityAfterProductScan", db.getConstant("askQuantityAfterProductScan"));
+        result.putString("showScannedProducts", db.getConstant("showScannedProducts"));
 
         db.close();
 

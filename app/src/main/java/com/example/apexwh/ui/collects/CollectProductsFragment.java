@@ -329,10 +329,14 @@ public class CollectProductsFragment extends ScanListFragment<ProductCellContain
 
                                             foundPCCO = curPCCO;
 
+                                            shtrihCodeInput.actvShtrihCode.setHint("Штрихкод ячейки или товара");
+
                                         }
 
+                                        if (curPCCO.mode < 2) {
 
-                                        curPCCO.mode = i == arguments.getInt("index") ? 1 : 0;
+                                            curPCCO.mode = i == arguments.getInt("index") ? 1 : 0;
+                                        }
 
                                     }
 

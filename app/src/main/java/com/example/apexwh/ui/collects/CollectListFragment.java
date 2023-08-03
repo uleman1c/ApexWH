@@ -23,6 +23,7 @@ import com.example.apexwh.ui.BundleMethodInterface;
 import com.example.apexwh.ui.Dialogs;
 import com.example.apexwh.ui.adapters.DataAdapter;
 import com.example.apexwh.ui.adapters.ListFragment;
+import com.google.android.material.navigation.NavigationView;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -38,6 +39,7 @@ public class CollectListFragment extends ListFragment<Outcome> {
     public CollectListFragment() {
 
         super(R.layout.fragment_filter_list, R.layout.movers_service_list_item);
+
 
         setListUpdater(new ListUpdater() {
             @Override

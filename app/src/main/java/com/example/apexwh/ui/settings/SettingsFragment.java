@@ -39,6 +39,9 @@ public class SettingsFragment extends Fragment {
         String warehouseDescription = settings.getString("warehouseDescription");
         tvWarehouse.setText("Склад: " + warehouseDescription);
 
+        TextView tvAppId = root.findViewById(R.id.tvAppId);
+        tvAppId.setText("appId: " + settings.getString("appId"));
+
         Switch askQuantityAfterProductScan = root.findViewById(R.id.askQuantityAfterProductScan);
         askQuantityAfterProductScan.setChecked(settings.getString("askQuantityAfterProductScan").equals("1"));
         askQuantityAfterProductScan.setOnClickListener(new View.OnClickListener() {

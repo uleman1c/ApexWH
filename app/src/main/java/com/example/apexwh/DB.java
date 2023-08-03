@@ -654,6 +654,7 @@ public class DB {
 
         db.open();
 
+        result.putString("appId", db.getConstant("appId"));
         result.putString("warehouseId", db.getConstant("warehouseId"));
         result.putString("warehouseDescription", db.getConstant("warehouseDescription"));
         result.putString("askQuantityAfterProductScan", db.getConstant("askQuantityAfterProductScan"));

@@ -1,13 +1,17 @@
 package com.example.apexwh.objects;
 
 import android.content.Context;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.example.apexwh.DB;
 import com.example.apexwh.DateStr;
 import com.example.apexwh.R;
+import com.example.apexwh.ui.adapters.BeforeEndOnCreateViewHolder;
 import com.example.apexwh.ui.adapters.DataAdapter;
+import com.example.apexwh.ui.adapters.OnGetItemViewType;
 
 import java.util.ArrayList;
 
@@ -45,6 +49,34 @@ public class History {
 
         adapter = new DataAdapter<HistoryRecord>(context, items, R.layout.history_record_list_item);
 
+        getAdapter().setOnGetItemViewType(new OnGetItemViewType() {
+            @Override
+            public int Do(int position) {
+                return ((HistoryRecord)items.get(position)).mode;
+            }
+        });
+
+        getAdapter().setBeforeEndOnCreateViewHolder(new BeforeEndOnCreateViewHolder() {
+            @Override
+            public View Do(LayoutInflater inflater, ViewGroup parent, int viewType) {
+
+                View view = null;
+
+                if (viewType == 0) {
+
+                    view = inflater.inflate(R.layout.history_record_list_item, parent, false);
+                }
+                else if (viewType == 1) {
+
+                    view = inflater.inflate(R.layout.history_record_red_list_item, parent, false);
+                }
+
+                return view;
+
+            }
+        });
+
+
         getAdapter().setInitViewsMaker(new DataAdapter.InitViewsMaker() {
             @Override
             public void init(View itemView, ArrayList<TextView> textViews) {
@@ -73,7 +105,15 @@ public class History {
 
     public void AddHistoryRecord(String data){
 
-        items.add(0, new HistoryRecord("", getType(), userId, data));
+        items.add(0, new HistoryRecord(DateStr.NowYmdhms(), getType(), userId, data));
+
+        getAdapter().notifyDataSetChanged();
+
+    }
+
+    public void SetLastRecordMode(int mode){
+
+        items.get(0).mode = mode;
 
         getAdapter().notifyDataSetChanged();
 

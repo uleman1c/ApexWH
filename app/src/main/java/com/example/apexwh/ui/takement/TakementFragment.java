@@ -107,6 +107,8 @@ public class TakementFragment extends ScanShtrihcodeFragment {
 
                             cellRef = DB.nil;
 
+                            history.SetLastRecordMode(1);
+
                             tvCell.setText("Не найдена " + strCatName);
                             tvCell.setBackgroundColor(Color.parseColor("#FF0000"));
                             tvCell.setTextColor(Color.parseColor("#FFFFFF"));

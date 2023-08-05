@@ -35,7 +35,7 @@ public class DB {
     public String emptyRef;
 
     private static final String DB_NAME = "APWHDB";
-    private static final int DB_VERSION = 1;
+    private static final int DB_VERSION = 2;
 
     private final Context mCtx;
 
@@ -600,6 +600,13 @@ public class DB {
 
                 if (oldVersion == 1 && newVersion == 2) {
 
+                    db.execSQL("create table history ("
+                            + "_id integer primary key autoincrement,"
+                            + "date text, "
+                            + "type text, "
+                            + "user_id text, "
+                            + "data text "
+                            + ");");
 
                 }
         }

@@ -1,15 +1,19 @@
 package com.example.apexwh.ui.takement;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.volley.Request;
+import com.example.apexwh.DB;
 import com.example.apexwh.JsonProcs;
 import com.example.apexwh.R;
 import com.example.apexwh.RequestToServer;
+import com.example.apexwh.objects.History;
 import com.example.apexwh.ui.Dialogs;
 import com.example.apexwh.ui.ScanShtrihcodeFragment;
 import com.example.apexwh.ui.adapters.ScanCodeSetter;
@@ -30,9 +34,16 @@ public class TakementFragment extends ScanShtrihcodeFragment {
 
     private String cellRef, containerRef;
 
+    private History history;
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        cellRef = DB.nil;
+        containerRef = DB.nil;
+
+        history = new History(getContext(), "takement");
 
         setOnCreateViewElements(new OnCreateViewElements() {
             @Override
@@ -53,6 +64,9 @@ public class TakementFragment extends ScanShtrihcodeFragment {
                     }
                 });
 
+                RecyclerView rvHistory = root.findViewById(R.id.rvHistory);
+                rvHistory.setAdapter(history.getAdapter());
+
             }
         });
 
@@ -60,7 +74,11 @@ public class TakementFragment extends ScanShtrihcodeFragment {
             @Override
             public void setScanCode(String strCatName, int pos, int quantity) {
 
-                if (tvCell.getText().toString().isEmpty()){
+                history.AddHistoryRecord(strCatName);
+
+                if (cellRef.equals(DB.nil)){
+
+                    tvCell.setText(strCatName);
 
                     RequestToServer.executeRequestUW(getContext(), Request.Method.GET, "getErpSkladCells", "filter=" + strCatName, new JSONObject(),
                             RequestToServer.TypeOfResponse.JsonObjectWithArray, response -> {
@@ -81,6 +99,17 @@ public class TakementFragment extends ScanShtrihcodeFragment {
                                 + ", " + JsonProcs.getIntegerFromJSON(cell, "quantity")
                                 + " (" + JsonProcs.getIntegerFromJSON(cell, "placeQuantity") + ")" );
 
+                            tvCell.setBackgroundColor(Color.parseColor("#FFFFFF"));
+                            tvCell.setTextColor(Color.parseColor("#000000"));
+
+                        }
+                        else {
+
+                            cellRef = DB.nil;
+
+                            tvCell.setText("Не найдена " + strCatName);
+                            tvCell.setBackgroundColor(Color.parseColor("#FF0000"));
+                            tvCell.setTextColor(Color.parseColor("#FFFFFF"));
 
                         }
 

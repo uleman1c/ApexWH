@@ -90,13 +90,15 @@ tools:context=".ui.products.ProductsFragment">
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:orientation="vertical">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="32sp"
+                android:layout_marginLeft="8sp"
+                android:layout_marginTop="8sp"
+                android:layout_marginRight="8sp"
                 android:background="@drawable/back"
                 android:orientation="vertical"
                 android:padding="12sp">
@@ -113,10 +115,8 @@ tools:context=".ui.products.ProductsFragment">
                     android:id="@+id/tvCell"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="32sp"
-                    android:gravity="center"
-                    android:text=""
-                    android:textSize="20sp" />
+                    android:gravity="center|right"
+                    android:textSize="24sp" />
 
                 <TextView
                     android:id="@+id/tvContent"
@@ -131,7 +131,9 @@ tools:context=".ui.products.ProductsFragment">
                 android:id="@+id/llContainer"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="32sp"
+                android:layout_marginLeft="8sp"
+                android:layout_marginTop="8sp"
+                android:layout_marginRight="8sp"
                 android:background="@drawable/back"
                 android:clickable="true"
                 android:orientation="vertical"
@@ -156,6 +158,13 @@ tools:context=".ui.products.ProductsFragment">
             </LinearLayout>
 
         </LinearLayout>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvHistory"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="8sp"
+            android:background="@drawable/back" />
 
 
     </LinearLayout>

@@ -76,53 +76,60 @@ public class TakementFragment extends ScanShtrihcodeFragment {
 
                 history.AddHistoryRecord(strCatName);
 
-                if (cellRef.equals(DB.nil)){
+                RequestToServer.executeRequestUW(getContext(), Request.Method.GET, "getErpSkladCellContainer", "filter=" + strCatName, new JSONObject(),
+                        RequestToServer.TypeOfResponse.JsonObjectWithArray, response -> {
 
-                    tvCell.setText(strCatName);
+                    JSONArray cells = JsonProcs.getJsonArrayFromJsonObject(response, "ErpSkladCellContainer");
 
-                    RequestToServer.executeRequestUW(getContext(), Request.Method.GET, "getErpSkladCells", "filter=" + strCatName, new JSONObject(),
-                            RequestToServer.TypeOfResponse.JsonObjectWithArray, response -> {
+                    if (cells.length() == 1){
 
-                        JSONArray cells = JsonProcs.getJsonArrayFromJsonObject(response, "ErpSkladCells");
+                        JSONObject cell = JsonProcs.getItemJSONArray(cells, 0);
 
-                        if (cells.length() == 1){
+                        if (JsonProcs.getStringFromJSON(cell, "type").equals("Ячейка")){
 
-                            JSONObject cell = JsonProcs.getItemJSONArray(cells, 0);
+                            tvCell.setText(strCatName);
 
                             cellRef = JsonProcs.getStringFromJSON(cell, "ref");
                             tvCell.setText(JsonProcs.getStringFromJSON(cell, "name"));
 
-                            containerRef = JsonProcs.getStringFromJSON(cell, "container");
+                            containerRef = JsonProcs.getStringFromJSON(cell, "containerCellRef");
 
-                            tvContent.setText(containerRef
-                                + ", " + JsonProcs.getStringFromJSON(cell, "product")
-                                + ", " + JsonProcs.getIntegerFromJSON(cell, "quantity")
-                                + " (" + JsonProcs.getIntegerFromJSON(cell, "placeQuantity") + ")" );
+                            tvContent.setText("Контейнер: " + JsonProcs.getStringFromJSON(cell, "containerCell")
+                                    );
 
-                            tvCell.setBackgroundColor(Color.parseColor("#FFFFFF"));
-                            tvCell.setTextColor(Color.parseColor("#000000"));
+                            tvContainer.setText("");
+
+                            history.SetLastRecordComment("Найдена ячейка");
 
                         }
                         else {
 
-                            cellRef = DB.nil;
+                            tvContainer.setText(JsonProcs.getStringFromJSON(cell, "name"));
 
-                            history.SetLastRecordMode(1);
+                            containerRef = JsonProcs.getStringFromJSON(cell, "ref");
 
-                            tvCell.setText("Не найдена " + strCatName);
-                            tvCell.setBackgroundColor(Color.parseColor("#FF0000"));
-                            tvCell.setTextColor(Color.parseColor("#FFFFFF"));
+                            history.SetLastRecordComment("Найден контейнер");
+
+                            askFortakement(strCatName);
 
                         }
 
-                    });
+                    }
+                    else {
 
-                } else {
+                        history.SetLastRecordMode(1);
+                        history.SetLastRecordComment("не найдено");
 
-                    askFortakement(strCatName);
+                    }
 
+                });
 
-                }
+//                } else {
+//
+//                    askFortakement(strCatName);
+//
+//
+//                }
 
 
 
@@ -140,7 +147,7 @@ public class TakementFragment extends ScanShtrihcodeFragment {
 
                     JSONArray containers = JsonProcs.getJsonArrayFromJsonObject(response, "ErpSkladContainerCell");
 
-                    if (containers.length() == 1){
+                    if (containers.length() > 0){
 
                         JSONObject container = JsonProcs.getItemJSONArray(containers, 0);
 
@@ -176,6 +183,9 @@ public class TakementFragment extends ScanShtrihcodeFragment {
 
                             }, args, "Взять контейнер " + tvContainer.getText().toString() + " из ячейки " + tvCell.getText().toString() + " ?", "Взятие");
 
+                        }
+                        else {
+                            history.SetLastRecordMode(1);
                         }
 
                     }

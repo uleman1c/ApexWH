@@ -2,7 +2,7 @@ package com.example.apexwh.objects;
 
 public class HistoryRecord {
 
-    public String date, type, userId, data;
+    public String date, type, userId, data, comment;
 
     public int mode;
 
@@ -12,6 +12,7 @@ public class HistoryRecord {
         this.userId = userId;
         this.data = data;
         this.mode = mode;
+        this.comment = "";
     }
 
     public HistoryRecord(String date, String type, String userId, String data) {

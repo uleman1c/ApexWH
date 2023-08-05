@@ -83,6 +83,7 @@ public class History {
 
                 textViews.add(itemView.findViewById(R.id.tvDate));
                 textViews.add(itemView.findViewById(R.id.tvData));
+                textViews.add(itemView.findViewById(R.id.tvComment));
             }
         });
 
@@ -92,6 +93,7 @@ public class History {
 
                 ((TextView) holder.getTextViews().get(0)).setText(DateStr.FromYmdhmsToDmyhms(document.date));
                 ((TextView) holder.getTextViews().get(1)).setText(document.data);
+                ((TextView) holder.getTextViews().get(2)).setText(document.comment);
             }
         });
 
@@ -114,6 +116,14 @@ public class History {
     public void SetLastRecordMode(int mode){
 
         items.get(0).mode = mode;
+
+        getAdapter().notifyDataSetChanged();
+
+    }
+
+    public void SetLastRecordComment(String comment){
+
+        items.get(0).comment = comment;
 
         getAdapter().notifyDataSetChanged();
 

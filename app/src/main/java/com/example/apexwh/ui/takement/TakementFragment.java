@@ -1,6 +1,5 @@
 package com.example.apexwh.ui.takement;
 
-import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
@@ -74,69 +73,77 @@ public class TakementFragment extends ScanShtrihcodeFragment {
             @Override
             public void setScanCode(String strCatName, int pos, int quantity) {
 
-                history.AddHistoryRecord(strCatName);
-
-                RequestToServer.executeRequestUW(getContext(), Request.Method.GET, "getErpSkladCellContainer", "filter=" + strCatName, new JSONObject(),
-                        RequestToServer.TypeOfResponse.JsonObjectWithArray, response -> {
-
-                    JSONArray cells = JsonProcs.getJsonArrayFromJsonObject(response, "ErpSkladCellContainer");
-
-                    if (cells.length() == 1){
-
-                        JSONObject cell = JsonProcs.getItemJSONArray(cells, 0);
-
-                        if (JsonProcs.getStringFromJSON(cell, "type").equals("Ячейка")){
-
-                            tvCell.setText(strCatName);
-
-                            cellRef = JsonProcs.getStringFromJSON(cell, "ref");
-                            tvCell.setText(JsonProcs.getStringFromJSON(cell, "name"));
-
-                            containerRef = JsonProcs.getStringFromJSON(cell, "containerCellRef");
-
-                            tvContent.setText("Контейнер: " + JsonProcs.getStringFromJSON(cell, "containerCell")
-                                    );
-
-                            tvContainer.setText("");
-
-                            history.SetLastRecordComment("Найдена ячейка");
-
-                        }
-                        else {
-
-                            tvContainer.setText(JsonProcs.getStringFromJSON(cell, "name"));
-
-                            containerRef = JsonProcs.getStringFromJSON(cell, "ref");
-
-                            history.SetLastRecordComment("Найден контейнер");
-
-                            askFortakement(strCatName);
-
-                        }
-
-                    }
-                    else {
-
-                        history.SetLastRecordMode(1);
-                        history.SetLastRecordComment("не найдено");
-
-                    }
-
-                });
-
-//                } else {
-//
-//                    askFortakement(strCatName);
-//
-//
-//                }
-
-
+                scanCellContainer(strCatName, true);
 
             }
         });
 
 
+    }
+
+    private void scanCellContainer(String strCatName, boolean saveToHistory) {
+
+        if (saveToHistory){
+
+            history.AddHistoryRecord(strCatName);
+        }
+
+
+        RequestToServer.executeRequestUW(getContext(), Request.Method.GET, "getErpSkladCellContainer", "filter=" + strCatName, new JSONObject(),
+                RequestToServer.TypeOfResponse.JsonObjectWithArray, response -> {
+
+            JSONArray cells = JsonProcs.getJsonArrayFromJsonObject(response, "ErpSkladCellContainer");
+
+            if (cells.length() == 1){
+
+                JSONObject cell = JsonProcs.getItemJSONArray(cells, 0);
+
+                if (JsonProcs.getStringFromJSON(cell, "type").equals("Ячейка")){
+
+                    tvCell.setText(strCatName);
+
+                    cellRef = JsonProcs.getStringFromJSON(cell, "ref");
+                    tvCell.setText(JsonProcs.getStringFromJSON(cell, "name"));
+
+                    containerRef = JsonProcs.getStringFromJSON(cell, "containerCellRef");
+
+                    tvContent.setText("Контейнер: " + JsonProcs.getStringFromJSON(cell, "containerCell")
+                            );
+
+                    tvContainer.setText("");
+
+                    if(saveToHistory){
+
+                        history.SetLastRecordComment("Найдена ячейка");
+                    }
+
+
+                }
+                else {
+
+                    tvContainer.setText(JsonProcs.getStringFromJSON(cell, "name"));
+
+                    containerRef = JsonProcs.getStringFromJSON(cell, "ref");
+
+                    if (saveToHistory){
+
+                        history.SetLastRecordComment("Найден контейнер");
+                    }
+
+
+                    askFortakement(strCatName);
+
+                }
+
+            }
+            else {
+
+                history.SetLastRecordMode(1);
+                history.SetLastRecordComment("не найдено");
+
+            }
+
+        });
     }
 
     private void askFortakement(String strCatName) {
@@ -174,7 +181,15 @@ public class TakementFragment extends ScanShtrihcodeFragment {
                                         RequestToServer.TypeOfResponse.JsonObject, response1 -> {
 
                                             if (!JsonProcs.getStringFromJSON(response1, "ref").isEmpty()) {
-                                                navController.popBackStack();
+
+                                                history.AddHistoryRecord("Создано взятие контейнера "
+                                                 + tvContainer.getText().toString() + " из ячейки "
+                                                        + tvCell.getText().toString());
+
+                                                tvContainer.setText("");
+
+                                                scanCellContainer(tvCell.getText().toString(), false);
+
                                             }
 
 
@@ -186,6 +201,7 @@ public class TakementFragment extends ScanShtrihcodeFragment {
                         }
                         else {
                             history.SetLastRecordMode(1);
+                            history.AddLastRecordComment("не найден контейнер в ячейке");
                         }
 
                     }

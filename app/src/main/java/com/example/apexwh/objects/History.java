@@ -129,4 +129,24 @@ public class History {
 
     }
 
+    public void AddLastRecordComment(String comment){
+
+        items.get(0).comment = (items.get(0).comment.isEmpty() ? "" : items.get(0).comment + ", ") + comment;
+
+        getAdapter().notifyDataSetChanged();
+
+    }
+
+    public void SetOnClickListener(DataAdapter.OnClickListener onClickListener){
+
+        getAdapter().setOnClickListener(onClickListener);
+
+    }
+
+    public void SetOnLongClickListener(DataAdapter.OnLongClickListener onClickListener){
+
+        getAdapter().setOnLongClickListener(onClickListener);
+
+    }
+
 }

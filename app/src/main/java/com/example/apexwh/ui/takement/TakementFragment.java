@@ -29,7 +29,7 @@ public class TakementFragment extends ScanShtrihcodeFragment {
         super(R.layout.fragment_scan_cell_container_take);
     }
 
-    private TextView tvCell, tvContent, tvContainer;
+    private TextView tvCell, tvContent, tvContainer, tvContainerCell;
 
     private String cellRef, containerRef;
 
@@ -49,6 +49,7 @@ public class TakementFragment extends ScanShtrihcodeFragment {
             public void execute(View root) {
 
                 tvCell = root.findViewById(R.id.tvCell);
+                tvContainerCell = root.findViewById(R.id.tvContainerCell);
                 tvContent = root.findViewById(R.id.tvContent);
                 tvContainer = root.findViewById(R.id.tvContainer);
                 root.findViewById(R.id.llContainer).setOnClickListener(new View.OnClickListener() {
@@ -107,8 +108,11 @@ public class TakementFragment extends ScanShtrihcodeFragment {
 
                     containerRef = JsonProcs.getStringFromJSON(cell, "containerCellRef");
 
-                    tvContent.setText("Контейнер: " + JsonProcs.getStringFromJSON(cell, "containerCell")
-                            );
+                    tvContainerCell.setText("Контейнер: " + JsonProcs.getStringFromJSON(cell, "containerCell"));
+
+                    tvContent.setText(JsonProcs.getStringFromJSON(cell, "product")
+                            + ", " + JsonProcs.getIntegerFromJSON(cell, "quantity")
+                            + " (" + JsonProcs.getIntegerFromJSON(cell, "placeQuantity") + ")");
 
                     tvContainer.setText("");
 

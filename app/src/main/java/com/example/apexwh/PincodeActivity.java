@@ -137,6 +137,8 @@ public class PincodeActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        DB.onStart(getBaseContext());
+
         binding = ActivityPincodeBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
@@ -261,7 +263,9 @@ public class PincodeActivity extends AppCompatActivity {
 
     private void testPincode(String pinCode) {
 
-        RequestToServer.executeRequest(this, Request.Method.GET,  "getErpSkladAuth", "pincode=" + pinCode, new JSONObject(), new RequestToServer.ResponseResultInterface(){
+        String appId = DB.getSettings(getBaseContext()).getString("appId");
+
+        RequestToServer.executeRequest(this, Request.Method.GET,  "getErpSkladAuth", "pincode=" + pinCode + "&appId=" + appId, new JSONObject(), new RequestToServer.ResponseResultInterface(){
 
             @Override
             public void onResponse(JSONObject response) {

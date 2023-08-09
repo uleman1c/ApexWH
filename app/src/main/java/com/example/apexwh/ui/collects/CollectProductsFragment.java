@@ -506,6 +506,7 @@ public class CollectProductsFragment extends ScanListFragment<ProductCellContain
 
                         Bundle bundle = new Bundle();
                         bundle.putString("ref", ref);
+                        bundle.putString("name", name);
 
                         Navigation.findNavController(getActivity(), R.id.nav_host_fragment_content_main).navigate(R.id.nav_OrderInfoFragment, bundle);
 

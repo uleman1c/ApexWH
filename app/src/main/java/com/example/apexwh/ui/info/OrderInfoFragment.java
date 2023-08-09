@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.example.apexwh.R;
 
@@ -57,10 +58,20 @@ public class OrderInfoFragment extends Fragment {
         }
     }
 
+    String ref, name;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_order_info, container, false);
+        View inflate = inflater.inflate(R.layout.fragment_order_info, container, false);
+
+        ref = getArguments().getString("ref");
+        name = getArguments().getString("name");
+
+        ((TextView)inflate.findViewById(R.id.tvName)).setText(name);
+        ((TextView)inflate.findViewById(R.id.tvRef)).setText(ref);
+
+        return inflate;
     }
 }

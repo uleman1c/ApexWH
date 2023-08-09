@@ -502,6 +502,8 @@ public class CollectProductsFragment extends ScanListFragment<ProductCellContain
 
                         res = true;
 
+                        break;
+
                     case R.id.miOrderInfo:
 
                         Bundle bundle = new Bundle();
@@ -511,6 +513,8 @@ public class CollectProductsFragment extends ScanListFragment<ProductCellContain
                         Navigation.findNavController(getActivity(), R.id.nav_host_fragment_content_main).navigate(R.id.nav_OrderInfoFragment, bundle);
 
                         res = true;
+
+                        break;
 
                 };
 

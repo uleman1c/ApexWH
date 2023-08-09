@@ -7,9 +7,19 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.android.volley.Request;
+import com.example.apexwh.JsonProcs;
 import com.example.apexwh.R;
+import com.example.apexwh.RequestToServer;
+import com.example.apexwh.objects.ProductCellContainerOutcome;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import java.util.Comparator;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -60,6 +70,8 @@ public class OrderInfoFragment extends Fragment {
 
     String ref, name;
 
+    ProgressBar progressBar;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -71,6 +83,33 @@ public class OrderInfoFragment extends Fragment {
 
         ((TextView)inflate.findViewById(R.id.tvName)).setText(name);
         ((TextView)inflate.findViewById(R.id.tvRef)).setText(ref);
+
+        progressBar = inflate.findViewById(R.id.progressBar);
+
+        progressBar.setVisibility(View.VISIBLE);
+
+        RequestToServer.executeRequestUW(getContext(), Request.Method.GET, "getErpSkladOrderInfo",
+                "name=" + name + "&ref=" + ref, new JSONObject(), 1,
+                new RequestToServer.ResponseResultInterface() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+
+                        progressBar.setVisibility(View.GONE);
+
+                        JSONArray responseItems = JsonProcs.getJsonArrayFromJsonObject(response, "ErpSkladOrderInfo");
+
+//                        for (int j = 0; j < responseItems.length(); j++) {
+//
+//                            JSONObject objectItem = JsonProcs.getItemJSONArray(responseItems, j);
+//
+//                            items.add(ProductCellContainerOutcome.FromJson(objectItem));
+//
+//                        }
+
+                    }
+                });
+
+
 
         return inflate;
     }

@@ -1,9 +1,14 @@
 package com.example.apexwh.ui.info;
 
+import android.graphics.Typeface;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 
+import android.text.SpannableString;
+import android.text.SpannableStringBuilder;
+import android.text.style.StyleSpan;
+import android.text.style.UnderlineSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,9 +16,11 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.android.volley.Request;
+import com.example.apexwh.DateStr;
 import com.example.apexwh.JsonProcs;
 import com.example.apexwh.R;
 import com.example.apexwh.RequestToServer;
+import com.example.apexwh.SpanText;
 import com.example.apexwh.objects.ProductCellContainerOutcome;
 
 import org.json.JSONArray;
@@ -81,9 +88,6 @@ public class OrderInfoFragment extends Fragment {
         ref = getArguments().getString("ref");
         name = getArguments().getString("name");
 
-        ((TextView)inflate.findViewById(R.id.tvName)).setText(name);
-        ((TextView)inflate.findViewById(R.id.tvRef)).setText(ref);
-
         progressBar = inflate.findViewById(R.id.progressBar);
 
         progressBar.setVisibility(View.VISIBLE);
@@ -96,15 +100,44 @@ public class OrderInfoFragment extends Fragment {
 
                         progressBar.setVisibility(View.GONE);
 
-                        JSONArray responseItems = JsonProcs.getJsonArrayFromJsonObject(response, "ErpSkladOrderInfo");
+                        JSONObject orderInfo = JsonProcs.getJsonObjectFromJsonObject(response, "ErpSkladOrderInfo");
 
-//                        for (int j = 0; j < responseItems.length(); j++) {
-//
-//                            JSONObject objectItem = JsonProcs.getItemJSONArray(responseItems, j);
-//
-//                            items.add(ProductCellContainerOutcome.FromJson(objectItem));
-//
-//                        }
+                        SpanText spanText = new SpanText();
+                        spanText.AppendBold("Документ: ");
+                        spanText.Append(JsonProcs.getStringFromJSON(orderInfo, "Представление"));
+                        spanText.AppendBold("\n№ ");
+                        spanText.Append(JsonProcs.getStringFromJSON(orderInfo, "НомерПоДаннымКлиента"));
+                        spanText.AppendBold(" от ");
+                        spanText.Append(DateStr.FromYmdhmsToDmyhms(JsonProcs.getStringFromJSON(orderInfo, "ДатаПоДаннымКлиента")));
+                        spanText.AppendBold("\nКонтрагент: ");
+                        spanText.Append(JsonProcs.getStringFromJSON(orderInfo, "Контрагент"));
+                        spanText.AppendBold("\nМенеджер: ");
+                        spanText.Append(JsonProcs.getStringFromJSON(orderInfo, "Менеджер"));
+                        spanText.AppendBold("\nВес: ");
+                        spanText.Append(JsonProcs.getIntegerFromJSON(orderInfo, "Вес").toString());
+
+                        if (JsonProcs.getBooleanFromJSON(orderInfo,"ОтгрузкаСОтветственногоХранения")){
+                            spanText.AppendBold("\n\nОтгрузка с ответственного хранения\n");
+
+                        }
+
+                        spanText.AppendBold("\nКомментарий: ");
+                        spanText.Append(JsonProcs.getStringFromJSON(orderInfo, "Комментарий"));
+
+                        ((TextView)inflate.findViewById(R.id.tvInfo)).setText(spanText.GetSpannableString());
+
+
+//                        Результат.Вставить("Менеджер", Строка(ТекДок.Менеджер));
+//                        Результат.Вставить("Вес", ТекДок.Вес);
+//                        Результат.Вставить("ОтгрузкаСОтветственногоХранения", ТекДок.ОтгрузкаСОтветственногоХранения);
+//                        Результат.Вставить("Комментарий", ТекДок.Комментарий);
+//                        Результат.Вставить("НомерПоДаннымКлиента", ТекДок.НомерПоДаннымКлиента);
+//                        Результат.Вставить("ДатаПоДаннымКлиента", Формат(ТекДок.ДатаПоДаннымКлиента, "ДФ=yyyyMMddhhmmss"));
+
+
+
+
+
 
                     }
                 });

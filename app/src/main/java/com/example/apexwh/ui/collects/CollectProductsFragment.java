@@ -82,138 +82,12 @@ public class CollectProductsFragment extends ScanListFragment<ProductCellContain
 
                 if (filter.isEmpty()) {
 
-                    shtrihCodeInput.actvShtrihCode.setHint("Штрихкод ячейки");
-
-                    items.clear();
-
-                    productCellContainerOutcomes.clear();
-
-                    RequestToServer.executeRequestUW(getContext(), Request.Method.GET, "getErpSkladProductsToOutcome",
-                            "name=" + name + "&ref=" + ref, new JSONObject(), 1,
-                            new RequestToServer.ResponseResultInterface() {
-                                @Override
-                                public void onResponse(JSONObject response) {
-
-                                    progressBar.setVisibility(View.GONE);
-
-                                    JSONArray responseItems = JsonProcs.getJsonArrayFromJsonObject(response, "ErpSkladProductsToOutcome");
-
-                                    for (int j = 0; j < responseItems.length(); j++) {
-
-                                        JSONObject objectItem = JsonProcs.getItemJSONArray(responseItems, j);
-
-                                        items.add(ProductCellContainerOutcome.FromJson(objectItem));
-
-                                    }
-
-                                    items.sort(new Comparator() {
-                                        @Override
-                                        public int compare(Object o, Object t1) {
-
-                                            String l1 = ((ProductCellContainerOutcome) o).cell.level;
-                                            String l2 = ((ProductCellContainerOutcome) t1).cell.level;
-                                            String cl1 = (l1.equals("P") ? "0" : "") + l1 + ((ProductCellContainerOutcome) o).cell.name;
-                                            String cl2 = (l2.equals("P") ? "0" : "") + l2 + ((ProductCellContainerOutcome) t1).cell.name;
-
-                                            return cl1.compareTo(cl2);
-                                        }
-                                    });
-
-                                    adapter.notifyDataSetChanged();
-
-                                    if (showScannedProducts){
-
-                                        //addScannedProducts();
-
-                                    }
-                                }
-                            });
+                    updateToScan(items, progressBar, adapter, "");
 
                 }
                 else {
 
-                    ProductCellContainerOutcome foundPCCO = null;
-                    ProductCellContainerOutcome foundProduct = null;
-                    for (int i = 0; i < items.size() && foundPCCO == null; i++) {
-
-                        ProductCellContainerOutcome curPCCO = ((ProductCellContainerOutcome) items.get(i));
-
-                        if (curPCCO.mode == 0 && filter.toLowerCase().equals(curPCCO.cell.name.toLowerCase())){
-
-                            foundPCCO = curPCCO;
-
-                        } else if (curPCCO.mode == 1) {
-
-                            if (filter.toLowerCase().equals(curPCCO.product.artikul.toLowerCase())){
-
-                                foundPCCO = curPCCO;
-                                foundProduct = curPCCO;
-
-                            }
-                            else {
-
-                                for (int j = 0; j < curPCCO.product.shtrihCodes.size() && foundProduct == null; j++) {
-
-                                    if (filter.toLowerCase().equals(curPCCO.product.shtrihCodes.get(j))){
-
-                                        foundPCCO = curPCCO;
-                                        foundProduct = curPCCO;
-
-                                    }
-
-                                }
-
-                            }
-
-                        }
-
-                    }
-
-                    if (foundPCCO != null && foundProduct == null){
-
-                        for (int i = 0; i < items.size(); i++) {
-
-                            ProductCellContainerOutcome curPCCO = ((ProductCellContainerOutcome) items.get(i));
-
-                            if (curPCCO.mode < 2) {
-
-                                curPCCO.mode = curPCCO == foundPCCO ? 1 : 0;
-                                shtrihCodeInput.actvShtrihCode.setHint("Штрихкод ячейки или товара");
-                            }
-                        }
-
-                        items.remove(items.indexOf(foundPCCO));
-
-                        items.add(0 , foundPCCO);
-
-                    }
-
-                    if (foundProduct != null){
-
-                        if (askQuantityAfterProductScan){
-
-                                askQuantity(foundProduct);
-                        }
-                        else {
-
-                            Bundle bundle = new Bundle();
-                            bundle.putString("ref", ref);
-                            bundle.putString("name", name);
-                            bundle.putString("order", order);
-                            bundle.putString("cell", foundProduct.cell.ref);
-                            bundle.putString("container", foundProduct.container.ref);
-                            bundle.putString("product", foundProduct.product.ref);
-                            bundle.putInt("quantity", 1);
-
-                             doCollect(bundle);
-
-
-                        }
-
-
-                    }
-
-                    getAdapter().notifyDataSetChanged();
+                    searchShtrih(items, filter);
 
                 }
             }
@@ -401,6 +275,140 @@ public class CollectProductsFragment extends ScanListFragment<ProductCellContain
 
     }
 
+    private void searchShtrih(ArrayList items, String filter) {
+        ProductCellContainerOutcome foundPCCO = null;
+        ProductCellContainerOutcome foundProduct = null;
+        for (int i = 0; i < items.size() && foundPCCO == null; i++) {
+
+            ProductCellContainerOutcome curPCCO = ((ProductCellContainerOutcome) items.get(i));
+
+            if (curPCCO.mode == 0 && filter.toLowerCase().equals(curPCCO.cell.name.toLowerCase())){
+
+                foundPCCO = curPCCO;
+
+            } else if (curPCCO.mode == 1) {
+
+                if (filter.toLowerCase().equals(curPCCO.product.artikul.toLowerCase())){
+
+                    foundPCCO = curPCCO;
+                    foundProduct = curPCCO;
+
+                }
+                else {
+
+                    for (int j = 0; j < curPCCO.product.shtrihCodes.size() && foundProduct == null; j++) {
+
+                        if (filter.toLowerCase().equals(curPCCO.product.shtrihCodes.get(j))){
+
+                            foundPCCO = curPCCO;
+                            foundProduct = curPCCO;
+
+                        }
+
+                    }
+
+                }
+
+            }
+
+        }
+
+        if (foundPCCO != null && foundProduct == null){
+
+            for (int i = 0; i < items.size(); i++) {
+
+                ProductCellContainerOutcome curPCCO = ((ProductCellContainerOutcome) items.get(i));
+
+                if (curPCCO.mode < 2) {
+
+                    curPCCO.mode = curPCCO == foundPCCO ? 1 : 0;
+                    shtrihCodeInput.actvShtrihCode.setHint("Штрихкод ячейки или товара");
+                }
+            }
+
+            items.remove(items.indexOf(foundPCCO));
+
+            items.add(0 , foundPCCO);
+
+        }
+
+        if (foundProduct != null){
+
+            if (askQuantityAfterProductScan){
+
+                    askQuantity(foundProduct);
+            }
+            else {
+
+                Bundle bundle = new Bundle();
+                bundle.putString("ref", ref);
+                bundle.putString("name", name);
+                bundle.putString("order", order);
+                bundle.putString("cell", foundProduct.cell.ref);
+                bundle.putString("container", foundProduct.container.ref);
+                bundle.putString("product", foundProduct.product.ref);
+                bundle.putInt("quantity", 1);
+
+                 doCollect(bundle);
+
+
+            }
+
+
+        }
+
+        getAdapter().notifyDataSetChanged();
+    }
+
+    private void updateToScan(ArrayList items, ProgressBar progressBar, DataAdapter adapter, String shtrih) {
+        shtrihCodeInput.actvShtrihCode.setHint("Штрихкод ячейки");
+
+        items.clear();
+
+        productCellContainerOutcomes.clear();
+
+        RequestToServer.executeRequestUW(getContext(), Request.Method.GET, "getErpSkladProductsToOutcome",
+                "name=" + name + "&ref=" + ref, new JSONObject(), 1,
+                new RequestToServer.ResponseResultInterface() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+
+                        progressBar.setVisibility(View.GONE);
+
+                        JSONArray responseItems = JsonProcs.getJsonArrayFromJsonObject(response, "ErpSkladProductsToOutcome");
+
+                        for (int j = 0; j < responseItems.length(); j++) {
+
+                            JSONObject objectItem = JsonProcs.getItemJSONArray(responseItems, j);
+
+                            items.add(ProductCellContainerOutcome.FromJson(objectItem));
+
+                        }
+
+                        items.sort(new Comparator() {
+                            @Override
+                            public int compare(Object o, Object t1) {
+
+                                String l1 = ((ProductCellContainerOutcome) o).cell.level;
+                                String l2 = ((ProductCellContainerOutcome) t1).cell.level;
+                                String cl1 = (l1.equals("P") ? "0" : "") + l1 + ((ProductCellContainerOutcome) o).cell.name;
+                                String cl2 = (l2.equals("P") ? "0" : "") + l2 + ((ProductCellContainerOutcome) t1).cell.name;
+
+                                return cl1.compareTo(cl2);
+                            }
+                        });
+
+                        adapter.notifyDataSetChanged();
+
+                        if (!shtrih.isEmpty()){
+
+                            searchShtrih(items, shtrih);
+
+                        }
+                    }
+                });
+    }
+
     private void addScannedProducts() {
 
         RequestToServer.executeRequestUW(getContext(), Request.Method.GET, "getErpSkladProductsToOutcomeScanned",
@@ -474,7 +482,7 @@ public class CollectProductsFragment extends ScanListFragment<ProductCellContain
 
                         linearLayout.setVisibility(View.VISIBLE);
 
-                        updateList(askQuantityAfterProductScan ? "" : bundle.getString("cellName"));
+                        updateToScan(items, progressBar, adapter, askQuantityAfterProductScan ? "" : bundle.getString("cellName"));
                     }
                 });
 

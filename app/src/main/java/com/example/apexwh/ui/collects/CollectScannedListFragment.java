@@ -22,6 +22,7 @@ import com.example.apexwh.DateStr;
 import com.example.apexwh.JsonProcs;
 import com.example.apexwh.R;
 import com.example.apexwh.RequestToServer;
+import com.example.apexwh.objects.Collected;
 import com.example.apexwh.objects.Outcome;
 import com.example.apexwh.ui.BundleMethodInterface;
 import com.example.apexwh.ui.Dialogs;
@@ -33,12 +34,12 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-public class CollectScannedListFragment extends ListFragment<Outcome> {
+public class CollectScannedListFragment extends ListFragment<Collected> {
 
     String ref, name;
     public CollectScannedListFragment() {
 
-        super(R.layout.fragment_filter_list, R.layout.movers_service_list_item);
+        super(R.layout.fragment_filter_list, R.layout.collected_list_item);
 
 
         setListUpdater(new ListUpdater() {
@@ -95,20 +96,21 @@ public class CollectScannedListFragment extends ListFragment<Outcome> {
 
                     items.clear();
 
-                    RequestToServer.executeRequestUW(getContext(), Request.Method.GET, "getErpSkladOutcome", "filter=" + filter, new JSONObject(), 1,
+                    RequestToServer.executeRequestUW(getContext(), Request.Method.GET, "getErpSkladScanned",
+                            "name=" + name + "&ref=" + ref, new JSONObject(), 1,
                             new RequestToServer.ResponseResultInterface() {
                                 @Override
                                 public void onResponse(JSONObject response) {
 
                                     progressBar.setVisibility(View.GONE);
 
-                                    JSONArray responseItems = JsonProcs.getJsonArrayFromJsonObject(response, "ErpSkladOutcome");
+                                    JSONArray responseItems = JsonProcs.getJsonArrayFromJsonObject(response, "ErpSkladScanned");
 
                                     for (int j = 0; j < responseItems.length(); j++) {
 
                                         JSONObject objectItem = JsonProcs.getItemJSONArray(responseItems, j);
 
-                                        items.add(Outcome.FromJson(objectItem));
+                                        items.add(Collected.FromJson(objectItem));
 
                                     }
 
@@ -136,38 +138,25 @@ public class CollectScannedListFragment extends ListFragment<Outcome> {
                         textViews.add((TextView) itemView.findViewById(R.id.tvNumberDate));
                         textViews.add((TextView) itemView.findViewById(R.id.tvDescription));
                         textViews.add((TextView) itemView.findViewById(R.id.tvStatus));
+                        textViews.add((TextView) itemView.findViewById(R.id.tvQuantity));
+                        textViews.add((TextView) itemView.findViewById(R.id.tvCell));
                     }
                 });
 
-                getAdapter().setDrawViewHolder(new DataAdapter.DrawViewHolder<Outcome>() {
+                getAdapter().setDrawViewHolder(new DataAdapter.DrawViewHolder<Collected>() {
                     @Override
-                    public void draw(DataAdapter.ItemViewHolder holder, Outcome document) {
+                    public void draw(DataAdapter.ItemViewHolder holder, Collected document) {
 
-                        ((TextView) holder.getTextViews().get(0)).setText("№ " + document.number + " от " + DateStr.FromYmdhmsToDmyhms(document.date));
-                        ((TextView) holder.getTextViews().get(1)).setText(document.receiver + ", " + document.orderDescription
-                                + (document.comment.isEmpty() ? "" : ", " + document.comment) );
-                        ((TextView) holder.getTextViews().get(2)).setText(document.status);
+                        ((TextView) holder.getTextViews().get(0)).setText(DateStr.FromYmdhmsToDmyhms(document.date));
+                        ((TextView) holder.getTextViews().get(1)).setText(document.product);
+                        ((TextView) holder.getTextViews().get(2)).setText(document.author);
+                        ((TextView) holder.getTextViews().get(3)).setText(String.valueOf(document.quantity));
+                        ((TextView) holder.getTextViews().get(4)).setText(document.cell);
                     }
                 });
 
                 getAdapter().setOnClickListener(document -> {
 
-                    Outcome curOutcome = ((Outcome) document);
-
-                    Bundle bundle = new Bundle();
-                    bundle.putString("name", curOutcome.orderType);
-                    bundle.putString("ref", curOutcome.order);
-                    bundle.putString("order", "");
-
-                    Dialogs.showQuestionYesNoCancel(getContext(), getActivity(), new BundleMethodInterface() {
-                        @Override
-                        public void callMethod(Bundle arguments) {
-
-                            Navigation.findNavController(getActivity(), R.id.nav_host_fragment_content_main)
-                                    .navigate(R.id.nav_collectProductsFragment, arguments);
-
-                        }
-                    }, bundle, "Начать отбор " + curOutcome.orderDescription + "?", "Начать отбор");
 
                 });
 

@@ -6,4 +6,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:title="Информация о заказе" />
+    <item
+        android:id="@+id/miScanned"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:title="Отсканировано" />
 </menu>

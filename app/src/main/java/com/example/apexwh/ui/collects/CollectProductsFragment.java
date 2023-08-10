@@ -123,7 +123,7 @@ public class CollectProductsFragment extends ScanListFragment<ProductCellContain
 
                                     if (showScannedProducts){
 
-                                        addScannedProducts();
+                                        //addScannedProducts();
 
                                     }
                                 }
@@ -383,9 +383,11 @@ public class CollectProductsFragment extends ScanListFragment<ProductCellContain
 
                 getAdapter().setOnLongClickListener(document -> {
 
-                    if (!askQuantityAfterProductScan){
+                    ProductCellContainerOutcome curPCCO = (ProductCellContainerOutcome) document;
 
-                        askQuantity((ProductCellContainerOutcome) document);
+                    if (curPCCO.mode == 1 && !askQuantityAfterProductScan){
+
+                        askQuantity(curPCCO);
 
                     }
 
@@ -438,6 +440,7 @@ public class CollectProductsFragment extends ScanListFragment<ProductCellContain
         bundle.putString("name", name);
         bundle.putString("order", order);
         bundle.putString("cell", foundProduct.cell.ref);
+        bundle.putString("cellName", foundProduct.cell.name);
         bundle.putString("container", foundProduct.container.ref);
         bundle.putString("product", foundProduct.product.ref);
 
@@ -471,7 +474,7 @@ public class CollectProductsFragment extends ScanListFragment<ProductCellContain
 
                         linearLayout.setVisibility(View.VISIBLE);
 
-                        updateList("");
+                        updateList(askQuantityAfterProductScan ? "" : bundle.getString("cellName"));
                     }
                 });
 
@@ -494,6 +497,10 @@ public class CollectProductsFragment extends ScanListFragment<ProductCellContain
 
                 boolean res = false;
 
+                Bundle bundle = new Bundle();
+                bundle.putString("ref", ref);
+                bundle.putString("name", name);
+
                 switch (menuItem.getItemId()) {
 
                     case R.id.miSettings:
@@ -506,11 +513,15 @@ public class CollectProductsFragment extends ScanListFragment<ProductCellContain
 
                     case R.id.miOrderInfo:
 
-                        Bundle bundle = new Bundle();
-                        bundle.putString("ref", ref);
-                        bundle.putString("name", name);
-
                         Navigation.findNavController(getActivity(), R.id.nav_host_fragment_content_main).navigate(R.id.nav_OrderInfoFragment, bundle);
+
+                        res = true;
+
+                        break;
+
+                    case R.id.miScanned:
+
+                        Navigation.findNavController(getActivity(), R.id.nav_host_fragment_content_main).navigate(R.id.nav_collectScannedListFragment, bundle);
 
                         res = true;
 

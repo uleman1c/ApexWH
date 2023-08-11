@@ -463,7 +463,7 @@ public class HomeFragment extends Fragment {
     public void onResume() {
         super.onResume();
 
-        //((MainActivity) getActivity()).binding.appBarMain.toolbar.setTitle("");
+        //(MainActivity) getActivity()).binding.appBarMain.toolbar.setTitle("sdgwethwrt");
 
         Bundle result = DB.getSettings(getContext());
 

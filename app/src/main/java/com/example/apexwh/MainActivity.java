@@ -28,7 +28,7 @@ import com.example.apexwh.databinding.ActivityMainBinding;
 public class MainActivity extends AppCompatActivity {
 
     private AppBarConfiguration mAppBarConfiguration;
-    private ActivityMainBinding binding;
+    public ActivityMainBinding binding;
 
     private static final int RC_HANDLE_CAMERA_PERM = 2;
     private static final int REQUEST = 112;

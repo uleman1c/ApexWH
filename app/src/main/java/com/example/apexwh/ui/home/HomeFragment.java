@@ -21,6 +21,7 @@ import androidx.navigation.Navigation;
 import com.android.volley.Request;
 import com.example.apexwh.DB;
 import com.example.apexwh.JsonProcs;
+import com.example.apexwh.MainActivity;
 import com.example.apexwh.R;
 import com.example.apexwh.RequestToServer;
 import com.example.apexwh.databinding.FragmentHomeBinding;
@@ -461,6 +462,8 @@ public class HomeFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+
+        //((MainActivity) getActivity()).binding.appBarMain.toolbar.setTitle("");
 
         Bundle result = DB.getSettings(getContext());
 

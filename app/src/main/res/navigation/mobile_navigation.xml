@@ -197,5 +197,9 @@
         android:id="@+id/nav_collectScannedListFragment"
         android:name="com.example.apexwh.ui.collects.CollectScannedListFragment"
         android:label="Отсканировано" />
+    <fragment
+        android:id="@+id/nav_containerContentListFragment"
+        android:name="com.example.apexwh.ui.container_content.ContainerContentListFragment"
+        android:label="Что в контейнере" />
 
 </navigation>

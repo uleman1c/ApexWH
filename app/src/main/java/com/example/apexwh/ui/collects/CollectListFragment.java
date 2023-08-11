@@ -104,7 +104,8 @@ public class CollectListFragment extends ListFragment<Outcome> {
 
                     items.clear();
 
-                    RequestToServer.executeRequestUW(getContext(), Request.Method.GET, "getErpSkladOutcome", "filter=" + filter, new JSONObject(), 1,
+                    RequestToServer.executeRequestUW(getContext(), Request.Method.GET, "getErpSkladOutcome",
+                            "status=collect&filter=" + filter, new JSONObject(), 1,
                             new RequestToServer.ResponseResultInterface() {
                                 @Override
                                 public void onResponse(JSONObject response) {

@@ -45,7 +45,6 @@ public class HomeFragment extends Fragment {
 
     Bundle bundle;
 
-    String nil = "00000000-0000-0000-0000-000000000000";
 
     protected Boolean isSettingsExist;
 
@@ -60,7 +59,7 @@ public class HomeFragment extends Fragment {
 
         View root = binding.getRoot();
 
-        parent = nil;
+        parent = DB.nil;
 
         menuItems = new ArrayList<>();
         menuStack = new ArrayList<>();
@@ -127,7 +126,7 @@ public class HomeFragment extends Fragment {
 
         binding2.llSettings.removeViews(1, binding2.llSettings.getChildCount() - 1);
 
-        binding2.btnBack.setVisibility(parent == nil ? View.GONE : View.VISIBLE);
+        binding2.btnBack.setVisibility(parent.equals(DB.nil) ? View.GONE : View.VISIBLE);
 
         isSettingsExist = DB.isSettingsExist(getContext());
 

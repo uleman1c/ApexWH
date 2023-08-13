@@ -204,7 +204,7 @@
     <fragment
         android:id="@+id/nav_subMenuFragment"
         android:name="com.example.apexwh.ui.menu.SubMenuFragment"
-        android:label="fragment_sub_menu"
+        android:label=""
         tools:layout="@layout/fragment_sub_menu" />
 
 </navigation>

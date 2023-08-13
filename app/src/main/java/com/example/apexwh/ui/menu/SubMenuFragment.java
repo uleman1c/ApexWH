@@ -2,11 +2,18 @@ package com.example.apexwh.ui.menu;
 
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.view.MenuHost;
+import androidx.core.view.MenuProvider;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Lifecycle;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -174,4 +181,45 @@ public class SubMenuFragment extends Fragment {
 
         return inflate;
     }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        Bundle bundle = getArguments();
+
+        MenuHost menuHost = requireActivity();
+
+        menuHost.addMenuProvider(new MenuProvider() {
+            @Override
+            public void onCreateMenu(@NonNull Menu menu, @NonNull MenuInflater menuInflater) {
+                //menuInflater.inflate(R.menu.home_menu, menu);
+            }
+
+            @Override
+            public boolean onMenuItemSelected(@NonNull android.view.MenuItem menuItem) {
+
+                boolean res = false;
+
+                switch (menuItem.getItemId()) {
+
+                    case R.id.miSettings:
+
+                        Navigation.findNavController(getActivity(), R.id.nav_host_fragment_content_main).navigate(R.id.nav_settings);
+
+                        res = true;
+
+                    case R.id.miItem:
+                        res = true;
+
+                };
+
+                return res;
+            }
+        }, getViewLifecycleOwner(), Lifecycle.State.RESUMED);
+
+    }
+
+
+
 }

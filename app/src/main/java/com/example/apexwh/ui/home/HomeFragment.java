@@ -26,6 +26,7 @@ import com.example.apexwh.R;
 import com.example.apexwh.RequestToServer;
 import com.example.apexwh.databinding.FragmentHomeBinding;
 import com.example.apexwh.objects.MenuItem;
+import com.example.apexwh.objects.NavigationNames;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -185,94 +186,18 @@ public class HomeFragment extends Fragment {
 
                         if (foundMenuItem.isGroup){
 
-                            menuStack.add(parent);
+                            bundle.putString("parent", foundMenuItem.ref);
+                            bundle.putString("parentName", foundMenuItem.name);
 
-                            parent = foundMenuItem.ref;
-
-                            getMenuItems(inflater, binding);
+                            navController.navigate(R.id.nav_subMenuFragment, bundle);
 
                         }
                         else {
 
-                            if (foundMenuItem.navigation.equals("Acceptment")){
+                            int curNavId = NavigationNames.getIdFromName(foundMenuItem.navigation);
+                            if (curNavId != 0){
 
-                                navController.navigate(R.id.nav_acceptmentFragment, bundle);
-
-                            }
-                            else if (foundMenuItem.navigation.equals("Shipment")){
-
-                                navController.navigate(R.id.nav_BuierOrdersFragment, bundle);
-
-                            }
-                            else if (foundMenuItem.navigation.equals("Returns")){
-
-                                navController.navigate(R.id.nav_returns, bundle);
-
-                            }
-                            else if (foundMenuItem.navigation.equals("Tests")){
-
-                                navController.navigate(R.id.nav_tests, bundle);
-
-                            }
-                            else if (foundMenuItem.navigation.equals("ReturnsOfProducts")){
-
-                                navController.navigate(R.id.nav_returnsOfProductsFragment, bundle);
-
-                            }
-                            else if (foundMenuItem.navigation.equals("OrdersToChangeCharacteristic")){
-
-                                navController.navigate(R.id.nav_ordersToChangeCharacteristicFragment, bundle);
-
-                            }
-                            else if (foundMenuItem.navigation.equals("Placement")){
-
-                                navController.navigate(R.id.nav_placementMenuFragment, bundle);
-
-                            }
-                            else if (foundMenuItem.navigation.equals("Takement")){
-
-                                navController.navigate(R.id.nav_takementMenuFragment, bundle);
-
-                            }
-                            else if (foundMenuItem.navigation.equals("Collect")){
-
-                                navController.navigate(R.id.nav_collectListFragment, bundle);
-
-                            }
-                            else if (foundMenuItem.navigation.equals("Movement")){
-
-                                navController.navigate(R.id.nav_movementFragment, bundle);
-
-                            }
-                            else if (foundMenuItem.navigation.equals("Moves")){
-
-                                navController.navigate(R.id.movementListFragment, bundle);
-
-                            }
-                            else if (foundMenuItem.navigation.equals("CellContent")){
-
-                                navController.navigate(R.id.nav_cellContentListFragment, bundle);
-
-                            }
-                            else if (foundMenuItem.navigation.equals("ContainerContent")){
-
-                                navController.navigate(R.id.nav_containerContentListFragment, bundle);
-
-                            }
-                            else if (foundMenuItem.navigation.equals("ProductCells")){
-
-                                navController.navigate(R.id.nav_productCellsListFragment, bundle);
-
-                            }
-                            else if (foundMenuItem.navigation.equals("Invents")){
-
-                                navController.navigate(R.id.nav_inventarizations, bundle);
-
-                            }
-                            else if (foundMenuItem.navigation.equals("ShtrihcodeProduct")){
-
-                                navController.navigate(R.id.nav_shtrihcodeProductFragment, bundle);
-
+                                navController.navigate(curNavId, bundle);
                             }
 
                         }
@@ -462,8 +387,6 @@ public class HomeFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-
-        //(MainActivity) getActivity()).binding.appBarMain.toolbar.setTitle("sdgwethwrt");
 
         Bundle result = DB.getSettings(getContext());
 

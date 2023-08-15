@@ -20,7 +20,7 @@ public class Test {
         this.receiver = receiver;
     }
 
-    public static Test TestFromJson(JSONObject task_item) {
+    public static Test FromJson(JSONObject task_item) {
 
         String ref = JsonProcs.getStringFromJSON(task_item, "ref");
         String name = JsonProcs.getStringFromJSON(task_item, "name");

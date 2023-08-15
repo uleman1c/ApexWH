@@ -124,6 +124,7 @@ public class CollectListFragment extends ListFragment<Outcome> {
 
                                     adapter.notifyItemRemoved(removed);
 
+
                                     adapter.notifyItemInserted(items.size());
                                 }
                             });

@@ -20,9 +20,12 @@ import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
 import com.android.volley.Request;
+import com.example.apexwh.HttpClient;
+import com.example.apexwh.HttpRequestInterface;
 import com.example.apexwh.JsonProcs;
 import com.example.apexwh.R;
 import com.example.apexwh.RequestToServer;
+import com.example.apexwh.SoundPlayer;
 import com.example.apexwh.objects.Cell;
 import com.example.apexwh.objects.ProductCellContainerOutcome;
 import com.example.apexwh.ui.BundleMethodInterface;
@@ -53,6 +56,7 @@ public class CollectProductsFragment extends ScanListFragment<ProductCellContain
 
     LinearLayout linearLayout;
     Cell cell;
+    protected SoundPlayer soundPlayer;
 
     ArrayList<ProductCellContainerOutcome> productCellContainerOutcomes;
 
@@ -75,6 +79,7 @@ public class CollectProductsFragment extends ScanListFragment<ProductCellContain
     public CollectProductsFragment() {
 
         super(R.layout.fragment_scan_list_clear, R.layout.product_cell_border_list_item);
+
 
         setListUpdater(new ListFragment.ListUpdater() {
             @Override
@@ -101,6 +106,9 @@ public class CollectProductsFragment extends ScanListFragment<ProductCellContain
                 tvProduct = root.findViewById(R.id.tvProduct);
 
                 linearLayout = root.findViewById(R.id.LinearLayout);
+
+                soundPlayer = new SoundPlayer(getContext(), R.raw.hrn05);
+                getActivity().setVolumeControlStream(soundPlayer.streamType);
 
 
                 root.findViewById(R.id.llCell).setOnClickListener(new View.OnClickListener() {
@@ -275,6 +283,22 @@ public class CollectProductsFragment extends ScanListFragment<ProductCellContain
 
     }
 
+
+    protected void setDocumentStatus(String newStatus) {
+
+        RequestToServer.executeRequestUW(getContext(), Request.Method.GET, "setErpSkladDocumentStatus",
+                "name=" + name + "&ref=" + ref + "&status=" + newStatus, new JSONObject(), 1, new RequestToServer.ResponseResultInterface() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+
+                        Navigation.findNavController(getActivity(), R.id.nav_host_fragment_content_main).popBackStack();
+
+                    }
+                });
+    }
+
+
+
     private void searchShtrih(ArrayList items, String filter) {
         ProductCellContainerOutcome foundPCCO = null;
         ProductCellContainerOutcome foundProduct = null;
@@ -311,6 +335,11 @@ public class CollectProductsFragment extends ScanListFragment<ProductCellContain
 
             }
 
+        }
+
+        if (foundPCCO == null && foundProduct == null) {
+
+            soundPlayer.play();
         }
 
         if (foundPCCO != null && foundProduct == null){
@@ -385,26 +414,44 @@ public class CollectProductsFragment extends ScanListFragment<ProductCellContain
 
                         }
 
-                        items.sort(new Comparator() {
-                            @Override
-                            public int compare(Object o, Object t1) {
+                        if (items.size() == 0){
 
-                                String l1 = ((ProductCellContainerOutcome) o).cell.level;
-                                String l2 = ((ProductCellContainerOutcome) t1).cell.level;
-                                String cl1 = (l1.equals("P") ? "0" : "") + l1 + ((ProductCellContainerOutcome) o).cell.name;
-                                String cl2 = (l2.equals("P") ? "0" : "") + l2 + ((ProductCellContainerOutcome) t1).cell.name;
+                            Dialogs.showQuestionYesNoCancel(getContext(), getActivity(), new BundleMethodInterface() {
+                                @Override
+                                public void callMethod(Bundle arguments) {
 
-                                return cl1.compareTo(cl2);
+                                    setDocumentStatus("toTest");
+
+                                }
+                            }, new Bundle(), "Завершить документ?", "Завершить");
+                        } else {
+
+
+                            items.sort(new Comparator() {
+                                @Override
+                                public int compare(Object o, Object t1) {
+
+                                    String l1 = ((ProductCellContainerOutcome) o).cell.level;
+                                    String l2 = ((ProductCellContainerOutcome) t1).cell.level;
+                                    String cl1 = (l1.equals("P") ? "0" : "") + l1 + ((ProductCellContainerOutcome) o).cell.name;
+                                    String cl2 = (l2.equals("P") ? "0" : "") + l2 + ((ProductCellContainerOutcome) t1).cell.name;
+
+                                    return cl1.compareTo(cl2);
+                                }
+                            });
+
+                            adapter.notifyDataSetChanged();
+
+                            if (shtrih != null && !shtrih.isEmpty()) {
+
+                                searchShtrih(items, shtrih);
+
                             }
-                        });
-
-                        adapter.notifyDataSetChanged();
-
-                        if (!shtrih.isEmpty()){
-
-                            searchShtrih(items, shtrih);
-
                         }
+
+
+
+
                     }
                 });
     }

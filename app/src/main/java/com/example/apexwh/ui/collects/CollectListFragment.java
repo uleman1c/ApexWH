@@ -213,7 +213,7 @@ public class CollectListFragment extends ListFragment<Outcome> {
         menuHost.addMenuProvider(new MenuProvider() {
             @Override
             public void onCreateMenu(@NonNull Menu menu, @NonNull MenuInflater menuInflater) {
-                //menuInflater.inflate(R.menu.home_menu, menu);
+                menuInflater.inflate(R.menu.collect_list, menu);
             }
 
             @Override
@@ -229,8 +229,15 @@ public class CollectListFragment extends ListFragment<Outcome> {
 
                         res = true;
 
-                    case R.id.miItem:
+                        break;
+
+                    case R.id.miCollectByReceiver:
+
+                        Navigation.findNavController(getActivity(), R.id.nav_host_fragment_content_main).navigate(R.id.nav_receiversListFragment);
+
+
                         res = true;
+                        break;
 
                 };
 

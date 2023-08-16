@@ -35,7 +35,7 @@ public class OutcomeReceiver {
         // "ДатаЗагрузки":"20230626095320"}
 
         String type = JsonProcs.getStringFromJSON(task_item, "type");
-        String ref = JsonProcs.getStringFromJSON(task_item, "Тиrefп");
+        String ref = JsonProcs.getStringFromJSON(task_item, "ref");
         String name = JsonProcs.getStringFromJSON(task_item, "name");
 
         return new OutcomeReceiver(type, ref, name);

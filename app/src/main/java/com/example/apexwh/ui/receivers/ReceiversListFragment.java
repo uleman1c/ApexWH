@@ -111,7 +111,7 @@ public class ReceiversListFragment extends ListFragment<OutcomeReceiver> {
                         public void callMethod(Bundle arguments) {
 
                             Navigation.findNavController(getActivity(), R.id.nav_host_fragment_content_main)
-                                    .navigate(R.id.nav_collectProductsFragment, arguments);
+                                    .navigate(R.id.nav_collectProductsByReceiverFragment, arguments);
 
                         }
                     }, bundle, "Начать отбор " + curOutcome.name + "?", "Начать отбор");

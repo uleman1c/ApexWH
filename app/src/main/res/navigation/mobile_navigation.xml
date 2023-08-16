@@ -213,5 +213,9 @@
         android:id="@+id/nav_receiversListFragment"
         android:name="com.example.apexwh.ui.receivers.ReceiversListFragment"
         android:label="Получатели" />
+    <fragment
+        android:id="@+id/nav_collectProductsByReceiverFragment"
+        android:name="com.example.apexwh.ui.collects.CollectProductsByReceiverFragment"
+        android:label="Отбор товаров по получателю" />
 
 </navigation>

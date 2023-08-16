@@ -514,19 +514,34 @@ public class CollectProductsByReceiverFragment extends ScanListFragment<ProductC
         progressBar.setVisibility(View.VISIBLE);
 
 
-        RequestToServer.executeRequestUW(getContext(), Request.Method.GET, "setErpSkladProductsToOutcome",
+        RequestToServer.executeRequestUW(getContext(), Request.Method.GET, "setErpSkladProductsToOutcomeByReceiver",
                 "doc=" + UUID.randomUUID().toString() + "&cell=" + bundle.getString("cell")
                         + "&container=" + bundle.getString("container")
-                        + "&name=" + name + "&ref=" + ref + "&product=" + bundle.getString("product") + "&quantity=" + bundle.getInt("quantity"), new JSONObject(), 1,
+                        + "&type=" + type + "&ref=" + ref + "&product=" + bundle.getString("product") + "&quantity=" + bundle.getInt("quantity"), new JSONObject(), 1,
                 new RequestToServer.ResponseResultInterface() {
                     @Override
                     public void onResponse(JSONObject response) {
 
-                        progressBar.setVisibility(View.GONE);
+                        JSONArray res = JsonProcs.getJsonArrayFromJsonObject(response, "ErpSkladProductsToOutcomeByReceiver");
+                        JSONObject res0 = JsonProcs.getItemJSONArray(res, 0);
 
-                        linearLayout.setVisibility(View.VISIBLE);
+                        int curLeft = JsonProcs.getIntegerFromJSON(res0, "left");
 
-                        updateToScan(items, progressBar, adapter, askQuantityAfterProductScan ? "" : bundle.getString("cellName"));
+                        if(curLeft > 0 && curLeft < bundle.getInt("quantity")){
+
+                                bundle.putInt("quantity", curLeft);
+
+                                doCollect(bundle);
+
+                        } else {
+
+                            progressBar.setVisibility(View.GONE);
+
+                            linearLayout.setVisibility(View.VISIBLE);
+
+                            updateToScan(items, progressBar, adapter, askQuantityAfterProductScan ? "" : bundle.getString("cellName"));
+                        }
+
                     }
                 });
 

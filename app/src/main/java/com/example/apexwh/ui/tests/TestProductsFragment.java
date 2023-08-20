@@ -179,51 +179,7 @@ public class TestProductsFragment extends ScanListFragment<ProductCellContainerO
 
                         ProductCellContainerOutcome curPCCO = ((ProductCellContainerOutcome)document);
 
-                        if (curPCCO.mode == 0 ) {
-
-                            if (curPCCO.cell.name.isEmpty()) {
-
-                                Bundle bundle = new Bundle();
-                                bundle.putInt("index", items.indexOf(curPCCO));
-                                Dialogs.showQuestionYesNoCancel(getContext(), getActivity(), new BundleMethodInterface() {
-                                    @Override
-                                    public void callMethod(Bundle arguments) {
-
-                                        ProductCellContainerOutcome foundPCCO = null;
-
-                                        for (int i = 0; i < items.size(); i++) {
-
-                                            ProductCellContainerOutcome curPCCO = ((ProductCellContainerOutcome) items.get(i));
-
-                                            if (i == arguments.getInt("index")) {
-
-                                                foundPCCO = curPCCO;
-
-                                                shtrihCodeInput.actvShtrihCode.setHint("Штрихкод товара");
-
-                                            }
-
-                                            if (curPCCO.mode < 2) {
-
-                                                curPCCO.mode = i == arguments.getInt("index") ? 1 : 0;
-                                            }
-
-                                        }
-
-                                        items.remove(items.indexOf(foundPCCO));
-
-                                        items.add(0, foundPCCO);
-
-                                        getAdapter().notifyDataSetChanged();
-
-                                        getRecyclerView().smoothScrollToPosition(0);
-
-                                    }
-                                }, bundle, "Начать отбор из ячейки " + curPCCO.cell.name + "?", "Начать отбор из ячейки");
-                            }
-
-                        }
-                        else if (false && curPCCO.product.shtrihCodes.size() == 0){
+                        if (true || curPCCO.product.shtrihCodes.size() == 0){
 
                             Bundle bundle = new Bundle();
                             bundle.putInt("index", items.indexOf(curPCCO));
@@ -237,8 +193,6 @@ public class TestProductsFragment extends ScanListFragment<ProductCellContainerO
 
                                 }
                             }, bundle, "Начать отбор номенклатуры " + curPCCO.product.name + "?", "Начать отбор номенклатуры");
-
-
 
                         }
 
@@ -373,6 +327,8 @@ public class TestProductsFragment extends ScanListFragment<ProductCellContainerO
     private void updateToScan(ArrayList items, ProgressBar progressBar, DataAdapter adapter, String shtrih) {
         shtrihCodeInput.actvShtrihCode.setHint("Штрихкод товара");
 
+        progressBar.setVisibility(View.VISIBLE);
+
         items.clear();
 
         productCellContainerOutcomes.clear();
@@ -498,7 +454,7 @@ public class TestProductsFragment extends ScanListFragment<ProductCellContainerO
         progressBar.setVisibility(View.VISIBLE);
 
 
-        RequestToServer.executeRequestUW(getContext(), Request.Method.GET, "setErpSkladProductsToOutcome",
+        RequestToServer.executeRequestUW(getContext(), Request.Method.GET, "setErpSkladProductsToTest",
                 "doc=" + UUID.randomUUID().toString() + "&cell=" + bundle.getString("cell")
                         + "&container=" + bundle.getString("container")
                         + "&name=" + name + "&ref=" + ref + "&product=" + bundle.getString("product") + "&quantity=" + bundle.getInt("quantity"), new JSONObject(), 1,

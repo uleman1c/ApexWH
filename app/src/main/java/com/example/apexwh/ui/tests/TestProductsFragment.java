@@ -57,7 +57,7 @@ public class TestProductsFragment extends ScanListFragment<ProductCellContainerO
     Cell cell;
     protected SoundPlayer soundPlayer;
 
-    ArrayList<ProductCellContainerOutcome> productCellContainerOutcomes;
+    ArrayList<ProductCellContainerOutcome> productCellContainerOutcomes = new ArrayList<>();
 
     public TestProductsFragment() {
 
@@ -97,30 +97,6 @@ public class TestProductsFragment extends ScanListFragment<ProductCellContainerO
                     @Override
                     public void onClick(View view) {
 
-                        String cellName = tvProduct.getText().toString();
-
-                        if (!cellName.isEmpty() && items.size() > 0) {
-
-                            Bundle args = new Bundle();
-                            args.putString("ref", UUID.randomUUID().toString());
-                            Dialogs.showQuestionYesNoCancel(getContext(), getActivity(), new BundleMethodInterface() {
-                                @Override
-                                public void callMethod(Bundle arguments) {
-
-                                    RequestToServer.executeRequestUW(getContext(), Request.Method.GET,
-                                            "setErpSkladCellClear", "cell=" + cell.ref + "&ref=" + arguments.getString("ref"), new JSONObject(),
-                                            RequestToServer.TypeOfResponse.JsonObjectWithArray, response -> {
-
-                                                JSONObject res = JsonProcs.getJsonObjectFromJsonObject(response, "ErpSkladCellClear");
-
-                                                listUpdater.update(items, progressBar, adapter, cell.name);
-
-                                            });
-
-
-                                }
-                            }, args, "Очистить ячейку ?", "Очищение");
-                        }
                     }
                 });
 
@@ -217,33 +193,26 @@ public class TestProductsFragment extends ScanListFragment<ProductCellContainerO
 
 
     private void searchShtrih(ArrayList items, String filter) {
+
         ProductCellContainerOutcome foundPCCO = null;
         ProductCellContainerOutcome foundProduct = null;
         for (int i = 0; i < items.size() && foundPCCO == null; i++) {
 
             ProductCellContainerOutcome curPCCO = ((ProductCellContainerOutcome) items.get(i));
 
-            if (curPCCO.mode == 0 && filter.toLowerCase().equals(curPCCO.cell.name.toLowerCase())) {
+            if (filter.toLowerCase().equals(curPCCO.product.artikul.toLowerCase())) {
 
                 foundPCCO = curPCCO;
+                foundProduct = curPCCO;
 
-            } else if (curPCCO.mode == 1) {
+            } else {
 
-                if (filter.toLowerCase().equals(curPCCO.product.artikul.toLowerCase())) {
+                for (int j = 0; j < curPCCO.product.shtrihCodes.size() && foundProduct == null; j++) {
 
-                    foundPCCO = curPCCO;
-                    foundProduct = curPCCO;
+                    if (filter.toLowerCase().equals(curPCCO.product.shtrihCodes.get(j))) {
 
-                } else {
-
-                    for (int j = 0; j < curPCCO.product.shtrihCodes.size() && foundProduct == null; j++) {
-
-                        if (filter.toLowerCase().equals(curPCCO.product.shtrihCodes.get(j))) {
-
-                            foundPCCO = curPCCO;
-                            foundProduct = curPCCO;
-
-                        }
+                        foundPCCO = curPCCO;
+                        foundProduct = curPCCO;
 
                     }
 
@@ -258,30 +227,12 @@ public class TestProductsFragment extends ScanListFragment<ProductCellContainerO
             soundPlayer.play();
         }
 
-        if (foundPCCO != null && foundProduct == null) {
-
-            for (int i = 0; i < items.size(); i++) {
-
-                ProductCellContainerOutcome curPCCO = ((ProductCellContainerOutcome) items.get(i));
-
-                if (curPCCO.mode < 2) {
-
-                    curPCCO.mode = curPCCO == foundPCCO ? 1 : 0;
-                    shtrihCodeInput.actvShtrihCode.setHint("Штрихкод товара");
-                }
-            }
-
-            items.remove(items.indexOf(foundPCCO));
-
-            items.add(0, foundPCCO);
-
-        }
-
         if (foundProduct != null) {
 
             if (askQuantityAfterProductScan) {
 
                 askQuantity(foundProduct);
+
             } else {
 
                 Bundle bundle = new Bundle();
@@ -323,6 +274,8 @@ public class TestProductsFragment extends ScanListFragment<ProductCellContainerO
 
         progressBar.setVisibility(View.VISIBLE);
 
+        int removed = items.size();
+
         items.clear();
 
         productCellContainerOutcomes.clear();
@@ -344,6 +297,10 @@ public class TestProductsFragment extends ScanListFragment<ProductCellContainerO
                             items.add(ProductCellContainerOutcome.FromJson(objectItem));
 
                         }
+
+                        adapter.notifyItemRemoved(removed);
+
+                        adapter.notifyItemInserted(items.size());
 
                         if (items.size() == 0) {
 

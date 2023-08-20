@@ -392,6 +392,8 @@ public class CollectProductsFragment extends ScanListFragment<ProductCellContain
     private void updateToScan(ArrayList items, ProgressBar progressBar, DataAdapter adapter, String shtrih) {
         shtrihCodeInput.actvShtrihCode.setHint("Штрихкод ячейки");
 
+        int removed = items.size();
+
         items.clear();
 
         productCellContainerOutcomes.clear();
@@ -413,6 +415,10 @@ public class CollectProductsFragment extends ScanListFragment<ProductCellContain
                             items.add(ProductCellContainerOutcome.FromJson(objectItem));
 
                         }
+
+                        adapter.notifyItemRemoved(removed);
+
+                        adapter.notifyItemInserted(items.size());
 
                         if (items.size() == 0){
 

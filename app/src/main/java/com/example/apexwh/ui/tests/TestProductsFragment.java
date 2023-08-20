@@ -61,7 +61,7 @@ public class TestProductsFragment extends ScanListFragment<ProductCellContainerO
 
     public TestProductsFragment() {
 
-            super(R.layout.fragment_scan_list_clear, R.layout.product_cell_border_list_item);
+            super(R.layout.fragment_scan_list_clear, R.layout.product_border_list_item);
 
 
             setListUpdater(new ListFragment.ListUpdater() {
@@ -140,7 +140,7 @@ public class TestProductsFragment extends ScanListFragment<ProductCellContainerO
 
                             if (viewType == 0) {
 
-                                view = inflater.inflate(R.layout.product_cell_border_list_item, parent, false);
+                                view = inflater.inflate(R.layout.product_border_list_item, parent, false);
                             }
                             else if (viewType == 1) {
 
@@ -161,7 +161,6 @@ public class TestProductsFragment extends ScanListFragment<ProductCellContainerO
                         @Override
                         public void init(View itemView, ArrayList<TextView> textViews) {
 
-                            textViews.add(itemView.findViewById(R.id.tvNumberDate));
                             textViews.add(itemView.findViewById(R.id.tvDescription));
                             textViews.add(itemView.findViewById(R.id.tvStatus));
                         }
@@ -171,9 +170,8 @@ public class TestProductsFragment extends ScanListFragment<ProductCellContainerO
                         @Override
                         public void draw(DataAdapter.ItemViewHolder holder, ProductCellContainerOutcome item) {
 
-                            ((TextView) holder.getTextViews().get(0)).setText("Ячейка: " + item.cell.name);
-                            ((TextView) holder.getTextViews().get(1)).setText(item.product.artikul + " " + item.product.name + ", " + item.number + " шт");
-                            ((TextView) holder.getTextViews().get(2)).setText(item.container.name);
+                            ((TextView) holder.getTextViews().get(0)).setText(item.product.artikul + " " + item.product.name);
+                            ((TextView) holder.getTextViews().get(1)).setText(item.number + " шт");
                         }
                     });
 
@@ -201,7 +199,7 @@ public class TestProductsFragment extends ScanListFragment<ProductCellContainerO
 
                                                 foundPCCO = curPCCO;
 
-                                                shtrihCodeInput.actvShtrihCode.setHint("Штрихкод ячейки или товара");
+                                                shtrihCodeInput.actvShtrihCode.setHint("Штрихкод товара");
 
                                             }
 
@@ -319,7 +317,7 @@ public class TestProductsFragment extends ScanListFragment<ProductCellContainerO
                 if (curPCCO.mode < 2) {
 
                     curPCCO.mode = curPCCO == foundPCCO ? 1 : 0;
-                    shtrihCodeInput.actvShtrihCode.setHint("Штрихкод ячейки или товара");
+                    shtrihCodeInput.actvShtrihCode.setHint("Штрихкод товара");
                 }
             }
 
@@ -373,13 +371,13 @@ public class TestProductsFragment extends ScanListFragment<ProductCellContainerO
 
 
     private void updateToScan(ArrayList items, ProgressBar progressBar, DataAdapter adapter, String shtrih) {
-        shtrihCodeInput.actvShtrihCode.setHint("Штрихкод ячейки");
+        shtrihCodeInput.actvShtrihCode.setHint("Штрихкод товара");
 
         items.clear();
 
         productCellContainerOutcomes.clear();
 
-        RequestToServer.executeRequestUW(getContext(), Request.Method.GET, "getErpSkladProductsToOutcome",
+        RequestToServer.executeRequestUW(getContext(), Request.Method.GET, "getErpSkladProductsToTest",
                 "name=" + name + "&ref=" + ref, new JSONObject(), 1,
                 new RequestToServer.ResponseResultInterface() {
                     @Override
@@ -387,7 +385,7 @@ public class TestProductsFragment extends ScanListFragment<ProductCellContainerO
 
                         progressBar.setVisibility(View.GONE);
 
-                        JSONArray responseItems = JsonProcs.getJsonArrayFromJsonObject(response, "ErpSkladProductsToOutcome");
+                        JSONArray responseItems = JsonProcs.getJsonArrayFromJsonObject(response, "ErpSkladProductsToTest");
 
                         for (int j = 0; j < responseItems.length(); j++) {
 

@@ -76,11 +76,11 @@ public class TestsFragment extends ListFragment<Outcome>{
                                         bundle.putString("order", order);
 
                                         Navigation.findNavController(getActivity(), R.id.nav_host_fragment_content_main)
-                                                .navigate(R.id.nav_collectProductsFragment, bundle);
+                                                .navigate(R.id.nav_testProductsFragment, bundle);
 
-                                        DoStartTest(Navigation.findNavController(getActivity(), R.id.nav_host_fragment_content_main),
-                                                JsonProcs.getStringFromJSON(responseItem, "Имя"),
-                                                JsonProcs.getStringFromJSON(responseItem, "Ссылка"));
+//                                        DoStartTest(Navigation.findNavController(getActivity(), R.id.nav_host_fragment_content_main),
+//                                                JsonProcs.getStringFromJSON(responseItem, "Имя"),
+//                                                JsonProcs.getStringFromJSON(responseItem, "Ссылка"));
 
                                     } else {
 
@@ -185,7 +185,7 @@ public class TestsFragment extends ListFragment<Outcome>{
                             @Override
                             public void callMethod(Bundle arguments) {
 
-                                startTest(navController, arguments.getString("ref"));
+                                navController.navigate(R.id.nav_testProductsFragment, bundle);
 
                             }
                         }, bundle, "Начать проверку " + curOutcome.orderDescription + "?", "Начать проверку");
@@ -204,7 +204,10 @@ public class TestsFragment extends ListFragment<Outcome>{
 
                         JSONObject jsonObject = JsonProcs.getJSONObjectFromString(bundle.getString("selected"));
 
-                        DoStartTest(navController, JsonProcs.getStringFromJSON(jsonObject, "name"), JsonProcs.getStringFromJSON(jsonObject, "ref"));
+//                        DoStartTest(navController, JsonProcs.getStringFromJSON(jsonObject, "name"), JsonProcs.getStringFromJSON(jsonObject, "ref"));
+//
+//                        navController.navigate(R.id.nav_testProductsFragment, bundle);
+
 
                     }
                 });
@@ -215,49 +218,6 @@ public class TestsFragment extends ListFragment<Outcome>{
         });
 
     }
-
-    private void DoStartTest(NavController navController, String name, String ref){
-
-//        HttpClient httpClient = new HttpClient(getContext());
-//
-//        httpClient.request_get("/hs/dta/obj?request=setTest&type=" + name
-//                + "&ref=" + ref
-//                + "&warehouseId=" + getWarehouseId(), new HttpRequestJsonObjectInterface() {
-//            @Override
-//            public void setProgressVisibility(int visibility) {
-//
-//            }
-//
-//            @Override
-//            public void processResponse(JSONObject jsonObjectResponse) {
-//
-//                JSONArray jsonArrayResponses = JsonProcs.getJsonArrayFromJsonObject(jsonObjectResponse, "responses");
-//
-//                JSONObject jsonObjectItem = JsonProcs.getItemJSONArray(jsonArrayResponses, 0);
-//
-//                String ref = JsonProcs.getStringFromJSON(jsonObjectItem, "Test");
-
-                startTest(navController, ref);
-
-//            }
-//        });
-
-
-    }
-
-    private void startTest(NavController navController, String ref) {
-
-        Bundle bundle = new Bundle();
-        bundle.putString("ref", ref);
-//        bundle.putString("warehouseId", getWarehouseId());
-//        bundle.putString("name", "ПроверкаДокумента");
-//        bundle.putString("description", "Проверка документа");
-
-        navController.navigate(R.id.nav_testProductsFragment, bundle);
-
-
-    }
-
 
     @Override
     public void onResume() {

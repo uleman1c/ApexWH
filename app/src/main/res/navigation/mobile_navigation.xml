@@ -179,7 +179,7 @@
     <fragment
         android:id="@+id/nav_shtrihcodeProductFragment"
         android:name="com.example.apexwh.ui.shtrihcode_product.ShtrihcodeProductFragment"
-        android:label="Штрихкодирование" />
+        android:label="ШК товара" />
     <fragment
         android:id="@+id/nav_productListFragment"
         android:name="com.example.apexwh.product.ProductListFragment"
@@ -216,6 +216,10 @@
     <fragment
         android:id="@+id/nav_collectProductsByReceiverFragment"
         android:name="com.example.apexwh.ui.collects.CollectProductsByReceiverFragment"
-        android:label="Отбор товаров по получателю" />
+        android:label="Отбор по получателю" />
+    <fragment
+        android:id="@+id/nav_shtrihcodeContainerFragment"
+        android:name="com.example.apexwh.ui.shtrihcode_container.ShtrihcodeContainerFragment"
+        android:label="ШК контейнера" />
 
 </navigation>

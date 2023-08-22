@@ -26,6 +26,7 @@ public class NavigationNames {
             case "ProductCells": result = R.id.nav_productCellsListFragment; break;
             case "Invents": result = R.id.nav_inventarizations; break;
             case "ShtrihcodeProduct": result = R.id.nav_shtrihcodeProductFragment; break;
+            case "ShtrihcodeContainer": result = R.id.nav_shtrihcodeContainerFragment; break;
 
         }
 

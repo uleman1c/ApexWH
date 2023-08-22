@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.android.volley.Request;
+import com.example.apexwh.DB;
 import com.example.apexwh.JsonProcs;
 import com.example.apexwh.R;
 import com.example.apexwh.RequestToServer;
@@ -36,7 +37,7 @@ public class PlacementFragment extends ScanShtrihcodeFragment {
 
     private TextView tvCell, tvContent, tvContainer, tvContainerContent;
 
-    private String cellRef, containerRef;
+    private String cellRef, containerRef, cellName;
 
     private History history;
     @Override
@@ -45,6 +46,8 @@ public class PlacementFragment extends ScanShtrihcodeFragment {
 
         history = new History(getContext(), "placement");
 
+        cellRef = DB.nil;
+        cellName = "";
 
         setOnCreateViewElements(new OnCreateViewElements() {
             @Override
@@ -80,21 +83,24 @@ public class PlacementFragment extends ScanShtrihcodeFragment {
             history.AddHistoryRecord(strCatName);
         }
 
-        RequestToServer.executeRequestUW(getContext(), Request.Method.GET, "getErpSkladCellContainer", "filter=" + strCatName, new JSONObject(),
+        RequestToServer.executeRequestUW(getContext(), Request.Method.GET, "getErpSkladCellContainerProduct", "filter=" + strCatName, new JSONObject(),
                 RequestToServer.TypeOfResponse.JsonObjectWithArray, response -> {
 
-                    JSONArray cells = JsonProcs.getJsonArrayFromJsonObject(response, "ErpSkladCellContainer");
+                    JSONArray cells = JsonProcs.getJsonArrayFromJsonObject(response, "ErpSkladCellContainerProduct");
 
                     if (cells.length() == 1){
 
                         JSONObject cell = JsonProcs.getItemJSONArray(cells, 0);
 
-                        if (JsonProcs.getStringFromJSON(cell, "type").equals("Ячейка")){
+                        String type = JsonProcs.getStringFromJSON(cell, "type");
+
+                        if (type.equals("Ячейка")){
 
                             tvCell.setText(strCatName);
 
                             cellRef = JsonProcs.getStringFromJSON(cell, "ref");
-                            tvCell.setText(JsonProcs.getStringFromJSON(cell, "name"));
+                            cellName = JsonProcs.getStringFromJSON(cell, "name");
+                            tvCell.setText(cellName);
 
                             containerRef = JsonProcs.getStringFromJSON(cell, "containerCellRef");
 
@@ -113,9 +119,23 @@ public class PlacementFragment extends ScanShtrihcodeFragment {
 
 
                         }
-                        else {
+                        else if (type.equals("Номенклатура")) {
 
-                            tvContainer.setText(JsonProcs.getStringFromJSON(cell, "name"));
+                            if (saveToHistory){
+
+                                history.SetLastRecordComment("Найдена номенклатура");
+                            }
+
+                            if (!cellRef.equals(DB.nil)){
+
+                                askForPlacementProductToCell(strCatName);
+
+                            }
+
+                        }
+                        else if (type.equals("Контейнер")) {
+
+                                tvContainer.setText(JsonProcs.getStringFromJSON(cell, "name"));
                             tvContainerContent.setText(JsonProcs.getStringFromJSON(cell, "product")
                                     + ", " + JsonProcs.getIntegerFromJSON(cell, "quantity")
                                     + " (" + JsonProcs.getIntegerFromJSON(cell, "placeQuantity") + ")");
@@ -141,6 +161,47 @@ public class PlacementFragment extends ScanShtrihcodeFragment {
                     }
 
                 });
+    }
+
+    private void askForPlacementProductToCell(String productRef) {
+//        Bundle args = new Bundle();
+//        args.putString("cellRef", cellRef);
+//
+//        args.putString("productRef", productRef);
+//
+//        Dialogs.showQuestionYesNoCancel(getContext(), getActivity(), arguments -> {
+//
+//            JSONObject jsonObject = new JSONObject();
+//            JsonProcs.putToJsonObject(jsonObject,"ref", UUID.randomUUID().toString());
+//            JsonProcs.putToJsonObject(jsonObject,"cellRef", arguments.getString("cellRef"));
+//            JsonProcs.putToJsonObject(jsonObject,"containerRef", arguments.getString("containerRef"));
+//            JsonProcs.putToJsonObject(jsonObject,"containerName", arguments.getString("containerName"));
+//
+//            RequestToServer.executeRequestBodyUW(getContext(), Request.Method.POST, "setErpSkladPlacement", jsonObject,
+//                    RequestToServer.TypeOfResponse.JsonObject, response1 -> {
+//
+//                        if (!JsonProcs.getStringFromJSON(response1, "ref").isEmpty()){
+//
+//                            history.AddHistoryRecord("Создано размещение контейнера "
+//                                    + tvContainer.getText().toString() + " в ячейку "
+//                                    + tvCell.getText().toString());
+//
+//                            tvContainer.setText("");
+//
+//                            scanCellContainer(tvCell.getText().toString(), false);
+//
+//                        }
+//
+//
+//
+//                    });
+//
+//
+//        },  args,
+//                "Разместить номенклатуру " + tvContainer.getText().toString()
+//                + " (" + tvContainerContent.getText().toString() +")"
+//                + " в ячейку " + cellName + " ?", "Размещение");
+
     }
 
     private void askForPlacement(String strCatName) {

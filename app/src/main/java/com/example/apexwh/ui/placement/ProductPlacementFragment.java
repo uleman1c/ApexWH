@@ -37,8 +37,6 @@ public class ProductPlacementFragment extends ScanListFragment<ProductCell> {
 
         super(R.layout.fragment_scan_cell_list, R.layout.product_cell_list_item);
 
-
-
         setListUpdater(new ListUpdater() {
             @Override
             public void update(ArrayList items, ProgressBar progressBar, DataAdapter adapter, String filter) {

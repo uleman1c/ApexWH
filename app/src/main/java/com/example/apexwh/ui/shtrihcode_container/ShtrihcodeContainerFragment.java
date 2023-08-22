@@ -39,6 +39,9 @@ public class ShtrihcodeContainerFragment extends ScanListFragment<Shtrihcode> {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = super.onCreateView(inflater, container, savedInstanceState);
+
+        ((TextView)view.findViewById(R.id.tvObjectName)).setText("Контейнер");
+
         getParentFragmentManager().setFragmentResultListener("selectProduct", this, new FragmentResultListener() {
 
             @Override
@@ -81,7 +84,7 @@ public class ShtrihcodeContainerFragment extends ScanListFragment<Shtrihcode> {
 
     public ShtrihcodeContainerFragment() {
 
-        super(R.layout.fragment_scan_list, R.layout.product_cell_list_item);
+        super(R.layout.fragment_scan_wo_proc_list, R.layout.product_cell_list_item);
 
         setListUpdater(new ListUpdater() {
             @Override
@@ -89,14 +92,14 @@ public class ShtrihcodeContainerFragment extends ScanListFragment<Shtrihcode> {
 
                 items.clear();
 
-                RequestToServer.executeRequestUW(getContext(), Request.Method.GET, "getErpSkladProductShtrihcodes", "filter=" + filter, new JSONObject(), 1,
+                RequestToServer.executeRequestUW(getContext(), Request.Method.GET, "getErpSkladContainerShtrihcodes", "filter=" + filter, new JSONObject(), 1,
                         new RequestToServer.ResponseResultInterface() {
                             @Override
                             public void onResponse(JSONObject response) {
 
                                 progressBar.setVisibility(View.GONE);
 
-                                JSONArray responseItems = JsonProcs.getJsonArrayFromJsonObject(response, "ErpSkladProductShtrihcodes");
+                                JSONArray responseItems = JsonProcs.getJsonArrayFromJsonObject(response, "ErpSkladContainerShtrihcodes");
 
                                 tvProduct.setText(filter + " не найден");
 

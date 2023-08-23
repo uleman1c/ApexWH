@@ -14,10 +14,13 @@ import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
 import com.android.volley.Request;
+import com.example.apexwh.DB;
 import com.example.apexwh.JsonProcs;
 import com.example.apexwh.R;
 import com.example.apexwh.RequestToServer;
+import com.example.apexwh.objects.Container;
 import com.example.apexwh.objects.Product;
+import com.example.apexwh.objects.ProductWithQuantity;
 import com.example.apexwh.objects.Shtrihcode;
 import com.example.apexwh.ui.BundleMethodInterface;
 import com.example.apexwh.ui.Dialogs;
@@ -29,12 +32,24 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-public class ShtrihcodeContainerFragment extends ScanListFragment<Shtrihcode> {
+public class ShtrihcodeContainerFragment extends ScanListFragment<ProductWithQuantity> {
 
     TextView tvProduct;
 
     Product product;
+
+    ArrayList<Product> products;
+    Container container;
     Shtrihcode shtrihcode;
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        products = new ArrayList<>();
+        container = null;
+
+    }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -90,16 +105,14 @@ public class ShtrihcodeContainerFragment extends ScanListFragment<Shtrihcode> {
             @Override
             public void update(ArrayList items, ProgressBar progressBar, DataAdapter adapter, String filter) {
 
-                items.clear();
-
-                RequestToServer.executeRequestUW(getContext(), Request.Method.GET, "getErpSkladContainerShtrihcodes", "filter=" + filter, new JSONObject(), 1,
+                RequestToServer.executeRequestUW(getContext(), Request.Method.GET, "getErpSkladContainersProducts", "filter=" + filter, new JSONObject(), 1,
                         new RequestToServer.ResponseResultInterface() {
                             @Override
                             public void onResponse(JSONObject response) {
 
                                 progressBar.setVisibility(View.GONE);
 
-                                JSONArray responseItems = JsonProcs.getJsonArrayFromJsonObject(response, "ErpSkladContainerShtrihcodes");
+                                JSONArray responseItems = JsonProcs.getJsonArrayFromJsonObject(response, "ErpSkladContainersProducts");
 
                                 tvProduct.setText(filter + " не найден");
 
@@ -107,29 +120,52 @@ public class ShtrihcodeContainerFragment extends ScanListFragment<Shtrihcode> {
 
                                     JSONObject objectItem = JsonProcs.getItemJSONArray(responseItems, j);
 
-                                    product = Product.FromJson(JsonProcs.getJsonObjectFromJsonObject(objectItem, "product"));
+                                    if (JsonProcs.getStringFromJSON(objectItem, "type").equals("Контейнер")){
 
-                                    tvProduct.setText(product.artikul + " " + product.name);
+                                        items.clear();
 
-                                    JSONArray cells = JsonProcs.getJsonArrayFromJsonObject(objectItem, "shtrihcodes");
+                                        container = Container.FromJson(objectItem);
 
-                                    for (int k = 0; k < cells.length(); k++) {
+                                        tvProduct.setText(container.name);
 
-                                        JSONObject productCell = JsonProcs.getItemJSONArray(cells, k);
+                                        JSONArray products = JsonProcs.getJsonArrayFromJsonObject(objectItem, "products");
 
-                                        items.add(new Shtrihcode(JsonProcs.getStringFromJSON(productCell, "shtrihcode"), false));
+                                        for (int k = 0; k < products.length(); k++) {
+
+                                            JSONObject curProduct = JsonProcs.getItemJSONArray(products, k);
+
+                                            items.add(ProductWithQuantity.FromJson(curProduct));
+                                        }
+
                                     }
+                                    else {
 
+                                        Product curProduct = Product.FromJson(objectItem);
+
+                                        items.add(0, new ProductWithQuantity(curProduct, 0, 0));
+
+                                        Dialogs.showInputQuantity(getContext(), null, getActivity(), new BundleMethodInterface() {
+                                            @Override
+                                            public void callMethod(Bundle arguments) {
+
+                                                ((ProductWithQuantity)items.get(0)).quantity = arguments.getInt("quantity");
+                                                adapter.notifyDataSetChanged();
+
+                                            }
+                                        }, new Bundle(), "Введите количество " + curProduct.name, "Ввод количества");
+
+
+                                    }
 
                                 }
 
                                 if (responseItems.length() == 0){
 
-                                    product = null;
-
-                                    shtrihcode = new Shtrihcode(filter, true);
-
-                                    items.add(shtrihcode);
+//                                    product = null;
+//
+//                                    shtrihcode = new Shtrihcode(filter, true);
+//
+//                                    items.add(shtrihcode);
 
                                 }
 
@@ -173,13 +209,13 @@ public class ShtrihcodeContainerFragment extends ScanListFragment<Shtrihcode> {
                     }
                 });
 
-                getAdapter().setDrawViewHolder(new DataAdapter.DrawViewHolder<Shtrihcode>() {
+                getAdapter().setDrawViewHolder(new DataAdapter.DrawViewHolder<ProductWithQuantity>() {
                     @Override
-                    public void draw(DataAdapter.ItemViewHolder holder, Shtrihcode item) {
+                    public void draw(DataAdapter.ItemViewHolder holder, ProductWithQuantity item) {
 
-                        ((TextView) holder.getTextViews().get(0)).setText("Штрихкод");
-                        ((TextView) holder.getTextViews().get(1)).setText(item.value);
-                        ((TextView) holder.getTextViews().get(2)).setText(item.isNew ? "новый" : "");
+                        ((TextView) holder.getTextViews().get(0)).setText(item.product.artikul);
+                        ((TextView) holder.getTextViews().get(1)).setText(item.product.name);
+                        ((TextView) holder.getTextViews().get(2)).setText(item.quantity + " (" + item.unitQuantity + ")");
                     }
                 });
 

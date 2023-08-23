@@ -31,6 +31,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.UUID;
 
 public class ShtrihcodeContainerFragment extends ScanListFragment<ProductWithQuantity> {
 
@@ -189,12 +190,14 @@ public class ShtrihcodeContainerFragment extends ScanListFragment<ProductWithQua
                     @Override
                     public void onClick(View view) {
 
-                        if (product == null){
+                        Dialogs.showQuestionYesNoCancel(getContext(), getActivity(), new BundleMethodInterface() {
+                            @Override
+                            public void callMethod(Bundle arguments) {
 
-                            Navigation.findNavController(getActivity(), R.id.nav_host_fragment_content_main)
-                                    .navigate(R.id.nav_productListFragment);
+                                createContainer();
 
-                        }
+                            }
+                        }, new Bundle(), "Генерировать новый контейнер?", "Вопрос");
 
                     }
                 });
@@ -229,6 +232,41 @@ public class ShtrihcodeContainerFragment extends ScanListFragment<ProductWithQua
 
             }
         });
+
+
+    }
+
+    private void createContainer() {
+
+        JSONArray content = new JSONArray();
+
+         for (ProductWithQuantity item : (ArrayList<ProductWithQuantity>) items) {
+
+             JSONObject jItem = new JSONObject();
+
+             JsonProcs.putToJsonObject(jItem,"ref", item.product.ref);
+             JsonProcs.putToJsonObject(jItem,"quantity", item.quantity);
+             JsonProcs.putToJsonObject(jItem,"unitQuantity", item.unitQuantity);
+
+             content.put(jItem);
+
+         }
+
+
+        JSONObject jsonObject = new JSONObject();
+        JsonProcs.putToJsonObject(jsonObject,"ref", UUID.randomUUID().toString());
+        JsonProcs.putToJsonObject(jsonObject,"content", String.valueOf(content));
+
+        RequestToServer.executeRequestBodyUW(getContext(), Request.Method.POST, "setErpSkladContainerWithContent", jsonObject,
+                RequestToServer.TypeOfResponse.JsonObject, response -> {
+
+            if (response.has("sdfhsfd")){
+
+            }
+
+
+        });
+
 
 
     }

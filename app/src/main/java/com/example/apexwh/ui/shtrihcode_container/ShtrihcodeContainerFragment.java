@@ -238,6 +238,8 @@ public class ShtrihcodeContainerFragment extends ScanListFragment<ProductWithQua
 
     private void createContainer() {
 
+        progressBar.setVisibility(View.VISIBLE);
+
         JSONArray content = new JSONArray();
 
          for (ProductWithQuantity item : (ArrayList<ProductWithQuantity>) items) {
@@ -260,7 +262,17 @@ public class ShtrihcodeContainerFragment extends ScanListFragment<ProductWithQua
         RequestToServer.executeRequestBodyUW(getContext(), Request.Method.POST, "setErpSkladContainerWithContent", jsonObject,
                 RequestToServer.TypeOfResponse.JsonObject, response -> {
 
-            if (response.has("sdfhsfd")){
+            progressBar.setVisibility(View.GONE);
+
+            if (!JsonProcs.getStringFromJSON(response, "ref").isEmpty()){
+
+                items.clear();
+
+                adapter.notifyDataSetChanged();
+
+                tvProduct.setText(JsonProcs.getStringFromJSON(response, "container") + " создан");
+
+
 
             }
 

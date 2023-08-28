@@ -437,6 +437,8 @@ public class CollectProductsFragment extends ScanListFragment<ProductCellContain
                                 @Override
                                 public int compare(Object o, Object t1) {
 
+                                    // Ладожский  ZB-ZA-ZE-ZH-ZK-ZC-ZD-ZF-ZI-ZL
+
                                     ProductCellContainerOutcome pcco1 = ((ProductCellContainerOutcome) o);
                                     ProductCellContainerOutcome pcco2 = ((ProductCellContainerOutcome) t1);
 

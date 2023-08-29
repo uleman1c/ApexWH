@@ -6,7 +6,7 @@ import org.json.JSONObject;
 
 public class Cell {
 
-    public String ref, name, line, section, rack, level, position;
+    public String ref, name, line, section, rack, level, position, order;
     public Boolean main;
 //    public Cell(String ref, String name) {
 //
@@ -20,7 +20,7 @@ public class Cell {
 //
 //    }
 //
-    public Cell(String ref, String name, String line, String section, String rack, String level, String position, Boolean main) {
+    public Cell(String ref, String name, String line, String section, String rack, String level, String position, String order, Boolean main) {
         this.ref = ref;
         this.name = name;
         this.line = line;
@@ -28,6 +28,7 @@ public class Cell {
         this.rack = rack;
         this.level = level;
         this.position = position;
+        this.order = order;
         this.main = main;
     }
 
@@ -40,9 +41,10 @@ public class Cell {
         String rack = JsonProcs.getStringFromJSON(task_item, "rack");
         String level = JsonProcs.getStringFromJSON(task_item, "level");
         String position = JsonProcs.getStringFromJSON(task_item, "position");
+        String order = JsonProcs.getStringFromJSON(task_item, "order");
         Boolean main = JsonProcs.getBooleanFromJSON(task_item, "main");
 
-        return new Cell(ref, name, line, section, rack, level, position, main);
+        return new Cell(ref, name, line, section, rack, level, position, order, main);
 
 
     }

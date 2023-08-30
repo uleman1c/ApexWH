@@ -24,6 +24,7 @@ import com.example.apexwh.HttpRequestJsonObjectInterface;
 import com.example.apexwh.JsonProcs;
 import com.example.apexwh.R;
 import com.example.apexwh.RequestToServer;
+import com.example.apexwh.SpanText;
 import com.example.apexwh.objects.Acceptment;
 import com.example.apexwh.objects.BuierOrder;
 import com.example.apexwh.objects.Outcome;
@@ -183,9 +184,11 @@ public class AcceptmentFragment extends ListFragment<Acceptment> {
                     @Override
                     public void draw(DataAdapter.ItemViewHolder holder, Acceptment document) {
 
-                        ((TextView) holder.getTextViews().get(0)).setText(document.description);
-                        ((TextView) holder.getTextViews().get(1)).setText(document.senderDescription);
-                        ((TextView) holder.getTextViews().get(2)).setText(document.comment);
+                        String filterString = etFilter.getText().toString();
+
+                        ((TextView) holder.getTextViews().get(0)).setText(SpanText.GetFilteredString(document.description, filterString));
+                        ((TextView) holder.getTextViews().get(1)).setText(SpanText.GetFilteredString(document.senderDescription, filterString));
+                        ((TextView) holder.getTextViews().get(2)).setText(SpanText.GetFilteredString(document.comment, filterString));
                     }
                 });
 

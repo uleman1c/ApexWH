@@ -126,6 +126,8 @@ public class CollectListFragment extends ListFragment<Outcome> {
 
 
                                     adapter.notifyItemInserted(items.size());
+
+                                    adapter.notifyDataSetChanged();
                                 }
                             });
                 }

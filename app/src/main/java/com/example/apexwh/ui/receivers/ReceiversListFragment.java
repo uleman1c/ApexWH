@@ -69,6 +69,8 @@ public class ReceiversListFragment extends ListFragment<OutcomeReceiver> {
 
 
                                     adapter.notifyItemInserted(items.size());
+
+                                    adapter.notifyDataSetChanged();
                                 }
                             });
                 }

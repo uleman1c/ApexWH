@@ -117,6 +117,8 @@ public class CollectScannedListFragment extends ListFragment<Collected> {
                                     adapter.notifyItemRemoved(removed);
 
                                     adapter.notifyItemInserted(items.size());
+
+                                    adapter.notifyDataSetChanged();
                                 }
                             });
                 }

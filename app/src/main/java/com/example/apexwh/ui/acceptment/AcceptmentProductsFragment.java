@@ -163,7 +163,7 @@ public class AcceptmentProductsFragment extends ScanListFragment<ProductCellCont
                                 askQuantity(foundProduct);
 
                             }
-                        }, bundle, "Начать отбор номенклатуры " + curPCCO.product.name + "?", "Начать отбор номенклатуры");
+                        }, bundle, "Начать приемку номенклатуры " + curPCCO.product.name + "?", "Начать приемку номенклатуры");
 
                     }
 

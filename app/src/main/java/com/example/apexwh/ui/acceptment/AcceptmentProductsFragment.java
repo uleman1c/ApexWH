@@ -2,13 +2,20 @@ package com.example.apexwh.ui.acceptment;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.view.MenuHost;
+import androidx.core.view.MenuProvider;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Lifecycle;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
@@ -424,5 +431,64 @@ public class AcceptmentProductsFragment extends ScanListFragment<ProductCellCont
 
 
     }
+
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        MenuHost menuHost = requireActivity();
+
+        menuHost.addMenuProvider(new MenuProvider() {
+            @Override
+            public void onCreateMenu(@NonNull Menu menu, @NonNull MenuInflater menuInflater) {
+                menuInflater.inflate(R.menu.collect_product, menu);
+            }
+
+            @Override
+            public boolean onMenuItemSelected(@NonNull android.view.MenuItem menuItem) {
+
+                boolean res = false;
+
+                Bundle bundle = new Bundle();
+                bundle.putString("ref", ref);
+                bundle.putString("name", name);
+
+                switch (menuItem.getItemId()) {
+
+                    case R.id.miSettings:
+
+                        Navigation.findNavController(getActivity(), R.id.nav_host_fragment_content_main).navigate(R.id.nav_settings);
+
+                        res = true;
+
+                        break;
+
+                    case R.id.miOrderInfo:
+
+                        Navigation.findNavController(getActivity(), R.id.nav_host_fragment_content_main).navigate(R.id.nav_OrderInfoFragment, bundle);
+
+                        res = true;
+
+                        break;
+
+                    case R.id.miScanned:
+
+                        Navigation.findNavController(getActivity(), R.id.nav_host_fragment_content_main).navigate(R.id.nav_collectScannedListFragment, bundle);
+
+                        res = true;
+
+                        break;
+
+                };
+
+                return res;
+            }
+        }, getViewLifecycleOwner(), Lifecycle.State.RESUMED);
+
+
+    }
+
+
 
 }

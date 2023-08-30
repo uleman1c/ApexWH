@@ -1,7 +1,9 @@
 package com.example.apexwh;
 
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.text.SpannableString;
+import android.text.style.ForegroundColorSpan;
 import android.text.style.StyleSpan;
 import android.text.style.UnderlineSpan;
 
@@ -46,6 +48,15 @@ public class SpanText {
 
     }
 
+    public void AppendColor(String s, int color){
+
+        int curLength = this.text.length();
+        this.text = this.text + s;
+
+        this.spans.add(new Span(new ForegroundColorSpan(color), curLength, this.text.length(), 0));
+
+    }
+
     public SpannableString GetSpannableString(){
 
         SpannableString spanString = new SpannableString(this.text);
@@ -55,6 +66,24 @@ public class SpanText {
         });
 
         return spanString;
+    }
+
+    public static SpannableString GetFilteredString(String text, String filter){
+
+        SpanText spanText = new SpanText();
+
+        String[] spl = text.split(filter);
+
+        for (int i = 0; i < spl.length - 1; i++) {
+
+            spanText.Append(spl[i]);
+            spanText.AppendColor(filter, Color.RED);
+        }
+        spanText.Append(spl[spl.length - 1]);
+
+        return spanText.GetSpannableString();
+
+
     }
 
 }

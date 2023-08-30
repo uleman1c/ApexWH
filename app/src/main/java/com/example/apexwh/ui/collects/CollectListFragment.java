@@ -23,6 +23,7 @@ import com.example.apexwh.HttpRequestInterface;
 import com.example.apexwh.JsonProcs;
 import com.example.apexwh.R;
 import com.example.apexwh.RequestToServer;
+import com.example.apexwh.SpanText;
 import com.example.apexwh.objects.MoversService;
 import com.example.apexwh.objects.Outcome;
 import com.example.apexwh.objects.Placement;
@@ -154,10 +155,12 @@ public class CollectListFragment extends ListFragment<Outcome> {
                     @Override
                     public void draw(DataAdapter.ItemViewHolder holder, Outcome document) {
 
-                        ((TextView) holder.getTextViews().get(0)).setText("№ " + document.number + " от " + DateStr.FromYmdhmsToDmyhms(document.date));
-                        ((TextView) holder.getTextViews().get(1)).setText(document.receiver + ", " + document.orderDescription
-                                + (document.comment.isEmpty() ? "" : ", " + document.comment) );
-                        ((TextView) holder.getTextViews().get(2)).setText(document.status);
+                        String filterString = etFilter.getText().toString();
+
+                        ((TextView) holder.getTextViews().get(0)).setText(SpanText.GetFilteredString("№ " + document.number + " от " + DateStr.FromYmdhmsToDmyhms(document.date), filterString));
+                        ((TextView) holder.getTextViews().get(1)).setText(SpanText.GetFilteredString(document.receiver + ", " + document.orderDescription
+                                + (document.comment.isEmpty() ? "" : ", " + document.comment) , filterString));
+                        ((TextView) holder.getTextViews().get(2)).setText(SpanText.GetFilteredString(document.status, filterString));
                     }
                 });
 

@@ -28,6 +28,8 @@ import com.example.apexwh.SpanText;
 import com.example.apexwh.objects.Acceptment;
 import com.example.apexwh.objects.BuierOrder;
 import com.example.apexwh.objects.Outcome;
+import com.example.apexwh.ui.BundleMethodInterface;
+import com.example.apexwh.ui.Dialogs;
 import com.example.apexwh.ui.adapters.DataAdapter;
 import com.example.apexwh.ui.adapters.ListFragment;
 
@@ -75,7 +77,7 @@ public class AcceptmentFragment extends ListFragment<Acceptment> {
                                         bundle.putString("order", order);
 
                                         Navigation.findNavController(getActivity(), R.id.nav_host_fragment_content_main)
-                                                .navigate(R.id.nav_collectProductsFragment, bundle);
+                                                .navigate(R.id.nav_acceptmentProductsFragment, bundle);
 
                                     } else {
 
@@ -192,22 +194,25 @@ public class AcceptmentFragment extends ListFragment<Acceptment> {
                     }
                 });
 
-                getAdapter().setOnClickListener(new DataAdapter.OnClickListener<Acceptment>() {
-                    @Override
-                    public void onItemClick(Acceptment document) {
+                getAdapter().setOnClickListener(document -> {
 
-                        JSONObject jsonObject = new JSONObject();
+                    Acceptment curOutcome = ((Acceptment) document);
 
-                        JsonProcs.putToJsonObject(jsonObject, "ref", document.ref);
-                        JsonProcs.putToJsonObject(jsonObject, "name", document.type);
+                    Bundle bundle = new Bundle();
+                    bundle.putString("name", curOutcome.type);
+                    bundle.putString("ref", curOutcome.ref);
+                    bundle.putString("order", "");
 
-//                        Bundle result = getArguments();
-//                        result.putString("selected", jsonObject.toString());
-//                        getParentFragmentManager().setFragmentResult("acceptment_order_selected", result);
+                    Dialogs.showQuestionYesNoCancel(getContext(), getActivity(), new BundleMethodInterface() {
+                        @Override
+                        public void callMethod(Bundle arguments) {
 
-                        navController.popBackStack();
+                            Navigation.findNavController(getActivity(), R.id.nav_host_fragment_content_main)
+                                    .navigate(R.id.nav_acceptmentProductsFragment, arguments);
 
-                    }
+                        }
+                    }, bundle, "Начать приемку " + curOutcome.description + "?", "Начать приемку");
+
                 });
 
                 getAdapter().setOnLongClickListener(new DataAdapter.OnLongClickListener<Acceptment>() {

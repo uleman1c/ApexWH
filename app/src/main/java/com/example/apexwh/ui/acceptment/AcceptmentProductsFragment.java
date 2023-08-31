@@ -459,7 +459,7 @@ public class AcceptmentProductsFragment extends ScanListFragment<ProductCellCont
         menuHost.addMenuProvider(new MenuProvider() {
             @Override
             public void onCreateMenu(@NonNull Menu menu, @NonNull MenuInflater menuInflater) {
-                menuInflater.inflate(R.menu.collect_product, menu);
+                menuInflater.inflate(R.menu.accept_product, menu);
             }
 
             @Override

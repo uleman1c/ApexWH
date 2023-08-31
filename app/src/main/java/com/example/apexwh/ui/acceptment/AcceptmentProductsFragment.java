@@ -242,7 +242,7 @@ public class AcceptmentProductsFragment extends ScanListFragment<ProductCellCont
                 bundle.putString("product", foundProduct.product.ref);
                 bundle.putInt("quantity", 1);
 
-                doCollect(bundle);
+                doAccept(bundle);
 
 
             }
@@ -254,6 +254,8 @@ public class AcceptmentProductsFragment extends ScanListFragment<ProductCellCont
     }
 
     protected void setDocumentStatus(String newStatus) {
+
+        progressBar.setVisibility(View.VISIBLE);
 
         RequestToServer.executeRequestUW(getContext(), Request.Method.GET, "setErpSkladDocumentStatus",
                 "name=" + name + "&ref=" + ref + "&status=" + newStatus, new JSONObject(), 1, new RequestToServer.ResponseResultInterface() {
@@ -306,7 +308,7 @@ public class AcceptmentProductsFragment extends ScanListFragment<ProductCellCont
                                 @Override
                                 public void callMethod(Bundle arguments) {
 
-                                    setDocumentStatus("toShipping");
+                                    setDocumentStatus("Accepted");
 
                                 }
                             }, new Bundle(), "Завершить документ?", "Завершить");
@@ -386,13 +388,13 @@ public class AcceptmentProductsFragment extends ScanListFragment<ProductCellCont
             @Override
             public void callMethod(Bundle arguments) {
 
-                doCollect(arguments);
+                doAccept(arguments);
 
             }
         }, bundle, "Введите количество " + foundProduct.product.artikul + " " + foundProduct.product.name, "Ввод количества");
     }
 
-    void doCollect(Bundle bundle) {
+    void doAccept(Bundle bundle) {
 
 
         linearLayout.setVisibility(View.GONE);
@@ -400,9 +402,8 @@ public class AcceptmentProductsFragment extends ScanListFragment<ProductCellCont
         progressBar.setVisibility(View.VISIBLE);
 
 
-        RequestToServer.executeRequestUW(getContext(), Request.Method.GET, "setErpSkladProductsToTest",
-                "doc=" + UUID.randomUUID().toString() + "&cell=" + bundle.getString("cell")
-                        + "&container=" + bundle.getString("container")
+        RequestToServer.executeRequestUW(getContext(), Request.Method.GET, "setErpSkladProductsToAccept",
+                "doc=" + UUID.randomUUID().toString()
                         + "&name=" + name + "&ref=" + ref + "&product=" + bundle.getString("product") + "&quantity=" + bundle.getInt("quantity"), new JSONObject(), 1,
                 new RequestToServer.ResponseResultInterface() {
                     @Override

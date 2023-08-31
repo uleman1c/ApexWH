@@ -173,11 +173,7 @@ public class AcceptmentProductsFragment extends ScanListFragment<ProductCellCont
 
                     ProductCellContainerOutcome curPCCO = (ProductCellContainerOutcome) document;
 
-                    if (curPCCO.mode == 1 && !askQuantityAfterProductScan) {
-
-                        askQuantity(curPCCO);
-
-                    }
+                    askForTest(curPCCO);
 
                 });
 
@@ -187,6 +183,26 @@ public class AcceptmentProductsFragment extends ScanListFragment<ProductCellCont
         });
 
 
+    }
+
+    private void askForTest(ProductCellContainerOutcome foundProduct) {
+        Bundle bundle = new Bundle();
+        bundle.putString("ref", ref);
+        bundle.putString("name", name);
+        bundle.putString("order", order);
+        bundle.putString("cell", foundProduct.cell.ref);
+        bundle.putString("cellName", foundProduct.cell.name);
+        bundle.putString("container", foundProduct.container.ref);
+        bundle.putString("product", foundProduct.product.ref);
+
+        Dialogs.showQuestionYesNoCancel(getContext(), getActivity(), new BundleMethodInterface() {
+            @Override
+            public void callMethod(Bundle arguments) {
+
+                //doAccept(arguments);
+
+            }
+        }, new Bundle(), "Отправить в проверку " + foundProduct.product.artikul + " " + foundProduct.product.name + ", " + foundProduct.productNumber + "?", "Отправить в проверку");
     }
 
 

@@ -3,9 +3,11 @@ package com.example.apexwh.ui.collects;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -24,10 +26,13 @@ import com.example.apexwh.R;
 import com.example.apexwh.RequestToServer;
 import com.example.apexwh.objects.Collected;
 import com.example.apexwh.objects.Outcome;
+import com.example.apexwh.objects.ProductCellContainerOutcome;
 import com.example.apexwh.ui.BundleMethodInterface;
 import com.example.apexwh.ui.Dialogs;
+import com.example.apexwh.ui.adapters.BeforeEndOnCreateViewHolder;
 import com.example.apexwh.ui.adapters.DataAdapter;
 import com.example.apexwh.ui.adapters.ListFragment;
+import com.example.apexwh.ui.adapters.OnGetItemViewType;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -137,13 +142,43 @@ public class CollectScannedListFragment extends ListFragment<Collected> {
                     @Override
                     public void init(View itemView, ArrayList<TextView> textViews) {
 
-                        textViews.add((TextView) itemView.findViewById(R.id.tvNumberDate));
-                        textViews.add((TextView) itemView.findViewById(R.id.tvDescription));
-                        textViews.add((TextView) itemView.findViewById(R.id.tvStatus));
-                        textViews.add((TextView) itemView.findViewById(R.id.tvQuantity));
-                        textViews.add((TextView) itemView.findViewById(R.id.tvCell));
+                        textViews.add(itemView.findViewById(R.id.tvNumberDate));
+                        textViews.add(itemView.findViewById(R.id.tvDescription));
+                        textViews.add(itemView.findViewById(R.id.tvStatus));
+                        textViews.add(itemView.findViewById(R.id.tvQuantity));
+                        textViews.add(itemView.findViewById(R.id.tvCell));
+                        textViews.add(itemView.findViewById(R.id.tvType));
                     }
                 });
+
+                getAdapter().setOnGetItemViewType(new OnGetItemViewType() {
+                    @Override
+                    public int Do(int position) {
+                        return ((Collected)items.get(position)).type.equals("КПроверкеОтправителем") ? 1 : 0;
+                    }
+                });
+
+                getAdapter().setBeforeEndOnCreateViewHolder(new BeforeEndOnCreateViewHolder() {
+                    @Override
+                    public View Do(LayoutInflater inflater, ViewGroup parent, int viewType) {
+
+                        View view = null;
+
+                        if (viewType == 0) {
+
+                            view = inflater.inflate(R.layout.collected_list_item, parent, false);
+                        }
+                        else if (viewType == 1) {
+
+                            view = inflater.inflate(R.layout.collected_warn_list_item, parent, false);
+                        }
+
+                        return view;
+
+                    }
+                });
+
+
 
                 getAdapter().setDrawViewHolder(new DataAdapter.DrawViewHolder<Collected>() {
                     @Override
@@ -154,6 +189,7 @@ public class CollectScannedListFragment extends ListFragment<Collected> {
                         ((TextView) holder.getTextViews().get(2)).setText(document.author);
                         ((TextView) holder.getTextViews().get(3)).setText(String.valueOf(document.quantity));
                         ((TextView) holder.getTextViews().get(4)).setText(document.cell);
+                        ((TextView) holder.getTextViews().get(5)).setText(document.type);
                     }
                 });
 

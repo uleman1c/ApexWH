@@ -194,15 +194,40 @@ public class AcceptmentProductsFragment extends ScanListFragment<ProductCellCont
         bundle.putString("cellName", foundProduct.cell.name);
         bundle.putString("container", foundProduct.container.ref);
         bundle.putString("product", foundProduct.product.ref);
+        bundle.putInt("quantity", foundProduct.number);
 
         Dialogs.showQuestionYesNoCancel(getContext(), getActivity(), new BundleMethodInterface() {
             @Override
             public void callMethod(Bundle arguments) {
 
-                //doAccept(arguments);
+                sendProductToTestBySender(arguments);
 
             }
-        }, new Bundle(), "Отправить в проверку " + foundProduct.product.artikul + " " + foundProduct.product.name + ", " + foundProduct.productNumber + "?", "Отправить в проверку");
+        }, bundle, "Отправить в проверку " + foundProduct.product.artikul + " " + foundProduct.product.name + ", " + foundProduct.productNumber + "?", "Отправить в проверку");
+    }
+
+    private void sendProductToTestBySender(Bundle bundle) {
+
+        linearLayout.setVisibility(View.GONE);
+
+        progressBar.setVisibility(View.VISIBLE);
+
+        RequestToServer.executeRequestUW(getContext(), Request.Method.GET, "setErpSkladProductToTestBySender",
+                "doc=" + UUID.randomUUID().toString()
+                        + "&name=" + name + "&ref=" + ref + "&product=" + bundle.getString("product") + "&quantity=" + bundle.getInt("quantity"), new JSONObject(), 1,
+                new RequestToServer.ResponseResultInterface() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+
+                        progressBar.setVisibility(View.GONE);
+
+                        linearLayout.setVisibility(View.VISIBLE);
+
+                        updateToScan(items, progressBar, adapter, askQuantityAfterProductScan ? "" : bundle.getString("cellName"));
+                    }
+                });
+
+
     }
 
 
@@ -492,6 +517,14 @@ public class AcceptmentProductsFragment extends ScanListFragment<ProductCellCont
                     case R.id.miScanned:
 
                         Navigation.findNavController(getActivity(), R.id.nav_host_fragment_content_main).navigate(R.id.nav_collectScannedListFragment, bundle);
+
+                        res = true;
+
+                        break;
+
+                    case R.id.miAdd:
+
+                        //Navigation.findNavController(getActivity(), R.id.nav_host_fragment_content_main).navigate(R.id.nav_collectScannedListFragment, bundle);
 
                         res = true;
 

@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -38,6 +39,7 @@ public class ProductLineFragment extends ScanListFragment<Shtrihcode> {
     Shtrihcode shtrihcode;
 
     String ref, name;
+    private LinearLayout linearLayout;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -162,6 +164,8 @@ public class ProductLineFragment extends ScanListFragment<Shtrihcode> {
             @Override
             public void execute(View root, NavController navController) {
 
+                linearLayout = root.findViewById(R.id.LinearLayout);
+
                 tvProduct = (TextView) root.findViewById(R.id.tvProduct);
 
                 root.findViewById(R.id.llProduct).setOnClickListener(new View.OnClickListener() {
@@ -223,6 +227,7 @@ public class ProductLineFragment extends ScanListFragment<Shtrihcode> {
             @Override
             public void callMethod(Bundle arguments) {
 
+                linearLayout.setVisibility(View.GONE);
                 progressBar.setVisibility(View.VISIBLE);
 
                 RequestToServer.executeRequestUW(getContext(), Request.Method.GET, "setErpSkladProductToTestBySender",

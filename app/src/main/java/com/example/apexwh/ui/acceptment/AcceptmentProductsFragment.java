@@ -524,7 +524,7 @@ public class AcceptmentProductsFragment extends ScanListFragment<ProductCellCont
 
                     case R.id.miAdd:
 
-                        //Navigation.findNavController(getActivity(), R.id.nav_host_fragment_content_main).navigate(R.id.nav_collectScannedListFragment, bundle);
+                        Navigation.findNavController(getActivity(), R.id.nav_host_fragment_content_main).navigate(R.id.nav_productLineFragment, bundle);
 
                         res = true;
 

@@ -15,6 +15,7 @@ import androidx.annotation.Nullable;
 import androidx.core.view.MenuHost;
 import androidx.core.view.MenuProvider;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentResultListener;
 import androidx.lifecycle.Lifecycle;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -69,6 +70,20 @@ public class CollectProductsFragment extends ScanListFragment<ProductCellContain
 
         productCellContainerOutcomes = new ArrayList<>();
 
+    }
+
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View view = super.onCreateView(inflater, container, savedInstanceState);
+
+        getParentFragmentManager().setFragmentResultListener("setFilter", this, new FragmentResultListener() {
+            @Override
+            public void onFragmentResult(@NonNull String requestKey, @NonNull Bundle result) {
+
+            }
+        });
+
+        return view;
     }
 
     @Override
@@ -588,6 +603,14 @@ public class CollectProductsFragment extends ScanListFragment<ProductCellContain
                     case R.id.miScanned:
 
                         Navigation.findNavController(getActivity(), R.id.nav_host_fragment_content_main).navigate(R.id.nav_collectScannedListFragment, bundle);
+
+                        res = true;
+
+                        break;
+
+                    case R.id.miFilter:
+
+                        Navigation.findNavController(getActivity(), R.id.nav_host_fragment_content_main).navigate(R.id.nav_filterFragment, bundle);
 
                         res = true;
 

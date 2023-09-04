@@ -229,5 +229,10 @@
         android:id="@+id/nav_productLineFragment"
         android:name="com.example.apexwh.ui.productline.ProductLineFragment"
         android:label="Строка товара" />
+    <fragment
+        android:id="@+id/nav_filterFragment"
+        android:name="com.example.apexwh.ui.filter.FilterFragment"
+        android:label="Фильтр"
+        tools:layout="@layout/fragment_filter" />
 
 </navigation>

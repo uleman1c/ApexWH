@@ -462,7 +462,7 @@ public class CollectProductsFragment extends ScanListFragment<ProductCellContain
 
                         adapter.notifyItemInserted(items.size());
 
-                        if (items.size() == 0){
+                        if (responseItems.length() == 0){
 
                             Dialogs.showQuestionYesNoCancel(getContext(), getActivity(), new BundleMethodInterface() {
                                 @Override
@@ -486,8 +486,8 @@ public class CollectProductsFragment extends ScanListFragment<ProductCellContain
 
                                     String l1 = pcco1.cell.level;
                                     String l2 = pcco2.cell.level;
-                                    String cl1 = pcco1.cell.order + (pcco1.cell.section + " ").substring(0, 1) + (l1.equals("P") ? "0" : "") + l1 + pcco1.cell.name;
-                                    String cl2 = pcco2.cell.order + (pcco2.cell.section + " ").substring(0, 1) + (l2.equals("P") ? "0" : "") + l2 + pcco2.cell.name;
+                                    String cl1 = pcco1.cell.order + l1 + pcco1.cell.name;
+                                    String cl2 = pcco2.cell.order + l2 + pcco2.cell.name;
 
                                     return cl1.compareTo(cl2);
                                 }

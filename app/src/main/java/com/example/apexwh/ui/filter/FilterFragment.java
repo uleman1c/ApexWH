@@ -3,6 +3,7 @@ package com.example.apexwh.ui.filter;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.navigation.fragment.NavHostFragment;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,6 +21,7 @@ import com.example.apexwh.R;
 import com.example.apexwh.RequestToServer;
 import com.example.apexwh.objects.Cell;
 import com.example.apexwh.objects.ProductCellContainerOutcome;
+import com.example.apexwh.ui.characteristics.CharacteristicsFragment;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -100,6 +102,23 @@ public class FilterFragment extends Fragment {
 
         tvCellNumber = inflate.findViewById(R.id.tvCellNumber);
         btnApply = inflate.findViewById(R.id.btnApply);
+
+        btnApply.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                Bundle bundle = new Bundle();
+                bundle.putString("section", spSections.getItemAtPosition(spSections.getSelectedItemPosition()).toString());
+                bundle.putString("line", spLines.getItemAtPosition(spLines.getSelectedItemPosition()).toString());
+                bundle.putString("rack", spRacks.getItemAtPosition(spRacks.getSelectedItemPosition()).toString());
+                bundle.putString("level", spLevels.getItemAtPosition(spLevels.getSelectedItemPosition()).toString());
+                bundle.putString("position", spPositions.getItemAtPosition(spPositions.getSelectedItemPosition()).toString());
+                getParentFragmentManager().setFragmentResult("setFilter", bundle);
+
+                NavHostFragment.findNavController(FilterFragment.this).popBackStack();
+
+            }
+        });
 
         AdapterView.OnItemSelectedListener itemSelectedListener = new AdapterView.OnItemSelectedListener() {
             @Override

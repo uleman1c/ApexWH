@@ -53,6 +53,8 @@ public class CollectProductsFragment extends ScanListFragment<ProductCellContain
 
     String name, ref, order;
 
+    String section, line, rack, level, position;
+
     TextView tvProduct;
 
     LinearLayout linearLayout;
@@ -80,6 +82,14 @@ public class CollectProductsFragment extends ScanListFragment<ProductCellContain
             @Override
             public void onFragmentResult(@NonNull String requestKey, @NonNull Bundle result) {
 
+                section = result.getString("section");
+                line = result.getString("line");
+                rack = result.getString("rack");
+                level = result.getString("level");
+                position = result.getString("position");
+
+                updateToScan(items, progressBar, adapter, "");
+
             }
         });
 
@@ -95,6 +105,11 @@ public class CollectProductsFragment extends ScanListFragment<ProductCellContain
 
         super(R.layout.fragment_scan_list_clear, R.layout.product_cell_border_list_item);
 
+        section = "";
+        line = "";
+        rack = "";
+        level = "";
+        position = "";
 
         setListUpdater(new ListFragment.ListUpdater() {
             @Override
@@ -427,8 +442,20 @@ public class CollectProductsFragment extends ScanListFragment<ProductCellContain
 
                             JSONObject objectItem = JsonProcs.getItemJSONArray(responseItems, j);
 
-                            items.add(ProductCellContainerOutcome.FromJson(objectItem));
+                            ProductCellContainerOutcome productCellContainerOutcome = ProductCellContainerOutcome.FromJson(objectItem);
 
+                            Cell curCell = productCellContainerOutcome.cell;
+                            if (
+                                    (curCell.section.equals(section) || section.isEmpty())
+                                            && (curCell.line.equals(line) || line.isEmpty())
+                                            && (curCell.rack.equals(rack) || rack.isEmpty())
+                                            && (curCell.level.equals(level) || level.isEmpty())
+                                            && (curCell.position.equals(position) || position.isEmpty())
+                            ) {
+
+
+                                items.add(productCellContainerOutcome);
+                            }
                         }
 
                         adapter.notifyItemRemoved(removed);

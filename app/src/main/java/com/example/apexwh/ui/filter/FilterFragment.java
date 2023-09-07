@@ -7,9 +7,12 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import com.android.volley.Request;
 import com.example.apexwh.JsonProcs;
@@ -22,6 +25,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -45,6 +49,9 @@ public class FilterFragment extends Fragment {
     private Spinner spLines, spSections, spRacks, spLevels, spPositions;
 
     private ArrayList<Cell> cells;
+
+    private Button btnApply;
+    private TextView tvCellNumber;
 
     public FilterFragment() {
         // Required empty public constructor
@@ -85,19 +92,68 @@ public class FilterFragment extends Fragment {
 
         inflate = inflater.inflate(R.layout.fragment_filter, container, false);
 
-        spLines = inflate.findViewById(R.id.spLines);
         spSections = inflate.findViewById(R.id.spSections);
+        spLines = inflate.findViewById(R.id.spLines);
         spRacks = inflate.findViewById(R.id.spRacks);
         spLevels = inflate.findViewById(R.id.spLevels);
         spPositions = inflate.findViewById(R.id.spPositions);
 
+        tvCellNumber = inflate.findViewById(R.id.tvCellNumber);
+        btnApply = inflate.findViewById(R.id.btnApply);
+
+        AdapterView.OnItemSelectedListener itemSelectedListener = new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+
+                String item = (String)parent.getItemAtPosition(position);
+
+                String curSection = spSections.getItemAtPosition(spSections.getSelectedItemPosition()).toString();
+                String curLine = spLines.getItemAtPosition(spLines.getSelectedItemPosition()).toString();
+                String curRack = spRacks.getItemAtPosition(spRacks.getSelectedItemPosition()).toString();
+                String curLevel = spLevels.getItemAtPosition(spLevels.getSelectedItemPosition()).toString();
+                String curPosition = spPositions.getItemAtPosition(spPositions.getSelectedItemPosition()).toString();
+
+                int cellCount = 0;
+                for (Cell cell: cells) {
+
+                    if (
+                            (cell.section.equals(curSection) || curSection.isEmpty())
+                                    && (cell.line.equals(curLine) || curLine.isEmpty())
+                                    && (cell.rack.equals(curRack) || curRack.isEmpty())
+                                    && (cell.level.equals(curLevel) || curLevel.isEmpty())
+                                    && (cell.position.equals(curPosition) || curPosition.isEmpty())
+                    ){
+                        cellCount++;
+                    }
+
+
+                }
+
+                tvCellNumber.setText("Количество: " + String.valueOf(cellCount));
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
+        };
+        spSections.setOnItemSelectedListener(itemSelectedListener);
+        spLines.setOnItemSelectedListener(itemSelectedListener);
+        spRacks.setOnItemSelectedListener(itemSelectedListener);
+        spLevels.setOnItemSelectedListener(itemSelectedListener);
+        spPositions.setOnItemSelectedListener(itemSelectedListener);
+
         cells = new ArrayList<>();
 
         lines = new ArrayList<>();
+        lines.add("");
         sections = new ArrayList<>();
+        sections.add("");
         racks = new ArrayList<>();
+        racks.add("");
         levels = new ArrayList<>();
+        levels.add("");
         positions = new ArrayList<>();
+        positions.add("");
 
 
 
@@ -224,6 +280,18 @@ public class FilterFragment extends Fragment {
     }
 
     private void setAdapterToSinner(Spinner spinner, ArrayList<String> arrayList) {
+
+        if (arrayList.size() == 2){
+            arrayList.remove(0);
+        }
+
+        arrayList.sort(new Comparator<String>() {
+            @Override
+            public int compare(String s, String t1) {
+
+                return s.compareTo(t1);
+            }
+        });
 
         ArrayAdapter<String> adapter = new ArrayAdapter(getContext(), android.R.layout.simple_spinner_item, arrayList);
 

@@ -32,23 +32,23 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Линии"
-            android:textSize="24sp" />
-
-        <Spinner
-            android:id="@+id/spLines"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
             android:layout_marginTop="12sp"
             android:text="Секции"
             android:textSize="24sp" />
 
         <Spinner
             android:id="@+id/spSections"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Линии"
+            android:textSize="24sp" />
+
+        <Spinner
+            android:id="@+id/spLines"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
@@ -84,6 +84,22 @@
             android:id="@+id/spPositions"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
+
+        <TextView
+            android:id="@+id/tvCellNumber"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16sp"
+            android:gravity="center"
+            android:text="Количество"
+            android:textSize="24sp" />
+
+        <Button
+            android:id="@+id/btnApply"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16sp"
+            android:text="Применить" />
     </LinearLayout>
 
 

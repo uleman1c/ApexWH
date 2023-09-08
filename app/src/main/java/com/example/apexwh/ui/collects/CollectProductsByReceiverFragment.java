@@ -15,6 +15,7 @@ import androidx.annotation.Nullable;
 import androidx.core.view.MenuHost;
 import androidx.core.view.MenuProvider;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentResultListener;
 import androidx.lifecycle.Lifecycle;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -49,6 +50,8 @@ public class CollectProductsByReceiverFragment extends ScanListFragment<ProductC
 
     String name, ref, type, order;
 
+    String section, line, rack, level, position;
+
     TextView tvProduct;
 
     LinearLayout linearLayout;
@@ -66,6 +69,29 @@ public class CollectProductsByReceiverFragment extends ScanListFragment<ProductC
 
         productCellContainerOutcomes = new ArrayList<>();
 
+    }
+
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View view = super.onCreateView(inflater, container, savedInstanceState);
+
+        getParentFragmentManager().setFragmentResultListener("setFilter", this, new FragmentResultListener() {
+            @Override
+            public void onFragmentResult(@NonNull String requestKey, @NonNull Bundle result) {
+
+                section = result.getString("section");
+                line = result.getString("line");
+                rack = result.getString("rack");
+                level = result.getString("level");
+                position = result.getString("position");
+
+            }
+        });
+
+
+
+
+        return view;
     }
 
     @Override
@@ -373,6 +399,7 @@ public class CollectProductsByReceiverFragment extends ScanListFragment<ProductC
                 bundle.putString("cell", foundProduct.cell.ref);
                 bundle.putString("container", foundProduct.container.ref);
                 bundle.putString("product", foundProduct.product.ref);
+                bundle.putString("characteristic", foundProduct.characteristic.ref);
                 bundle.putInt("quantity", 1);
 
                  doCollect(bundle);
@@ -407,11 +434,26 @@ public class CollectProductsByReceiverFragment extends ScanListFragment<ProductC
 
                             JSONObject objectItem = JsonProcs.getItemJSONArray(responseItems, j);
 
-                            items.add(ProductCellContainerOutcome.FromJson(objectItem));
+                            ProductCellContainerOutcome productCellContainerOutcome = ProductCellContainerOutcome.FromJson(objectItem);
+
+                            Cell curCell = productCellContainerOutcome.cell;
+                            if (
+                                    (curCell.section.equals(section) || section.isEmpty())
+                                            && (curCell.line.equals(line) || line.isEmpty())
+                                            && (curCell.rack.equals(rack) || rack.isEmpty())
+                                            && (curCell.level.equals(level) || level.isEmpty())
+                                            && (curCell.position.equals(position) || position.isEmpty())
+                            ) {
+
+
+                                items.add(productCellContainerOutcome);
+                            }
+
+
 
                         }
 
-                        if (items.size() == 0){
+                        if (responseItems.length() == 0){
 
                             Dialogs.showQuestionYesNoCancel(getContext(), getActivity(), new BundleMethodInterface() {
                                 @Override
@@ -495,6 +537,7 @@ public class CollectProductsByReceiverFragment extends ScanListFragment<ProductC
         bundle.putString("cellName", foundProduct.cell.name);
         bundle.putString("container", foundProduct.container.ref);
         bundle.putString("product", foundProduct.product.ref);
+        bundle.putString("characteristic", foundProduct.characteristic.ref);
 
         Dialogs.showInputQuantity(getContext(), foundProduct.number, getActivity(), new BundleMethodInterface() {
             @Override
@@ -517,7 +560,10 @@ public class CollectProductsByReceiverFragment extends ScanListFragment<ProductC
         RequestToServer.executeRequestUW(getContext(), Request.Method.GET, "setErpSkladProductsToOutcomeByReceiver",
                 "doc=" + UUID.randomUUID().toString() + "&cell=" + bundle.getString("cell")
                         + "&container=" + bundle.getString("container")
-                        + "&type=" + type + "&ref=" + ref + "&product=" + bundle.getString("product") + "&quantity=" + bundle.getInt("quantity"), new JSONObject(), 1,
+                        + "&type=" + type + "&ref=" + ref
+                        + "&product=" + bundle.getString("product")
+                        + "&characteristic=" + bundle.getString("characteristic")
+                        + "&quantity=" + bundle.getInt("quantity"), new JSONObject(), 1,
                 new RequestToServer.ResponseResultInterface() {
                     @Override
                     public void onResponse(JSONObject response) {
@@ -589,6 +635,14 @@ public class CollectProductsByReceiverFragment extends ScanListFragment<ProductC
                     case R.id.miScanned:
 
                         Navigation.findNavController(getActivity(), R.id.nav_host_fragment_content_main).navigate(R.id.nav_collectScannedListFragment, bundle);
+
+                        res = true;
+
+                        break;
+
+                    case R.id.miFilter:
+
+                        Navigation.findNavController(getActivity(), R.id.nav_host_fragment_content_main).navigate(R.id.nav_filterFragment, bundle);
 
                         res = true;
 

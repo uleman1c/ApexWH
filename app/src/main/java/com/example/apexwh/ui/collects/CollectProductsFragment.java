@@ -88,8 +88,6 @@ public class CollectProductsFragment extends ScanListFragment<ProductCellContain
                 level = result.getString("level");
                 position = result.getString("position");
 
-                //updateToScan(items, progressBar, adapter, "");
-
             }
         });
 

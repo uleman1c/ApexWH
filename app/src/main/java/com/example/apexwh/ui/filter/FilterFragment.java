@@ -42,8 +42,7 @@ public class FilterFragment extends Fragment {
     private static final String ARG_PARAM2 = "ref";
 
     // TODO: Rename and change types of parameters
-    private String name;
-    private String ref;
+    private String name, ref, mode, type;
 
     private ProgressBar progressBar;
 
@@ -83,6 +82,8 @@ public class FilterFragment extends Fragment {
         if (getArguments() != null) {
             name = getArguments().getString(ARG_PARAM1);
             ref = getArguments().getString(ARG_PARAM2);
+            mode = getArguments().getString("mode");
+            type = getArguments().getString("type");
         }
     }
 
@@ -180,15 +181,16 @@ public class FilterFragment extends Fragment {
 
         progressBar.setVisibility(View.VISIBLE);
 
-        RequestToServer.executeRequestUW(getContext(), Request.Method.GET, "getErpSkladProductsToOutcome",
-                "name=" + name + "&ref=" + ref, new JSONObject(), 1,
+        RequestToServer.executeRequestUW(getContext(), Request.Method.GET, "getErpSkladProductsToOutcome" + (mode == null ? "" : mode),
+                "name=" + name + "&ref=" + ref
+                + (type == null ? "" : "&type=" + type), new JSONObject(), 1,
                 new RequestToServer.ResponseResultInterface() {
                     @Override
                     public void onResponse(JSONObject response) {
 
                         progressBar.setVisibility(View.GONE);
 
-                        JSONArray responseItems = JsonProcs.getJsonArrayFromJsonObject(response, "ErpSkladProductsToOutcome");
+                        JSONArray responseItems = JsonProcs.getJsonArrayFromJsonObject(response, "ErpSkladProductsToOutcome" + (mode == null ? "" : mode));
 
                         for (int j = 0; j < responseItems.length(); j++) {
 

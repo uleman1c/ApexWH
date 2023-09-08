@@ -103,6 +103,11 @@ public class CollectProductsByReceiverFragment extends ScanListFragment<ProductC
 
         super(R.layout.fragment_scan_list_clear, R.layout.product_cell_border_list_item);
 
+        section = "";
+        line = "";
+        rack = "";
+        level = "";
+        position = "";
 
         setListUpdater(new ListUpdater() {
             @Override
@@ -613,6 +618,8 @@ public class CollectProductsByReceiverFragment extends ScanListFragment<ProductC
                 Bundle bundle = new Bundle();
                 bundle.putString("ref", ref);
                 bundle.putString("name", name);
+                bundle.putString("type", type);
+                bundle.putString("mode", "ByReceiver");
 
                 switch (menuItem.getItemId()) {
 

@@ -219,7 +219,8 @@ public class CollectProductsFragment extends ScanListFragment<ProductCellContain
                     public void draw(DataAdapter.ItemViewHolder holder, ProductCellContainerOutcome item) {
 
                         ((TextView) holder.getTextViews().get(0)).setText("Ячейка: " + item.cell.name);
-                        ((TextView) holder.getTextViews().get(1)).setText(item.product.artikul + " " + item.product.name + ", " + item.number + " шт");
+                        ((TextView) holder.getTextViews().get(1)).setText(item.product.artikul + " " + item.product.name + ", "
+                                + item.characteristic.description + ", " + item.number + " шт");
                         ((TextView) holder.getTextViews().get(2)).setText(item.container.name);
                     }
                 });
@@ -406,6 +407,7 @@ public class CollectProductsFragment extends ScanListFragment<ProductCellContain
                 bundle.putString("cell", foundProduct.cell.ref);
                 bundle.putString("container", foundProduct.container.ref);
                 bundle.putString("product", foundProduct.product.ref);
+                bundle.putString("characteristic", foundProduct.characteristic.ref);
                 bundle.putInt("quantity", 1);
 
                  doCollect(bundle);
@@ -551,6 +553,7 @@ public class CollectProductsFragment extends ScanListFragment<ProductCellContain
         bundle.putString("cellName", foundProduct.cell.name);
         bundle.putString("container", foundProduct.container.ref);
         bundle.putString("product", foundProduct.product.ref);
+        bundle.putString("characteristic", foundProduct.characteristic.ref);
 
         Dialogs.showInputQuantity(getContext(), foundProduct.number, getActivity(), new BundleMethodInterface() {
             @Override
@@ -573,7 +576,10 @@ public class CollectProductsFragment extends ScanListFragment<ProductCellContain
         RequestToServer.executeRequestUW(getContext(), Request.Method.GET, "setErpSkladProductsToOutcome",
                 "doc=" + UUID.randomUUID().toString() + "&cell=" + bundle.getString("cell")
                         + "&container=" + bundle.getString("container")
-                        + "&name=" + name + "&ref=" + ref + "&product=" + bundle.getString("product") + "&quantity=" + bundle.getInt("quantity"), new JSONObject(), 1,
+                        + "&name=" + name + "&ref=" + ref
+                        + "&product=" + bundle.getString("product")
+                        + "&characteristic=" + bundle.getString("characteristic")
+                        + "&quantity=" + bundle.getInt("quantity"), new JSONObject(), 1,
                 new RequestToServer.ResponseResultInterface() {
                     @Override
                     public void onResponse(JSONObject response) {

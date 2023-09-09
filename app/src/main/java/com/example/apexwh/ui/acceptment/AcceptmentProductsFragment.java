@@ -1,5 +1,6 @@
 package com.example.apexwh.ui.acceptment;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -24,6 +25,7 @@ import com.example.apexwh.JsonProcs;
 import com.example.apexwh.R;
 import com.example.apexwh.RequestToServer;
 import com.example.apexwh.SoundPlayer;
+import com.example.apexwh.SpanText;
 import com.example.apexwh.objects.Cell;
 import com.example.apexwh.objects.ProductCellContainerOutcome;
 import com.example.apexwh.ui.BundleMethodInterface;
@@ -59,7 +61,7 @@ public class AcceptmentProductsFragment extends ScanListFragment<ProductCellCont
 
     public AcceptmentProductsFragment() {
 
-        super(R.layout.fragment_scan_list_clear, R.layout.product_border_list_item);
+        super(R.layout.fragment_scan_list_clear, R.layout.test_product_border_list_item);
 
 
         setListUpdater(new ListUpdater() {
@@ -113,7 +115,7 @@ public class AcceptmentProductsFragment extends ScanListFragment<ProductCellCont
 
                         if (viewType == 0) {
 
-                            view = inflater.inflate(R.layout.product_border_list_item, parent, false);
+                            view = inflater.inflate(R.layout.test_product_border_list_item, parent, false);
                         } else if (viewType == 1) {
 
                             view = inflater.inflate(R.layout.product_cell_border2_list_item, parent, false);
@@ -132,8 +134,10 @@ public class AcceptmentProductsFragment extends ScanListFragment<ProductCellCont
                     @Override
                     public void init(View itemView, ArrayList<TextView> textViews) {
 
+                        textViews.add(itemView.findViewById(R.id.tvQuantity));
+                        textViews.add(itemView.findViewById(R.id.tvArtikul));
                         textViews.add(itemView.findViewById(R.id.tvDescription));
-                        textViews.add(itemView.findViewById(R.id.tvStatus));
+                        textViews.add(itemView.findViewById(R.id.tvCharacteristic));
                     }
                 });
 
@@ -141,8 +145,18 @@ public class AcceptmentProductsFragment extends ScanListFragment<ProductCellCont
                     @Override
                     public void draw(DataAdapter.ItemViewHolder holder, ProductCellContainerOutcome item) {
 
-                        ((TextView) holder.getTextViews().get(0)).setText(item.product.artikul + " " + item.product.name);
-                        ((TextView) holder.getTextViews().get(1)).setText(item.number + " шт");
+                        SpanText spanText = new SpanText();
+                        if (item.characteristic.description.equals("Основная характеристика")){
+                            spanText.Append(item.characteristic.description);
+                        }
+                        else {
+                            spanText.AppendColor(item.characteristic.description, Color.MAGENTA);
+                        }
+
+                        ((TextView) holder.getTextViews().get(0)).setText(String.valueOf(item.number));
+                        ((TextView) holder.getTextViews().get(1)).setText(item.product.artikul);
+                        ((TextView) holder.getTextViews().get(2)).setText(item.product.name);
+                        ((TextView) holder.getTextViews().get(3)).setText(spanText.GetSpannableString());
                     }
                 });
 

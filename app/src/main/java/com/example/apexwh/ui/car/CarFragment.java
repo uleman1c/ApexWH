@@ -25,6 +25,7 @@ import com.example.apexwh.R;
 import com.example.apexwh.RequestToServer;
 import com.example.apexwh.SpanText;
 import com.example.apexwh.objects.Acceptment;
+import com.example.apexwh.objects.Ttn;
 import com.example.apexwh.ui.BundleMethodInterface;
 import com.example.apexwh.ui.Dialogs;
 import com.example.apexwh.ui.adapters.DataAdapter;
@@ -35,7 +36,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-public class CarFragment extends ListFragment<Acceptment> {
+public class CarFragment extends ListFragment<Ttn> {
 
     String request_id, request_date, request_result;
 
@@ -111,7 +112,7 @@ public class CarFragment extends ListFragment<Acceptment> {
 
                                         JSONObject objectItem = JsonProcs.getItemJSONArray(responseItems, j);
 
-                                        items.add(Acceptment.FromJson(objectItem));
+                                        items.add(Ttn.FromJson(objectItem));
 
                                     }
 
@@ -150,7 +151,7 @@ public class CarFragment extends ListFragment<Acceptment> {
 //
 //                            JSONObject objectItem = JsonProcs.getItemJSONArray(jsonArrayObjects, j);
 //
-//                            items.add(Acceptment.FromJson(objectItem));
+//                            items.add(Ttn.FromJson(objectItem));
 //
 //                        }
 //
@@ -179,24 +180,25 @@ public class CarFragment extends ListFragment<Acceptment> {
                     }
                 });
 
-                getAdapter().setDrawViewHolder(new DataAdapter.DrawViewHolder<Acceptment>() {
+                getAdapter().setDrawViewHolder(new DataAdapter.DrawViewHolder<Ttn>() {
                     @Override
-                    public void draw(DataAdapter.ItemViewHolder holder, Acceptment document) {
+                    public void draw(DataAdapter.ItemViewHolder holder, Ttn document) {
 
                         String filterString = etFilter.getText().toString();
 
-                        ((TextView) holder.getTextViews().get(0)).setText(SpanText.GetFilteredString(document.description, filterString));
-                        ((TextView) holder.getTextViews().get(1)).setText(SpanText.GetFilteredString(document.senderDescription, filterString));
-                        ((TextView) holder.getTextViews().get(2)).setText(SpanText.GetFilteredString(document.comment, filterString));
+                        ((TextView) holder.getTextViews().get(0)).setText(SpanText.GetFilteredString(document.number, filterString));
+                        ((TextView) holder.getTextViews().get(1)).setText(SpanText.GetFilteredString(document.description, filterString));
+                        ((TextView) holder.getTextViews().get(2)).setText(SpanText.GetFilteredString(document.car
+                                + (document.attach.isEmpty() ? "" : " прицеп " + document.attach), filterString));
                     }
                 });
 
                 getAdapter().setOnClickListener(document -> {
 
-                    Acceptment curOutcome = ((Acceptment) document);
+                    Ttn curOutcome = ((Ttn) document);
 
                     Bundle bundle = new Bundle();
-                    bundle.putString("name", curOutcome.type);
+                    bundle.putString("name", "ByCar");
                     bundle.putString("ref", curOutcome.ref);
                     bundle.putString("order", "");
 
@@ -208,13 +210,13 @@ public class CarFragment extends ListFragment<Acceptment> {
                                     .navigate(R.id.nav_acceptmentProductsFragment, arguments);
 
                         }
-                    }, bundle, "Начать приемку " + curOutcome.description + "?", "Начать приемку");
+                    }, bundle, "Начать приемку " + curOutcome.car + "?", "Начать приемку");
 
                 });
 
-                getAdapter().setOnLongClickListener(new DataAdapter.OnLongClickListener<Acceptment>() {
+                getAdapter().setOnLongClickListener(new DataAdapter.OnLongClickListener<Ttn>() {
                     @Override
-                    public void onLongItemClick(Acceptment document) {
+                    public void onLongItemClick(Ttn document) {
 
                     }
                 });

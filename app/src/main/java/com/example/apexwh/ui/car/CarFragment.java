@@ -186,10 +186,10 @@ public class CarFragment extends ListFragment<Ttn> {
 
                         String filterString = etFilter.getText().toString();
 
-                        ((TextView) holder.getTextViews().get(0)).setText(SpanText.GetFilteredString(document.number, filterString));
-                        ((TextView) holder.getTextViews().get(1)).setText(SpanText.GetFilteredString(document.description, filterString));
-                        ((TextView) holder.getTextViews().get(2)).setText(SpanText.GetFilteredString(document.car
+                        ((TextView) holder.getTextViews().get(0)).setText(SpanText.GetFilteredString(document.description, filterString));
+                        ((TextView) holder.getTextViews().get(1)).setText(SpanText.GetFilteredString(document.car
                                 + (document.attach.isEmpty() ? "" : " прицеп " + document.attach), filterString));
+                        ((TextView) holder.getTextViews().get(2)).setText(SpanText.GetFilteredString(document.comment, filterString));
                     }
                 });
 
@@ -198,7 +198,7 @@ public class CarFragment extends ListFragment<Ttn> {
                     Ttn curOutcome = ((Ttn) document);
 
                     Bundle bundle = new Bundle();
-                    bundle.putString("name", "ByCar");
+                    bundle.putString("name", curOutcome.name);
                     bundle.putString("ref", curOutcome.ref);
                     bundle.putString("order", "");
 

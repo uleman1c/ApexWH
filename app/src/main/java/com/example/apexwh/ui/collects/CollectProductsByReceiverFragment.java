@@ -1,5 +1,6 @@
 package com.example.apexwh.ui.collects;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -25,6 +26,7 @@ import com.example.apexwh.JsonProcs;
 import com.example.apexwh.R;
 import com.example.apexwh.RequestToServer;
 import com.example.apexwh.SoundPlayer;
+import com.example.apexwh.SpanText;
 import com.example.apexwh.objects.Cell;
 import com.example.apexwh.objects.ProductCellContainerOutcome;
 import com.example.apexwh.ui.BundleMethodInterface;
@@ -206,9 +208,11 @@ public class CollectProductsByReceiverFragment extends ScanListFragment<ProductC
                     @Override
                     public void init(View itemView, ArrayList<TextView> textViews) {
 
-                        textViews.add(itemView.findViewById(R.id.tvNumberDate));
+                        textViews.add(itemView.findViewById(R.id.tvCell));
+                        textViews.add(itemView.findViewById(R.id.tvQuantity));
+                        textViews.add(itemView.findViewById(R.id.tvArtikul));
                         textViews.add(itemView.findViewById(R.id.tvDescription));
-                        textViews.add(itemView.findViewById(R.id.tvStatus));
+                        textViews.add(itemView.findViewById(R.id.tvCharacteristic));
                     }
                 });
 
@@ -216,9 +220,19 @@ public class CollectProductsByReceiverFragment extends ScanListFragment<ProductC
                     @Override
                     public void draw(DataAdapter.ItemViewHolder holder, ProductCellContainerOutcome item) {
 
+                        SpanText spanText = new SpanText();
+                        if (item.characteristic.description.equals("Основная характеристика")){
+                            spanText.Append(item.characteristic.description);
+                        }
+                        else {
+                            spanText.AppendColor(item.characteristic.description, Color.MAGENTA);
+                        }
+
                         ((TextView) holder.getTextViews().get(0)).setText("Ячейка: " + item.cell.name);
-                        ((TextView) holder.getTextViews().get(1)).setText(item.product.artikul + " " + item.product.name + ", " + item.number + " шт");
-                        ((TextView) holder.getTextViews().get(2)).setText(item.container.name);
+                        ((TextView) holder.getTextViews().get(1)).setText(String.valueOf(item.number));
+                        ((TextView) holder.getTextViews().get(2)).setText(item.product.artikul);
+                        ((TextView) holder.getTextViews().get(3)).setText(item.product.name);
+                        ((TextView) holder.getTextViews().get(4)).setText(spanText.GetSpannableString());
                     }
                 });
 

@@ -229,7 +229,7 @@ public class CollectProductsFragment extends ScanListFragment<ProductCellContain
                         }
 
                         ((TextView) holder.getTextViews().get(0)).setText("Ячейка: " + item.cell.name);
-                        ((TextView) holder.getTextViews().get(1)).setText(item.number + " " + " шт");
+                        ((TextView) holder.getTextViews().get(1)).setText(String.valueOf(item.number));
                         ((TextView) holder.getTextViews().get(2)).setText(item.product.artikul);
                         ((TextView) holder.getTextViews().get(3)).setText(item.product.name);
                         ((TextView) holder.getTextViews().get(4)).setText(spanText.GetSpannableString());

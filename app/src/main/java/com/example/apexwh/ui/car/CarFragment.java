@@ -73,6 +73,7 @@ public class CarFragment extends ListFragment<Ttn> {
                                         bundle.putString("name", JsonProcs.getStringFromJSON(responseItem, "Имя"));
                                         bundle.putString("ref", JsonProcs.getStringFromJSON(responseItem, "Ссылка"));
                                         bundle.putString("order", order);
+                                        bundle.putString("mode", "ttn");
 
                                         Navigation.findNavController(getActivity(), R.id.nav_host_fragment_content_main)
                                                 .navigate(R.id.nav_acceptmentProductsFragment, bundle);
@@ -200,6 +201,7 @@ public class CarFragment extends ListFragment<Ttn> {
                     Bundle bundle = new Bundle();
                     bundle.putString("name", curOutcome.name);
                     bundle.putString("ref", curOutcome.ref);
+                    bundle.putString("mode", "ttn");
                     bundle.putString("order", "");
 
                     Dialogs.showQuestionYesNoCancel(getContext(), getActivity(), new BundleMethodInterface() {

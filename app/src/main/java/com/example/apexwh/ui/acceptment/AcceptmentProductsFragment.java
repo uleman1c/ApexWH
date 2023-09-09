@@ -47,7 +47,7 @@ import java.util.UUID;
  */
 public class AcceptmentProductsFragment extends ScanListFragment<ProductCellContainerOutcome> {
 
-    String name, ref, order;
+    String name, ref, order, mode;
 
     TextView tvProduct;
 
@@ -281,6 +281,7 @@ public class AcceptmentProductsFragment extends ScanListFragment<ProductCellCont
                 bundle.putString("cell", foundProduct.cell.ref);
                 bundle.putString("container", foundProduct.container.ref);
                 bundle.putString("product", foundProduct.product.ref);
+                bundle.putString("characteristic", foundProduct.characteristic.ref);
                 bundle.putInt("quantity", 1);
 
                 doAccept(bundle);
@@ -424,6 +425,7 @@ public class AcceptmentProductsFragment extends ScanListFragment<ProductCellCont
         bundle.putString("cellName", foundProduct.cell.name);
         bundle.putString("container", foundProduct.container.ref);
         bundle.putString("product", foundProduct.product.ref);
+        bundle.putString("characteristic", foundProduct.characteristic.ref);
 
         Dialogs.showInputQuantity(getContext(), foundProduct.number, getActivity(), new BundleMethodInterface() {
             @Override
@@ -442,22 +444,31 @@ public class AcceptmentProductsFragment extends ScanListFragment<ProductCellCont
 
         progressBar.setVisibility(View.VISIBLE);
 
+        if (mode == null) {
 
-        RequestToServer.executeRequestUW(getContext(), Request.Method.GET, "setErpSkladProductsToAccept",
-                "doc=" + UUID.randomUUID().toString()
-                        + "&name=" + name + "&ref=" + ref + "&product=" + bundle.getString("product") + "&quantity=" + bundle.getInt("quantity"), new JSONObject(), 1,
-                new RequestToServer.ResponseResultInterface() {
-                    @Override
-                    public void onResponse(JSONObject response) {
+            RequestToServer.executeRequestUW(getContext(), Request.Method.GET, "setErpSkladProductsToAccept",
+                    "doc=" + UUID.randomUUID().toString()
+                            + "&name=" + name + "&ref=" + ref
+                            + "&product=" + bundle.getString("product")
+                            + "&characteristic=" + bundle.getString("characteristic")
+                            + "&quantity=" + bundle.getInt("quantity"), new JSONObject(), 1,
+                    new RequestToServer.ResponseResultInterface() {
+                        @Override
+                        public void onResponse(JSONObject response) {
 
-                        progressBar.setVisibility(View.GONE);
+                            progressBar.setVisibility(View.GONE);
 
-                        linearLayout.setVisibility(View.VISIBLE);
+                            linearLayout.setVisibility(View.VISIBLE);
 
-                        updateToScan(items, progressBar, adapter, askQuantityAfterProductScan ? "" : bundle.getString("cellName"));
-                    }
-                });
+                            updateToScan(items, progressBar, adapter, askQuantityAfterProductScan ? "" : bundle.getString("cellName"));
+                        }
+                    });
+        }
+        else {
 
+
+
+        }
     }
 
 
@@ -468,6 +479,7 @@ public class AcceptmentProductsFragment extends ScanListFragment<ProductCellCont
         name = getArguments().getString("name");
         ref = getArguments().getString("ref");
         order = getArguments().getString("order");
+        mode = getArguments().getString("mode");
 
         productCellContainerOutcomes = new ArrayList<>();
 

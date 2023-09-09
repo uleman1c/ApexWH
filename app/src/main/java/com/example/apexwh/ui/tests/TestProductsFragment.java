@@ -22,6 +22,7 @@ import com.example.apexwh.JsonProcs;
 import com.example.apexwh.R;
 import com.example.apexwh.RequestToServer;
 import com.example.apexwh.SoundPlayer;
+import com.example.apexwh.SpanText;
 import com.example.apexwh.objects.Cell;
 import com.example.apexwh.objects.DocumentLine;
 import com.example.apexwh.objects.ProductCellContainerOutcome;
@@ -61,7 +62,7 @@ public class TestProductsFragment extends ScanListFragment<ProductCellContainerO
 
     public TestProductsFragment() {
 
-        super(R.layout.fragment_scan_list_clear, R.layout.product_border_list_item);
+        super(R.layout.fragment_scan_list_clear, R.layout.test_product_border_list_item);
 
 
         setListUpdater(new ListFragment.ListUpdater() {
@@ -115,7 +116,7 @@ public class TestProductsFragment extends ScanListFragment<ProductCellContainerO
 
                         if (viewType == 0) {
 
-                            view = inflater.inflate(R.layout.product_border_list_item, parent, false);
+                            view = inflater.inflate(R.layout.test_product_border_list_item, parent, false);
                         } else if (viewType == 1) {
 
                             view = inflater.inflate(R.layout.product_cell_border2_list_item, parent, false);
@@ -134,8 +135,10 @@ public class TestProductsFragment extends ScanListFragment<ProductCellContainerO
                     @Override
                     public void init(View itemView, ArrayList<TextView> textViews) {
 
+                        textViews.add(itemView.findViewById(R.id.tvQuantity));
+                        textViews.add(itemView.findViewById(R.id.tvArtikul));
                         textViews.add(itemView.findViewById(R.id.tvDescription));
-                        textViews.add(itemView.findViewById(R.id.tvStatus));
+                        textViews.add(itemView.findViewById(R.id.tvCharacteristic));
                     }
                 });
 
@@ -143,8 +146,18 @@ public class TestProductsFragment extends ScanListFragment<ProductCellContainerO
                     @Override
                     public void draw(DataAdapter.ItemViewHolder holder, ProductCellContainerOutcome item) {
 
-                        ((TextView) holder.getTextViews().get(0)).setText(item.product.artikul + " " + item.product.name);
-                        ((TextView) holder.getTextViews().get(1)).setText(item.number + " шт");
+                        SpanText spanText = new SpanText();
+                        if (item.characteristic.description.equals("Основная характеристика")){
+                            spanText.Append(item.characteristic.description);
+                        }
+                        else {
+                            spanText.AppendColor(item.characteristic.description, Color.MAGENTA);
+                        }
+
+                        ((TextView) holder.getTextViews().get(0)).setText(item.number + " шт");
+                        ((TextView) holder.getTextViews().get(1)).setText(item.product.artikul);
+                        ((TextView) holder.getTextViews().get(2)).setText(item.product.name);
+                        ((TextView) holder.getTextViews().get(3)).setText(spanText.GetSpannableString());
                     }
                 });
 
@@ -165,7 +178,7 @@ public class TestProductsFragment extends ScanListFragment<ProductCellContainerO
                                 askQuantity(foundProduct);
 
                             }
-                        }, bundle, "Начать отбор номенклатуры " + curPCCO.product.name + "?", "Начать отбор номенклатуры");
+                        }, bundle, "Начать проверку номенклатуры " + curPCCO.product.name + "?", "Начать проверку номенклатуры");
 
                     }
 
@@ -242,6 +255,7 @@ public class TestProductsFragment extends ScanListFragment<ProductCellContainerO
                 bundle.putString("cell", foundProduct.cell.ref);
                 bundle.putString("container", foundProduct.container.ref);
                 bundle.putString("product", foundProduct.product.ref);
+                bundle.putString("characteristic", foundProduct.characteristic.ref);
                 bundle.putInt("quantity", 1);
 
                 doCollect(bundle);
@@ -383,6 +397,7 @@ public class TestProductsFragment extends ScanListFragment<ProductCellContainerO
         bundle.putString("cellName", foundProduct.cell.name);
         bundle.putString("container", foundProduct.container.ref);
         bundle.putString("product", foundProduct.product.ref);
+        bundle.putString("characteristic", foundProduct.characteristic.ref);
 
         Dialogs.showInputQuantity(getContext(), foundProduct.number, getActivity(), new BundleMethodInterface() {
             @Override
@@ -405,7 +420,10 @@ public class TestProductsFragment extends ScanListFragment<ProductCellContainerO
         RequestToServer.executeRequestUW(getContext(), Request.Method.GET, "setErpSkladProductsToTest",
                 "doc=" + UUID.randomUUID().toString() + "&cell=" + bundle.getString("cell")
                         + "&container=" + bundle.getString("container")
-                        + "&name=" + name + "&ref=" + ref + "&product=" + bundle.getString("product") + "&quantity=" + bundle.getInt("quantity"), new JSONObject(), 1,
+                        + "&name=" + name + "&ref=" + ref
+                        + "&product=" + bundle.getString("product")
+                        + "&characteristic=" + bundle.getString("characteristic")
+                        + "&quantity=" + bundle.getInt("quantity"), new JSONObject(), 1,
                 new RequestToServer.ResponseResultInterface() {
                     @Override
                     public void onResponse(JSONObject response) {

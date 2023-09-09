@@ -1,40 +1,30 @@
-package com.example.apexwh.ui.acceptment;
+package com.example.apexwh.ui.car;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.View;
+import android.widget.Button;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.view.MenuHost;
 import androidx.core.view.MenuProvider;
-import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Lifecycle;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
-import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.ProgressBar;
-import android.widget.TextView;
-
 import com.android.volley.Request;
 import com.example.apexwh.DB;
-import com.example.apexwh.DateStr;
-import com.example.apexwh.HttpClient;
-import com.example.apexwh.HttpRequestInterface;
-import com.example.apexwh.HttpRequestJsonObjectInterface;
 import com.example.apexwh.JsonProcs;
 import com.example.apexwh.R;
 import com.example.apexwh.RequestToServer;
 import com.example.apexwh.SpanText;
 import com.example.apexwh.objects.Acceptment;
-import com.example.apexwh.objects.BuierOrder;
-import com.example.apexwh.objects.Outcome;
 import com.example.apexwh.ui.BundleMethodInterface;
 import com.example.apexwh.ui.Dialogs;
 import com.example.apexwh.ui.adapters.DataAdapter;
@@ -45,13 +35,13 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-public class AcceptmentFragment extends ListFragment<Acceptment> {
+public class CarFragment extends ListFragment<Acceptment> {
 
     String request_id, request_date, request_result;
 
     Button btnUpdate;
 
-    public AcceptmentFragment() {
+    public CarFragment() {
 
         super(R.layout.fragment_filter_list, R.layout.movers_service_list_item);
 
@@ -107,7 +97,7 @@ public class AcceptmentFragment extends ListFragment<Acceptment> {
                 }
                 else {
 
-                    RequestToServer.executeRequestUW(getContext(), Request.Method.GET, "getErpSkladIncome",
+                    RequestToServer.executeRequestUW(getContext(), Request.Method.GET, "getErpSkladIncomeTtn",
                             "status=collect&filter=" + filter, new JSONObject(), 1,
                             new RequestToServer.ResponseResultInterface() {
                                 @Override
@@ -115,7 +105,7 @@ public class AcceptmentFragment extends ListFragment<Acceptment> {
 
                                     progressBar.setVisibility(View.GONE);
 
-                                    JSONArray responseItems = JsonProcs.getJsonArrayFromJsonObject(response, "ErpSkladIncome");
+                                    JSONArray responseItems = JsonProcs.getJsonArrayFromJsonObject(response, "ErpSkladIncomeTtn");
 
                                     for (int j = 0; j < responseItems.length(); j++) {
 
@@ -379,13 +369,6 @@ public class AcceptmentFragment extends ListFragment<Acceptment> {
 
                         break;
 
-                    case R.id.miByCar:
-
-                        Navigation.findNavController(getActivity(), R.id.nav_host_fragment_content_main).navigate(R.id.nav_carFragment);
-
-                        res = true;
-
-                        break;
                 };
 
                 return res;

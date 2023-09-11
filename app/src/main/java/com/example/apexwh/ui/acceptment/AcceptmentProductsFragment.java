@@ -453,22 +453,33 @@ public class AcceptmentProductsFragment extends ScanListFragment<ProductCellCont
 
     void doAccept(Bundle bundle) {
 
-
         linearLayout.setVisibility(View.GONE);
 
         progressBar.setVisibility(View.VISIBLE);
 
-        if (mode == null) {
+        RequestToServer.executeRequestUW(getContext(), Request.Method.GET, "setErpSkladProductsToAccept",
+                "doc=" + UUID.randomUUID().toString()
+                        + "&name=" + name + "&ref=" + ref
+                        + "&product=" + bundle.getString("product")
+                        + "&characteristic=" + bundle.getString("characteristic")
+                        + "&quantity=" + bundle.getInt("quantity"), new JSONObject(), 1,
+                new RequestToServer.ResponseResultInterface() {
+                    @Override
+                    public void onResponse(JSONObject response) {
 
-            RequestToServer.executeRequestUW(getContext(), Request.Method.GET, "setErpSkladProductsToAccept",
-                    "doc=" + UUID.randomUUID().toString()
-                            + "&name=" + name + "&ref=" + ref
-                            + "&product=" + bundle.getString("product")
-                            + "&characteristic=" + bundle.getString("characteristic")
-                            + "&quantity=" + bundle.getInt("quantity"), new JSONObject(), 1,
-                    new RequestToServer.ResponseResultInterface() {
-                        @Override
-                        public void onResponse(JSONObject response) {
+                        JSONArray res = JsonProcs.getJsonArrayFromJsonObject(response, "ErpSkladProductsToAccept");
+                        JSONObject res0 = JsonProcs.getItemJSONArray(res, 0);
+
+                        int curLeft = JsonProcs.getIntegerFromJSON(res0, "left");
+
+                        if(curLeft > 0 && curLeft < bundle.getInt("quantity")){
+
+                            bundle.putInt("quantity", curLeft);
+
+                            doAccept(bundle);
+
+                        } else {
+
 
                             progressBar.setVisibility(View.GONE);
 
@@ -476,14 +487,10 @@ public class AcceptmentProductsFragment extends ScanListFragment<ProductCellCont
 
                             updateToScan(items, progressBar, adapter, askQuantityAfterProductScan ? "" : bundle.getString("cellName"));
                         }
-                    });
-        }
-        else {
-
-
-
-        }
+                    }
+                });
     }
+
 
 
     @Override

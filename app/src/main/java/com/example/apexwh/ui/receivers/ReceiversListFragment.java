@@ -1,9 +1,11 @@
 package com.example.apexwh.ui.receivers;
 
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -37,8 +39,6 @@ public class ReceiversListFragment extends ListFragment<OutcomeReceiver> {
     public ReceiversListFragment() {
 
         super(R.layout.fragment_filter_list, R.layout.outcome_receiver_list_item);
-
-        mode = getArguments().getString("mode");
 
         setListUpdater(new ListUpdater() {
             @Override
@@ -131,7 +131,7 @@ public class ReceiversListFragment extends ListFragment<OutcomeReceiver> {
                             public void callMethod(Bundle arguments) {
 
                                 Navigation.findNavController(getActivity(), R.id.nav_host_fragment_content_main)
-                                        .navigate(R.id.nav_collectProductsByReceiverFragment, arguments);
+                                        .navigate(R.id.nav_testProductsFragment, arguments);
 
                             }
                         }, bundle, "Начать проверку " + curOutcome.name + "?", "Начать проверку");
@@ -146,6 +146,15 @@ public class ReceiversListFragment extends ListFragment<OutcomeReceiver> {
         });
 
 
+    }
+
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View view = super.onCreateView(inflater, container, savedInstanceState);
+
+        mode = getArguments().getString("mode");
+
+        return view;
     }
 
     @Override

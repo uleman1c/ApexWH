@@ -50,7 +50,7 @@ import java.util.UUID;
  */
 public class TestProductsFragment extends ScanListFragment<ProductCellContainerOutcome> {
 
-    String name, ref, order;
+    String name, ref, type, order;
 
     TextView tvProduct;
 
@@ -295,7 +295,7 @@ public class TestProductsFragment extends ScanListFragment<ProductCellContainerO
         productCellContainerOutcomes.clear();
 
         RequestToServer.executeRequestUW(getContext(), Request.Method.GET, "getErpSkladProductsToTest",
-                "name=" + name + "&ref=" + ref, new JSONObject(), 1,
+                "name=" + name + "&ref=" + ref + "&type=" + type, new JSONObject(), 1,
                 new RequestToServer.ResponseResultInterface() {
                     @Override
                     public void onResponse(JSONObject response) {
@@ -445,6 +445,7 @@ public class TestProductsFragment extends ScanListFragment<ProductCellContainerO
 
         name = getArguments().getString("name");
         ref = getArguments().getString("ref");
+        type = getArguments().getString("type");
         order = getArguments().getString("order");
 
         productCellContainerOutcomes = new ArrayList<>();

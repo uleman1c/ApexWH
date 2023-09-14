@@ -420,7 +420,7 @@ public class TestProductsFragment extends ScanListFragment<ProductCellContainerO
         RequestToServer.executeRequestUW(getContext(), Request.Method.GET, "setErpSkladProductsToTest",
                 "doc=" + UUID.randomUUID().toString() + "&cell=" + bundle.getString("cell")
                         + "&container=" + bundle.getString("container")
-                        + "&name=" + name + "&ref=" + ref
+                        + "&name=" + name + "&ref=" + ref + "&type=" + type
                         + "&product=" + bundle.getString("product")
                         + "&characteristic=" + bundle.getString("characteristic")
                         + "&quantity=" + bundle.getInt("quantity"), new JSONObject(), 1,
@@ -428,11 +428,26 @@ public class TestProductsFragment extends ScanListFragment<ProductCellContainerO
                     @Override
                     public void onResponse(JSONObject response) {
 
-                        progressBar.setVisibility(View.GONE);
+                        JSONArray res = JsonProcs.getJsonArrayFromJsonObject(response, "ErpSkladProductsToAccept");
+                        JSONObject res0 = JsonProcs.getItemJSONArray(res, 0);
 
-                        linearLayout.setVisibility(View.VISIBLE);
+                        int curLeft = JsonProcs.getIntegerFromJSON(res0, "left");
 
-                        updateToScan(items, progressBar, adapter, askQuantityAfterProductScan ? "" : bundle.getString("cellName"));
+                        if(curLeft > 0 && curLeft < bundle.getInt("quantity")){
+
+                            bundle.putInt("quantity", curLeft);
+
+                            doCollect(bundle);
+
+                        } else {
+
+
+                            progressBar.setVisibility(View.GONE);
+
+                            linearLayout.setVisibility(View.VISIBLE);
+
+                            updateToScan(items, progressBar, adapter, askQuantityAfterProductScan ? "" : bundle.getString("cellName"));
+                        }
                     }
                 });
 

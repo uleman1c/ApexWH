@@ -238,10 +238,12 @@ public class CollectListFragment extends ListFragment<Outcome> {
 
                     case R.id.miCollectByReceiver:
 
-                        Navigation.findNavController(getActivity(), R.id.nav_host_fragment_content_main).navigate(R.id.nav_receiversListFragment);
-
+                        Bundle bundle = new Bundle();
+                        bundle.putString("mode", "collect");
+                        Navigation.findNavController(getActivity(), R.id.nav_host_fragment_content_main).navigate(R.id.nav_receiversListFragment, bundle);
 
                         res = true;
+
                         break;
 
                 };

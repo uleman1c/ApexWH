@@ -249,7 +249,7 @@ public class TestsFragment extends ListFragment<Outcome>{
         menuHost.addMenuProvider(new MenuProvider() {
             @Override
             public void onCreateMenu(@NonNull Menu menu, @NonNull MenuInflater menuInflater) {
-                //menuInflater.inflate(R.menu.home_menu, menu);
+                menuInflater.inflate(R.menu.test_list, menu);
             }
 
             @Override
@@ -265,8 +265,17 @@ public class TestsFragment extends ListFragment<Outcome>{
 
                         res = true;
 
-                    case R.id.miItem:
+                        break;
+
+                    case R.id.miTestByReceiver:
+
+                        Bundle bundle = new Bundle();
+                        bundle.putString("mode", "test");
+                        Navigation.findNavController(getActivity(), R.id.nav_host_fragment_content_main).navigate(R.id.nav_receiversListFragment, bundle);
+
                         res = true;
+
+                        break;
 
                 };
 

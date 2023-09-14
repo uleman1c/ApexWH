@@ -32,10 +32,13 @@ import java.util.ArrayList;
 
 public class ReceiversListFragment extends ListFragment<OutcomeReceiver> {
 
+    String mode;
+
     public ReceiversListFragment() {
 
         super(R.layout.fragment_filter_list, R.layout.outcome_receiver_list_item);
 
+        mode = getArguments().getString("mode");
 
         setListUpdater(new ListUpdater() {
             @Override
@@ -108,15 +111,32 @@ public class ReceiversListFragment extends ListFragment<OutcomeReceiver> {
                     bundle.putString("type", curOutcome.type);
                     bundle.putString("order", "");
 
-                    Dialogs.showQuestionYesNoCancel(getContext(), getActivity(), new BundleMethodInterface() {
-                        @Override
-                        public void callMethod(Bundle arguments) {
+                    if (mode.equals("collect")){
 
-                            Navigation.findNavController(getActivity(), R.id.nav_host_fragment_content_main)
-                                    .navigate(R.id.nav_collectProductsByReceiverFragment, arguments);
+                        Dialogs.showQuestionYesNoCancel(getContext(), getActivity(), new BundleMethodInterface() {
+                            @Override
+                            public void callMethod(Bundle arguments) {
 
-                        }
-                    }, bundle, "Начать отбор " + curOutcome.name + "?", "Начать отбор");
+                                Navigation.findNavController(getActivity(), R.id.nav_host_fragment_content_main)
+                                        .navigate(R.id.nav_collectProductsByReceiverFragment, arguments);
+
+                            }
+                        }, bundle, "Начать отбор " + curOutcome.name + "?", "Начать отбор");
+
+                    }
+                    else if (mode.equals("test")){
+
+                        Dialogs.showQuestionYesNoCancel(getContext(), getActivity(), new BundleMethodInterface() {
+                            @Override
+                            public void callMethod(Bundle arguments) {
+
+                                Navigation.findNavController(getActivity(), R.id.nav_host_fragment_content_main)
+                                        .navigate(R.id.nav_collectProductsByReceiverFragment, arguments);
+
+                            }
+                        }, bundle, "Начать проверку " + curOutcome.name + "?", "Начать проверку");
+
+                    }
 
                 });
 

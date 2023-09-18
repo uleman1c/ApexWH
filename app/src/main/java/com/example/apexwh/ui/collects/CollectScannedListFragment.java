@@ -2,6 +2,7 @@ package com.example.apexwh.ui.collects;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -24,6 +25,7 @@ import com.example.apexwh.DateStr;
 import com.example.apexwh.JsonProcs;
 import com.example.apexwh.R;
 import com.example.apexwh.RequestToServer;
+import com.example.apexwh.SpanText;
 import com.example.apexwh.objects.Collected;
 import com.example.apexwh.objects.Outcome;
 import com.example.apexwh.objects.ProductCellContainerOutcome;
@@ -144,6 +146,7 @@ public class CollectScannedListFragment extends ListFragment<Collected> {
 
                         textViews.add(itemView.findViewById(R.id.tvNumberDate));
                         textViews.add(itemView.findViewById(R.id.tvDescription));
+                        textViews.add(itemView.findViewById(R.id.tvCharacteristic));
                         textViews.add(itemView.findViewById(R.id.tvStatus));
                         textViews.add(itemView.findViewById(R.id.tvQuantity));
                         textViews.add(itemView.findViewById(R.id.tvCell));
@@ -184,12 +187,20 @@ public class CollectScannedListFragment extends ListFragment<Collected> {
                     @Override
                     public void draw(DataAdapter.ItemViewHolder holder, Collected document) {
 
+                        SpanText spanText = new SpanText();
+                        if (document.characteristic.equals("Основная характеристика")){
+                            spanText.Append(document.characteristic);
+                        }
+                        else {
+                            spanText.AppendColor(document.characteristic, Color.MAGENTA);
+                        }
                         ((TextView) holder.getTextViews().get(0)).setText(DateStr.FromYmdhmsToDmyhms(document.date));
                         ((TextView) holder.getTextViews().get(1)).setText(document.product);
-                        ((TextView) holder.getTextViews().get(2)).setText(document.author);
-                        ((TextView) holder.getTextViews().get(3)).setText(String.valueOf(document.quantity));
-                        ((TextView) holder.getTextViews().get(4)).setText(document.cell);
-                        ((TextView) holder.getTextViews().get(5)).setText(document.type);
+                        ((TextView) holder.getTextViews().get(2)).setText(spanText.GetSpannableString());
+                        ((TextView) holder.getTextViews().get(3)).setText(document.author);
+                        ((TextView) holder.getTextViews().get(4)).setText(String.valueOf(document.quantity));
+                        ((TextView) holder.getTextViews().get(5)).setText(document.cell);
+                        ((TextView) holder.getTextViews().get(6)).setText(document.type);
                     }
                 });
 

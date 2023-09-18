@@ -69,6 +69,16 @@
                 android:textStyle="bold" />
 
             <TextView
+                android:id="@+id/tvCharacteristic"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="right"
+                android:padding="4sp"
+                android:text="а"
+                android:textSize="20sp"
+                android:textStyle="italic" />
+
+            <TextView
                 android:id="@+id/tvStatus"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

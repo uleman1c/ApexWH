@@ -10,10 +10,10 @@ import java.util.ArrayList;
 
 public class Collected {
 
-    public String date, cell, container, product, author, type;
+    public String date, cell, container, product, author, type, characteristic;
     public int quantity, unitQuantity;
 
-    public Collected(String date, String cell, String container, String product, String author, int quantity, int unitQuantity, String type) {
+    public Collected(String date, String cell, String container, String product, String author, int quantity, int unitQuantity, String type, String characteristic) {
         this.date = date;
         this.cell = cell;
         this.container = container;
@@ -22,6 +22,7 @@ public class Collected {
         this.quantity = quantity;
         this.unitQuantity = unitQuantity;
         this.type = type;
+        this.characteristic = characteristic;
     }
 
     public static Collected FromJson(JSONObject item) {
@@ -34,7 +35,8 @@ public class Collected {
                 JsonProcs.getStringFromJSON(item, "СкладскойСотрудник"),
                 JsonProcs.getIntegerFromJSON(item, "Количество"),
                 JsonProcs.getIntegerFromJSON(item, "КоличествоУпаковок"),
-                JsonProcs.getStringFromJSON(item, "Тип")
+                JsonProcs.getStringFromJSON(item, "Тип"),
+                JsonProcs.getStringFromJSON(item, "Характеристика")
         );
 
     }

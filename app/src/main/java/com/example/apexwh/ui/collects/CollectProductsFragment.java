@@ -571,7 +571,9 @@ public class CollectProductsFragment extends ScanListFragment<ProductCellContain
                 doCollect(arguments);
 
             }
-        }, bundle, "Введите количество " + foundProduct.product.artikul + " " + foundProduct.product.name, "Ввод количества");
+        }, bundle, "Введите количество " + foundProduct.product.artikul + " "
+                + foundProduct.product.name
+                + " (" + foundProduct.characteristic.description + ")", "Ввод количества");
     }
 
     void doCollect(Bundle bundle){

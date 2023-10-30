@@ -21,6 +21,8 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.animation.TranslateAnimation;
 import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.android.volley.Request;
@@ -107,6 +109,8 @@ public class PincodeActivity extends AppCompatActivity {
      * system UI. This is to prevent the jarring behavior of controls going away
      * while interacting with activity UI.
      */
+
+
     private final View.OnTouchListener mDelayHideTouchListener = new View.OnTouchListener() {
         @Override
         public boolean onTouch(View view, MotionEvent motionEvent) {
@@ -133,6 +137,9 @@ public class PincodeActivity extends AppCompatActivity {
 
     private BroadcastReceiver broadcastReceiver;
 
+    private LinearLayout linearLayout;
+    private ProgressBar progressBar;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -143,6 +150,9 @@ public class PincodeActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
 
         binding.llShtrih.setVisibility(View.GONE);
+
+        linearLayout = binding.linearLayout;
+        progressBar = binding.progressBar;
 
         broadcastReceiver = new BroadcastReceiver() {
             @Override
@@ -263,12 +273,18 @@ public class PincodeActivity extends AppCompatActivity {
 
     private void testPincode(String pinCode) {
 
+        linearLayout.setVisibility(View.GONE);
+        progressBar.setVisibility(View.VISIBLE);
+
         String appId = DB.getSettings(getBaseContext()).getString("appId");
 
         RequestToServer.executeRequest(this, Request.Method.GET,  "getErpSkladAuth", "pincode=" + pinCode + "&appId=" + appId, new JSONObject(), new RequestToServer.ResponseResultInterface(){
 
             @Override
             public void onResponse(JSONObject response) {
+
+                linearLayout.setVisibility(View.VISIBLE);
+                progressBar.setVisibility(View.GONE);
 
                 if (!DefaultJson.getString(response, "ref", "").isEmpty()) {
 

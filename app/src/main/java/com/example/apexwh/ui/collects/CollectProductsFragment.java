@@ -440,7 +440,7 @@ public class CollectProductsFragment extends ScanListFragment<ProductCellContain
         productCellContainerOutcomes.clear();
 
         RequestToServer.executeRequestUW(getContext(), Request.Method.GET, "getErpSkladProductsToOutcome",
-                "name=" + name + "&ref=" + ref, new JSONObject(), 1,
+                "name=" + name + "&ref=" + ref + "&bec=" + barсodeEqualsCharacteristic, new JSONObject(), 1,
                 new RequestToServer.ResponseResultInterface() {
                     @Override
                     public void onResponse(JSONObject response) {

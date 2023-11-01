@@ -638,6 +638,10 @@ public class DB {
             db.updateConstant("showScannedProducts", "0");
         }
 
+        if (db.getConstant("barсodeEqualsCharacteristic") == null){
+            db.updateConstant("barсodeEqualsCharacteristic", "0");
+        }
+
         db.close();
 
     }
@@ -670,6 +674,7 @@ public class DB {
         result.putString("warehouseDescription", db.getConstant("warehouseDescription"));
         result.putString("askQuantityAfterProductScan", db.getConstant("askQuantityAfterProductScan"));
         result.putString("showScannedProducts", db.getConstant("showScannedProducts"));
+        result.putString("barсodeEqualsCharacteristic", db.getConstant("barсodeEqualsCharacteristic"));
 
         db.close();
 

@@ -7,10 +7,10 @@ import org.json.JSONObject;
 public class Inventarization {
 
     public String ref, number, date, comment;
-    Cell cell;
-    Container container;
-    Product product;
-    Characteristic characteristic;
+    public Cell cell;
+    public Container container;
+    public Product product;
+    public Characteristic characteristic;
 
 
     public int quantity;

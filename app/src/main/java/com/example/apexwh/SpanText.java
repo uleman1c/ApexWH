@@ -8,6 +8,7 @@ import android.text.style.StyleSpan;
 import android.text.style.UnderlineSpan;
 
 import java.util.ArrayList;
+import java.util.regex.Pattern;
 
 public class SpanText {
 
@@ -72,7 +73,9 @@ public class SpanText {
 
         SpanText spanText = new SpanText();
 
-        String[] spl = text.split(filter);
+        Pattern pattern = Pattern.compile(filter, Pattern.CASE_INSENSITIVE);
+
+        String[] spl = pattern.split(text);
 
         for (int i = 0; i < spl.length - 1; i++) {
 

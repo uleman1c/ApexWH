@@ -19,13 +19,18 @@ import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.android.volley.Request;
+import com.example.apexwh.DateStr;
 import com.example.apexwh.JsonProcs;
 import com.example.apexwh.R;
 import com.example.apexwh.RequestToServer;
+import com.example.apexwh.SpanText;
 import com.example.apexwh.objects.Inventarization;
 import com.example.apexwh.objects.Outcome;
+import com.example.apexwh.ui.BundleMethodInterface;
+import com.example.apexwh.ui.Dialogs;
 import com.example.apexwh.ui.adapters.DataAdapter;
 import com.example.apexwh.ui.adapters.ListFragment;
 
@@ -95,6 +100,36 @@ public class InventarizationsFragment extends ListFragment<Inventarization> {
                     }
                 });
 
+                getAdapter().setInitViewsMaker(new DataAdapter.InitViewsMaker() {
+                    @Override
+                    public void init(View itemView, ArrayList<TextView> textViews) {
+
+                        textViews.add((TextView) itemView.findViewById(R.id.tvNumberDate));
+                        textViews.add((TextView) itemView.findViewById(R.id.tvDescription));
+                        textViews.add((TextView) itemView.findViewById(R.id.tvStatus));
+                    }
+                });
+
+                getAdapter().setDrawViewHolder(new DataAdapter.DrawViewHolder<Inventarization>() {
+                    @Override
+                    public void draw(DataAdapter.ItemViewHolder holder, Inventarization document) {
+
+                        String filterString = etFilter.getText().toString();
+
+                        ((TextView) holder.getTextViews().get(0)).setText(SpanText.GetFilteredString("№ " + document.number + " от " + DateStr.FromYmdhmsToDmyhms(document.date), filterString));
+                        ((TextView) holder.getTextViews().get(1)).setText(SpanText.GetFilteredString(document.cell.name, filterString));
+                        ((TextView) holder.getTextViews().get(2)).setText(SpanText.GetFilteredString(document.product.name
+                                + ", " + String.valueOf(document.quantity), filterString));
+                    }
+                });
+
+                getAdapter().setOnClickListener(document -> {});
+
+                getAdapter().setOnLongClickListener(document -> {});
+
+
+
+
             }
         });
 
@@ -147,5 +182,20 @@ public class InventarizationsFragment extends ListFragment<Inventarization> {
 
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        RegisterReceiver(getActivity());
+
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+
+        UnRegisterReceiver(getActivity());
+
+    }
 
 }

@@ -15,6 +15,7 @@ import com.example.apexwh.objects.Cell;
 import com.example.apexwh.objects.Container;
 import com.example.apexwh.objects.Product;
 import com.example.apexwh.objects.ProductCell;
+import com.example.apexwh.ui.BundleMethodInterface;
 import com.example.apexwh.ui.Dialogs;
 import com.example.apexwh.ui.adapters.DataAdapter;
 import com.example.apexwh.ui.adapters.ScanListFragment;
@@ -181,6 +182,30 @@ public class InventarizationProductFragment extends ScanListFragment<ProductCell
         setOnCreateViewElements(new OnCreateViewElements() {
             @Override
             public void execute(View root, NavController navController) {
+
+                root.findViewById(R.id.llCell).setOnLongClickListener(new View.OnLongClickListener() {
+                    @Override
+                    public boolean onLongClick(View view) {
+
+                        if (cell != null) {
+
+                            Dialogs.showQuestionYesNoCancel(getContext(), getActivity(), new BundleMethodInterface() {
+                                @Override
+                                public void callMethod(Bundle arguments) {
+
+                                    items.clear();
+
+                                    adapter.notifyDataSetChanged();
+
+                                    tvProduct.setText(cell.name);
+
+                                }
+                            }, new Bundle(), "Очистить ячейку ?", "Очистить");
+                        }
+
+                        return false;
+                    }
+                });
 
                 tvProduct = root.findViewById(R.id.tvProduct);
 

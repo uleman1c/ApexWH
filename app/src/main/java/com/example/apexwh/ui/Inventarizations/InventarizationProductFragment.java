@@ -142,7 +142,7 @@ public class InventarizationProductFragment extends ScanListFragment<ProductCell
                                                     JsonProcs.putToJsonObject(jsonObject,"productRef", arguments.getString("productRef"));
                                                     JsonProcs.putToJsonObject(jsonObject,"quantity", arguments.getInt("quantity"));
 
-                                                    RequestToServer.executeRequestBodyUW(getContext(), Request.Method.POST, "setErpSkladPlacement", jsonObject,
+                                                    RequestToServer.executeRequestBodyUW(getContext(), Request.Method.POST, "setErpSkladInventarization", jsonObject,
                                                             RequestToServer.TypeOfResponse.JsonObject, response1 -> {
 
                                                                 if (!JsonProcs.getStringFromJSON(response1, "ref").isEmpty()){

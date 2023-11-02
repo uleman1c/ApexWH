@@ -102,6 +102,18 @@ public class ListFragment<T> extends Fragment {
     protected OnCreateViewElements onCreateViewElements;
 
     @Override
+    public void onResume() {
+        super.onResume();
+
+//        if (etFilter != null) {
+//
+//            updateList(etFilter.getText().toString());
+//        }
+
+
+    }
+
+    @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         View root = inflater.inflate(fragmentLayout, container, false);

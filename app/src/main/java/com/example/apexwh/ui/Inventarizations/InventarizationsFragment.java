@@ -38,7 +38,7 @@ public class InventarizationsFragment extends ListFragment<Inventarization> {
     private InventarizationsViewModel mViewModel;
 
     public InventarizationsFragment() {
-        super(R.layout.fragment_filter_list, R.layout.movers_service_list_item);
+        super(R.layout.fragment_filter_add_list, R.layout.movers_service_list_item);
 
         setListUpdater(new ListUpdater() {
             @Override

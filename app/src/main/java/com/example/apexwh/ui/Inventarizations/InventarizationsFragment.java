@@ -10,6 +10,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
 import android.view.LayoutInflater;
@@ -77,6 +78,22 @@ public class InventarizationsFragment extends ListFragment<Inventarization> {
                             }
                         });
 
+
+            }
+        });
+
+        setOnCreateViewElements(new OnCreateViewElements() {
+            @Override
+            public void execute(View root, NavController navController) {
+
+                root.findViewById(R.id.btnAdd).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+
+                        navController.navigate(R.id.nav_inventarizationProductFragment, new Bundle());
+
+                    }
+                });
 
             }
         });

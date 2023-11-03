@@ -13,6 +13,7 @@ import com.example.apexwh.JsonProcs;
 import com.example.apexwh.R;
 import com.example.apexwh.RequestToServer;
 import com.example.apexwh.objects.Cell;
+import com.example.apexwh.objects.Characteristic;
 import com.example.apexwh.objects.Container;
 import com.example.apexwh.objects.Product;
 import com.example.apexwh.objects.ProductCell;
@@ -131,8 +132,13 @@ public class ProductPlacementFragment extends ScanListFragment<ProductCell> {
                                     } else {
 
                                         Product product = Product.FromJson(container);
-
                                         args.putString("productRef", product.ref);
+
+                                        Characteristic characteristic = new Characteristic("", "");
+                                        if (type.equals("НоменклатураСХарактеристикой")) {
+                                            characteristic = Characteristic.FromJson(JsonProcs.getJsonObjectFromJsonObject(container, "characteristic"));
+                                            args.putString("characterRef", characteristic.ref);
+                                        }
 
                                         Dialogs.showInputQuantity(getContext(), null, getActivity(), arguments -> {
 
@@ -140,6 +146,9 @@ public class ProductPlacementFragment extends ScanListFragment<ProductCell> {
                                                     JsonProcs.putToJsonObject(jsonObject,"ref", UUID.randomUUID().toString());
                                                     JsonProcs.putToJsonObject(jsonObject,"cellRef", arguments.getString("cellRef"));
                                                     JsonProcs.putToJsonObject(jsonObject,"productRef", arguments.getString("productRef"));
+                                                    if (type.equals("НоменклатураСХарактеристикой")) {
+                                                        JsonProcs.putToJsonObject(jsonObject, "characterRef", arguments.getString("characterRef"));
+                                                    }
                                                     JsonProcs.putToJsonObject(jsonObject,"quantity", arguments.getInt("quantity"));
 
                                                     RequestToServer.executeRequestBodyUW(getContext(), Request.Method.POST, "setErpSkladPlacement", jsonObject,
@@ -162,7 +171,9 @@ public class ProductPlacementFragment extends ScanListFragment<ProductCell> {
 
 
                                                 },
-                                                args, "Ввести вручную " + product.name + " ?", "Ввод количества");
+                                                args, "Ввести вручную " + product.name
+                                                        + (type.equals("НоменклатураСХарактеристикой") ? ", " + characteristic.description : "")
+                                                        + " ?", "Ввод количества");
 
 
                                     }

@@ -111,7 +111,10 @@ public class ProductCellsListFragment extends ScanListFragment<ProductCell> {
 
                         ((TextView) holder.getTextViews().get(0)).setText(item.cell.name);
                         ((TextView) holder.getTextViews().get(1)).setText(item.container.name + " " + item.containerNumber + " шт");
-                        ((TextView) holder.getTextViews().get(2)).setText(item.productNumber + " шт (" + item.productUnitNumber + " упак)");
+                        ((TextView) holder.getTextViews().get(2)).setText(
+                                (item.characteristic.description.isEmpty() || item.characteristic.description.equals("Основная характеристика")
+                                        ? "" : item.characteristic.description + ", ")
+                                        + item.productNumber + " шт (" + item.productUnitNumber + " упак)");
                     }
                 });
 

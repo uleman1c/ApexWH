@@ -31,11 +31,16 @@ public class InventarizationProductFragment extends ScanListFragment<ProductCell
     TextView tvProduct;
 
     Cell cell;
+
+    ArrayList<ProductCell> accProductCells;
+
     int productNumber, productUnitNumber, containerNumber;
 
     public InventarizationProductFragment() {
 
         super(R.layout.fragment_scan_cell_list, R.layout.product_cell_list_item);
+
+        accProductCells = new ArrayList<>();
 
         setListUpdater(new ListUpdater() {
             @Override
@@ -70,11 +75,13 @@ public class InventarizationProductFragment extends ScanListFragment<ProductCell
 
                                         JSONArray products = JsonProcs.getJsonArrayFromJsonObject(objectItem, "products");
 
+                                        accProductCells.clear();
+
                                         for (int k = 0; k < products.length(); k++) {
 
                                             ProductCell productCell = ProductCell.FromJson(JsonProcs.getItemJSONArray(products, k));
 
-                                            items.add(productCell);
+                                            accProductCells.add(productCell);
                                         }
 
 

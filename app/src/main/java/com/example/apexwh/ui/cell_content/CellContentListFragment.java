@@ -14,6 +14,7 @@ import com.example.apexwh.JsonProcs;
 import com.example.apexwh.R;
 import com.example.apexwh.RequestToServer;
 import com.example.apexwh.objects.Cell;
+import com.example.apexwh.objects.Characteristic;
 import com.example.apexwh.objects.Movement;
 import com.example.apexwh.objects.MoversService;
 import com.example.apexwh.objects.Placement;
@@ -145,7 +146,10 @@ public class CellContentListFragment extends ScanListFragment<ProductCell> {
                     @Override
                     public void draw(DataAdapter.ItemViewHolder holder, ProductCell item) {
 
-                        ((TextView) holder.getTextViews().get(0)).setText(item.product.artikul + " " + item.product.name);
+                        String characteristicString = Characteristic.getString(item.characteristic);
+
+                        ((TextView) holder.getTextViews().get(0)).setText(item.product.artikul + " " + item.product.name
+                            + (characteristicString.isEmpty() ? "" : ", " + characteristicString));
                         ((TextView) holder.getTextViews().get(1)).setText(item.container.name + " " + item.containerNumber + " шт");
                         ((TextView) holder.getTextViews().get(2)).setText(item.productNumber + " шт (" + item.productUnitNumber + " упак)");
                     }

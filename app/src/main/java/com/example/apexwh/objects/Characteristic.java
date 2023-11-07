@@ -27,7 +27,11 @@ public class Characteristic extends Reference {
 
     }
 
+    public static String getString(Characteristic characteristic){
 
+        return characteristic.description.isEmpty() || characteristic.description.equals("Основная характеристика") ? "" : characteristic.description;
+
+    }
 
 
 }

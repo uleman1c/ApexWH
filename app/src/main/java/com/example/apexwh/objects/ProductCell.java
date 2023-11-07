@@ -40,8 +40,13 @@ public class ProductCell {
         Cell cell = Cell.FromJson(JsonProcs.getJsonObjectFromJsonObject(task_item, "cell"));
         Container container = Container.FromJson(JsonProcs.getJsonObjectFromJsonObject(task_item, "container"));
 
-        String characteristicDesc = JsonProcs.getStringFromJSON(task_item,"characteristic");
-        Characteristic characteristic = new Characteristic("", characteristicDesc);
+        Characteristic characteristic = Characteristic.FromJson(JsonProcs.getJsonObjectFromJsonObject(task_item, "characteristic"));
+
+        if (characteristic.description.isEmpty()) {
+
+            String characteristicDesc = JsonProcs.getStringFromJSON(task_item, "characteristic");
+            characteristic.description = characteristicDesc;
+        }
 
         int productNumber = JsonProcs.getIntegerFromJSON(task_item, "productNumber");
         int productUnitNumber = JsonProcs.getIntegerFromJSON(task_item, "productUnitNumber");

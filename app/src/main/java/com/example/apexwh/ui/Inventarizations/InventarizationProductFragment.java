@@ -12,6 +12,7 @@ import com.example.apexwh.JsonProcs;
 import com.example.apexwh.R;
 import com.example.apexwh.RequestToServer;
 import com.example.apexwh.objects.Cell;
+import com.example.apexwh.objects.Characteristic;
 import com.example.apexwh.objects.Container;
 import com.example.apexwh.objects.Product;
 import com.example.apexwh.objects.ProductCell;
@@ -139,37 +140,45 @@ public class InventarizationProductFragment extends ScanListFragment<ProductCell
 
                                         Product product = Product.FromJson(container);
 
-                                        args.putString("productRef", product.ref);
+                                        Characteristic characteristic = Characteristic.FromJson(JsonProcs.getJsonObjectFromJsonObject(container, "characteristic"));
 
-                                        Dialogs.showInputQuantity(getContext(), null, getActivity(), arguments -> {
+                                        ProductCell productCell = new ProductCell(product, 0, 0, cell, new Container("", ""), 0, characteristic);
 
-                                                    JSONObject jsonObject = new JSONObject();
-                                                    JsonProcs.putToJsonObject(jsonObject,"ref", UUID.randomUUID().toString());
-                                                    JsonProcs.putToJsonObject(jsonObject,"cellRef", arguments.getString("cellRef"));
-                                                    JsonProcs.putToJsonObject(jsonObject,"productRef", arguments.getString("productRef"));
-                                                    JsonProcs.putToJsonObject(jsonObject,"quantity", arguments.getInt("quantity"));
+                                        items.add(productCell);
 
-                                                    RequestToServer.executeRequestBodyUW(getContext(), Request.Method.POST, "setErpSkladInventarization", jsonObject,
-                                                            RequestToServer.TypeOfResponse.JsonObject, response1 -> {
+                                        adapter.notifyDataSetChanged();
 
-                                                                if (!JsonProcs.getStringFromJSON(response1, "ref").isEmpty()){
-
-                                                                    String cfilter = cell.name;
-
-                                                                    cell = null;
-
-                                                                    update(items, progressBar, adapter, cfilter);
-
-                                                                }
-
-
-
-                                                            });
-
-
-
-                                                },
-                                                args, "Ввести вручную " + product.name + " ?", "Ввод количества");
+//                                        args.putString("productRef", product.ref);
+//
+//                                        Dialogs.showInputQuantity(getContext(), null, getActivity(), arguments -> {
+//
+//                                                    JSONObject jsonObject = new JSONObject();
+//                                                    JsonProcs.putToJsonObject(jsonObject,"ref", UUID.randomUUID().toString());
+//                                                    JsonProcs.putToJsonObject(jsonObject,"cellRef", arguments.getString("cellRef"));
+//                                                    JsonProcs.putToJsonObject(jsonObject,"productRef", arguments.getString("productRef"));
+//                                                    JsonProcs.putToJsonObject(jsonObject,"quantity", arguments.getInt("quantity"));
+//
+//                                                    RequestToServer.executeRequestBodyUW(getContext(), Request.Method.POST, "setErpSkladInventarization", jsonObject,
+//                                                            RequestToServer.TypeOfResponse.JsonObject, response1 -> {
+//
+//                                                                if (!JsonProcs.getStringFromJSON(response1, "ref").isEmpty()){
+//
+//                                                                    String cfilter = cell.name;
+//
+//                                                                    cell = null;
+//
+//                                                                    update(items, progressBar, adapter, cfilter);
+//
+//                                                                }
+//
+//
+//
+//                                                            });
+//
+//
+//
+//                                                },
+//                                                args, "Ввести вручную " + product.name + " ?", "Ввод количества");
 
 
                                     }

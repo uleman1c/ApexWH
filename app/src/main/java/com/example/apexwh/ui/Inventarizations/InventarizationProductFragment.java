@@ -6,6 +6,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 
 import com.android.volley.Request;
 import com.example.apexwh.JsonProcs;
@@ -22,6 +23,7 @@ import com.example.apexwh.ui.adapters.DataAdapter;
 import com.example.apexwh.ui.adapters.ScanListFragment;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -122,18 +124,6 @@ public class InventarizationProductFragment extends ScanListFragment<ProductCell
                                             JsonProcs.putToJsonObject(jsonObject,"containerRef", arguments.getString("containerRef"));
                                             JsonProcs.putToJsonObject(jsonObject,"containerName", arguments.getString("containerName"));
 
-//                                            RequestToServer.executeRequestBodyUW(getContext(), Request.Method.POST, "setErpSkladPlacement", jsonObject,
-//                                                    RequestToServer.TypeOfResponse.JsonObject, response1 -> {
-//
-//                                                        if (!JsonProcs.getStringFromJSON(response1, "ref").isEmpty()){
-//                                                            navController.popBackStack();
-//                                                        }
-//
-//
-//
-//                                                    });
-
-
                                         },  args, "Разместить контейнер " + sourceContainer.name + " в ячейку " + cell.name + " ?", "Размещение");
 
                                     } else {
@@ -171,31 +161,6 @@ public class InventarizationProductFragment extends ScanListFragment<ProductCell
 
                                                     }
 
-//                                                    JSONObject jsonObject = new JSONObject();
-//                                                    JsonProcs.putToJsonObject(jsonObject,"ref", UUID.randomUUID().toString());
-//                                                    JsonProcs.putToJsonObject(jsonObject,"cellRef", arguments.getString("cellRef"));
-//                                                    JsonProcs.putToJsonObject(jsonObject,"productRef", arguments.getString("productRef"));
-//                                                    JsonProcs.putToJsonObject(jsonObject,"quantity", arguments.getInt("quantity"));
-//
-//                                                    RequestToServer.executeRequestBodyUW(getContext(), Request.Method.POST, "setErpSkladInventarization", jsonObject,
-//                                                            RequestToServer.TypeOfResponse.JsonObject, response1 -> {
-//
-//                                                                if (!JsonProcs.getStringFromJSON(response1, "ref").isEmpty()){
-//
-//                                                                    String cfilter = cell.name;
-//
-//                                                                    cell = null;
-//
-//                                                                    update(items, progressBar, adapter, cfilter);
-//
-//                                                                }
-//
-//
-//
-//                                                            });
-
-
-
                                                 },
                                                 args, "Ввести вручную " + product.name + " ?", "Ввод количества");
 
@@ -227,11 +192,47 @@ public class InventarizationProductFragment extends ScanListFragment<ProductCell
                                 @Override
                                 public void callMethod(Bundle arguments) {
 
-//                                items.clear();
+                                    JSONArray jsonArray = new JSONArray();
+
+                                    for (ProductCell productCell: (ArrayList<ProductCell>) items) {
+
+                                        try {
+                                            jsonArray.put(ProductCell.ToJson(productCell));
+                                        } catch (JSONException e) {
+                                            throw new RuntimeException(e);
+                                        }
+
+
+                                    }
+
+                                JSONObject jsonObject = new JSONObject();
+                                JsonProcs.putToJsonObject(jsonObject,"ref", UUID.randomUUID().toString());
+                                JsonProcs.putToJsonObject(jsonObject,"cellRef", arguments.getString("cellRef"));
+                                JsonProcs.putToJsonObject(jsonObject, "items", jsonArray.toString());
+
+
+                                RequestToServer.executeRequestBodyUW(getContext(), Request.Method.POST, "setErpSkladInventarization", jsonObject,
+                                        RequestToServer.TypeOfResponse.JsonObject, response1 -> {
+
+                                            if (!JsonProcs.getStringFromJSON(response1, "ref").isEmpty()){
+
+                                                navController.popBackStack();
+
+//                                                cell = null;
 //
-//                                adapter.notifyDataSetChanged();
-//
-//                                tvProduct.setText(cell.name);
+//                                                updateList("");
+
+                                            }
+
+
+
+                                        });
+
+
+
+
+
+
 
                                 }
                             }, new Bundle(), "Сохранить инвентаризацию ячейки " + cell.name + " ?", "Сохранить");

@@ -2,6 +2,7 @@ package com.example.apexwh.objects;
 
 import com.example.apexwh.JsonProcs;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 public class ProductCell {
@@ -54,6 +55,20 @@ public class ProductCell {
 
         return new ProductCell(product, productNumber, productUnitNumber, cell, container, containerNumber, characteristic);
 
+
+    }
+
+    public static JSONObject ToJson(ProductCell productCell) throws JSONException {
+
+        JSONObject jsonObject = new JSONObject();
+
+        jsonObject.put("cellRef", productCell.cell.ref);
+        jsonObject.put("productRef", productCell.product.ref);
+        jsonObject.put("characteristicRef", productCell.characteristic.ref);
+        jsonObject.put("containerRef", productCell.container.ref);
+        jsonObject.put("productNumber", productCell.productNumber);
+
+        return jsonObject;
 
     }
 

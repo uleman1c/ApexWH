@@ -39,7 +39,7 @@ public class InventarizationProductFragment extends ScanListFragment<ProductCell
 
     public InventarizationProductFragment() {
 
-        super(R.layout.fragment_scan_cell_list, R.layout.product_cell_list_item);
+        super(R.layout.fragment_scan_invent_list, R.layout.product_cell_list_item);
 
         accProductCells = new ArrayList<>();
 
@@ -144,14 +144,33 @@ public class InventarizationProductFragment extends ScanListFragment<ProductCell
 
                                         ProductCell productCell = new ProductCell(product, 0, 0, cell, new Container("", ""), 0, characteristic);
 
-                                        items.add(productCell);
+                                        items.add(0, productCell);
 
                                         adapter.notifyDataSetChanged();
 
-//                                        args.putString("productRef", product.ref);
-//
-//                                        Dialogs.showInputQuantity(getContext(), null, getActivity(), arguments -> {
-//
+                                        args.putString("productRef", product.ref);
+                                        args.putString("characteristicRef", characteristic.ref);
+
+                                        Dialogs.showInputQuantity(getContext(), null, getActivity(), arguments -> {
+
+                                            Boolean found = false;
+                                                    for (int i = 0; i < items.size() && !found; i++) {
+
+                                                        ProductCell curPC = (ProductCell) items.get(i);
+
+                                                        found = curPC.product.ref.equals(arguments.getString("productRef"))
+                                                                && curPC.characteristic.ref.equals(arguments.getString("characteristicRef"));
+
+                                                        if (found){
+
+                                                            curPC.productNumber = arguments.getInt("quantity");
+                                                            curPC.productUnitNumber = arguments.getInt("quantity");
+                                                            adapter.notifyDataSetChanged();
+
+                                                        }
+
+                                                    }
+
 //                                                    JSONObject jsonObject = new JSONObject();
 //                                                    JsonProcs.putToJsonObject(jsonObject,"ref", UUID.randomUUID().toString());
 //                                                    JsonProcs.putToJsonObject(jsonObject,"cellRef", arguments.getString("cellRef"));
@@ -174,11 +193,11 @@ public class InventarizationProductFragment extends ScanListFragment<ProductCell
 //
 //
 //                                                            });
-//
-//
-//
-//                                                },
-//                                                args, "Ввести вручную " + product.name + " ?", "Ввод количества");
+
+
+
+                                                },
+                                                args, "Ввести вручную " + product.name + " ?", "Ввод количества");
 
 
                                     }
@@ -199,6 +218,26 @@ public class InventarizationProductFragment extends ScanListFragment<ProductCell
             @Override
             public void execute(View root, NavController navController) {
 
+                root.findViewById(R.id.btnSaveInvent).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+
+                        if (cell != null) {
+                            Dialogs.showQuestionYesNoCancel(getContext(), getActivity(), new BundleMethodInterface() {
+                                @Override
+                                public void callMethod(Bundle arguments) {
+
+//                                items.clear();
+//
+//                                adapter.notifyDataSetChanged();
+//
+//                                tvProduct.setText(cell.name);
+
+                                }
+                            }, new Bundle(), "Сохранить инвентаризацию ячейки " + cell.name + " ?", "Сохранить");
+                        }
+                    }
+                });
                 root.findViewById(R.id.llCell).setOnLongClickListener(new View.OnLongClickListener() {
                     @Override
                     public boolean onLongClick(View view) {

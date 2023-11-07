@@ -207,7 +207,7 @@ public class InventarizationProductFragment extends ScanListFragment<ProductCell
 
                                 JSONObject jsonObject = new JSONObject();
                                 JsonProcs.putToJsonObject(jsonObject,"ref", UUID.randomUUID().toString());
-                                JsonProcs.putToJsonObject(jsonObject,"cellRef", arguments.getString("cellRef"));
+                                JsonProcs.putToJsonObject(jsonObject,"cellRef", cell.ref);
                                 JsonProcs.putToJsonObject(jsonObject, "items", jsonArray.toString());
 
 

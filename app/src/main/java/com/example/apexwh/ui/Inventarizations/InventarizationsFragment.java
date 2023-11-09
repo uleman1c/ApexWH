@@ -44,7 +44,7 @@ public class InventarizationsFragment extends ListFragment<Inventarization> {
     private InventarizationsViewModel mViewModel;
 
     public InventarizationsFragment() {
-        super(R.layout.fragment_filter_add_list, R.layout.movers_service_list_item);
+        super(R.layout.fragment_filter_add_list, R.layout.inventarization_list_item);
 
         setListUpdater(new ListUpdater() {
             @Override
@@ -106,7 +106,6 @@ public class InventarizationsFragment extends ListFragment<Inventarization> {
 
                         textViews.add((TextView) itemView.findViewById(R.id.tvNumberDate));
                         textViews.add((TextView) itemView.findViewById(R.id.tvDescription));
-                        textViews.add((TextView) itemView.findViewById(R.id.tvStatus));
                     }
                 });
 
@@ -118,8 +117,6 @@ public class InventarizationsFragment extends ListFragment<Inventarization> {
 
                         ((TextView) holder.getTextViews().get(0)).setText(SpanText.GetFilteredString("№ " + document.number + " от " + DateStr.FromYmdhmsToDmyhms(document.date), filterString));
                         ((TextView) holder.getTextViews().get(1)).setText(SpanText.GetFilteredString(document.cell.name, filterString));
-                        ((TextView) holder.getTextViews().get(2)).setText(SpanText.GetFilteredString(document.product.name
-                                + ", " + String.valueOf(document.quantity), filterString));
                     }
                 });
 

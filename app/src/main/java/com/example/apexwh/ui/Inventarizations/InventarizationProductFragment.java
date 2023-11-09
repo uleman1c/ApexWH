@@ -113,18 +113,26 @@ public class InventarizationProductFragment extends ScanListFragment<ProductCell
 
                                         Container sourceContainer = Container.FromJson(container);
 
-                                        args.putString("containerRef", sourceContainer.ref);
-                                        args.putString("containerName", sourceContainer.name);
+                                        JSONArray products = JsonProcs.getJsonArrayFromJsonObject(container, "products");
 
-                                        Dialogs.showQuestionYesNoCancel(getContext(), getActivity(), arguments -> {
+                                        for (int i = 0; i < products.length(); i++) {
 
-                                            JSONObject jsonObject = new JSONObject();
-                                            JsonProcs.putToJsonObject(jsonObject,"ref", UUID.randomUUID().toString());
-                                            JsonProcs.putToJsonObject(jsonObject,"cellRef", arguments.getString("cellRef"));
-                                            JsonProcs.putToJsonObject(jsonObject,"containerRef", arguments.getString("containerRef"));
-                                            JsonProcs.putToJsonObject(jsonObject,"containerName", arguments.getString("containerName"));
+                                            JSONObject jProduct = JsonProcs.getItemJSONArray(products, i);
 
-                                        },  args, "Разместить контейнер " + sourceContainer.name + " в ячейку " + cell.name + " ?", "Размещение");
+                                            Product product = Product.FromJson(JsonProcs.getJsonObjectFromJsonObject(jProduct, "product"));
+
+                                            Characteristic characteristic = Characteristic.FromJson(JsonProcs.getJsonObjectFromJsonObject(jProduct, "characteristic"));
+
+                                            int productNumber = JsonProcs.getIntegerFromJSON(jProduct, "quantity");
+                                            int productUnitNumber = JsonProcs.getIntegerFromJSON(jProduct, "unitQuantity");
+
+                                            ProductCell productCell = new ProductCell(product, productNumber, productUnitNumber, cell, sourceContainer, 0, characteristic);
+
+                                            items.add(0, productCell);
+
+                                        }
+
+                                        adapter.notifyDataSetChanged();
 
                                     } else {
 
@@ -227,12 +235,6 @@ public class InventarizationProductFragment extends ScanListFragment<ProductCell
 
 
                                         });
-
-
-
-
-
-
 
                                 }
                             }, new Bundle(), "Сохранить инвентаризацию ячейки " + cell.name + " ?", "Сохранить");

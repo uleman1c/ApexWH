@@ -26,10 +26,23 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.UUID;
 
 public class InventarizationProductFragment extends ScanListFragment<ProductCell> {
+
+    class RefNum {
+        public RefNum(String ref, int number) {
+            this.ref = ref;
+            this.number = number;
+        }
+
+        public String ref;
+        public int number;
+
+    }
 
     TextView tvProduct;
 
@@ -74,8 +87,6 @@ public class InventarizationProductFragment extends ScanListFragment<ProductCell
                                         productUnitNumber = JsonProcs.getIntegerFromJSON(objectItem, "productUnitNumber");
                                         containerNumber = JsonProcs.getIntegerFromJSON(objectItem, "containerNumber");
 
-                                        tvProduct.setText(cell.name + " " + productNumber + " шт (" + productUnitNumber + " упак) " + containerNumber + " конт");
-
                                         JSONArray products = JsonProcs.getJsonArrayFromJsonObject(objectItem, "products");
 
                                         accProductCells.clear();
@@ -90,7 +101,63 @@ public class InventarizationProductFragment extends ScanListFragment<ProductCell
 
                                     }
 
+                                    ArrayList<RefNum> refNums = new ArrayList<>();
+
+                                    for (ProductCell productCell:accProductCells) {
+
+                                        if (productCell.productNumber > 0) {
+
+                                            String curRef = productCell.product.ref;
+
+                                            Boolean found = false;
+
+                                            RefNum curRefNum = null;
+
+                                            for (int i = 0; i < refNums.size() && !found; i++) {
+                                                found = refNums.get(i).ref.equals(curRef);
+
+                                                if (found) {
+                                                    curRefNum = refNums.get(i);
+                                                }
+                                            }
+
+                                            if (curRefNum == null){
+
+                                                curRefNum = new RefNum(curRef, 0);
+
+                                                refNums.add(curRefNum);
+
+                                            }
+
+                                            curRefNum.number = curRefNum.number + productCell.productNumber;
+
+                                        }
+
+                                    }
+
                                     adapter.notifyDataSetChanged();
+
+                                    if (cell != null) {
+
+                                        int curDecMod = refNums.size() % 100;
+                                        int curMod = refNums.size() % 10;
+
+                                        String sMod = "";
+
+                                        if (curDecMod > 20 || curDecMod < 10) {
+                                            sMod = curMod == 1 ? "" : (curMod > 5 ? "а" : "ов");
+                                        } else {
+                                            sMod = "ов";
+                                        }
+
+                                        int sum = 0;
+                                        for (RefNum refNum: refNums) {
+                                            sum = sum + refNum.number;
+                                        }
+
+                                        tvProduct.setText(cell.name + ", "
+                                                + String.valueOf(refNums.size()) + " товар" + sMod + ", " + sum + " шт");
+                                    }
                                 }
                             });
                 } else {

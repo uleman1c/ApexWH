@@ -34,21 +34,27 @@ import java.util.UUID;
 public class InventarizationProductFragment extends ScanListFragment<ProductCell> {
 
     class RefNum {
-        public RefNum(String ref, int number) {
+        public RefNum(String ref) {
             this.ref = ref;
-            this.number = number;
+            this.number = 0;
+            this.scanned = 0;
         }
 
         public String ref;
-        public int number;
+        public int number, scanned;
 
     }
 
-    TextView tvProduct;
+    TextView tvProduct, tvCell, tvInvented;
 
     Cell cell;
 
     ArrayList<ProductCell> accProductCells;
+
+    ArrayList<RefNum> refNums;
+    int sumRefNums, sumRefScanned, sumRefScannedProducts;
+
+    String modRefNums;
 
     int productNumber, productUnitNumber, containerNumber;
 
@@ -101,7 +107,7 @@ public class InventarizationProductFragment extends ScanListFragment<ProductCell
 
                                     }
 
-                                    ArrayList<RefNum> refNums = new ArrayList<>();
+                                    refNums = new ArrayList<>();
 
                                     for (ProductCell productCell:accProductCells) {
 
@@ -123,7 +129,7 @@ public class InventarizationProductFragment extends ScanListFragment<ProductCell
 
                                             if (curRefNum == null){
 
-                                                curRefNum = new RefNum(curRef, 0);
+                                                curRefNum = new RefNum(curRef);
 
                                                 refNums.add(curRefNum);
 
@@ -142,21 +148,26 @@ public class InventarizationProductFragment extends ScanListFragment<ProductCell
                                         int curDecMod = refNums.size() % 100;
                                         int curMod = refNums.size() % 10;
 
-                                        String sMod = "";
+                                        modRefNums = "";
 
                                         if (curDecMod > 20 || curDecMod < 10) {
-                                            sMod = curMod == 1 ? "" : (curMod > 5 ? "а" : "ов");
+                                            modRefNums = curMod == 1 ? "" : (curMod > 5 ? "а" : "ов");
                                         } else {
-                                            sMod = "ов";
+                                            modRefNums = "ов";
                                         }
 
-                                        int sum = 0;
+                                        sumRefNums = 0;
                                         for (RefNum refNum: refNums) {
-                                            sum = sum + refNum.number;
+                                            sumRefNums = sumRefNums + refNum.number;
                                         }
 
-                                        tvProduct.setText(cell.name + ", "
-                                                + String.valueOf(refNums.size()) + " товар" + sMod + ", " + sum + " шт");
+                                        tvCell.setText(cell.name);
+
+                                        sumRefScanned = 0;
+                                        sumRefScannedProducts = 0;
+
+                                        tvProduct.setText(String.valueOf(refNums.size()) + " товар" + modRefNums + ", " + sumRefNums + " шт");
+                                        tvInvented.setText(sumRefScanned + " товаров, " + sumRefScanned + " шт отсканировано");
                                     }
                                 }
                             });
@@ -195,6 +206,36 @@ public class InventarizationProductFragment extends ScanListFragment<ProductCell
 
                                             ProductCell productCell = new ProductCell(product, productNumber, productUnitNumber, cell, sourceContainer, 0, characteristic);
 
+                                            String curRef = productCell.product.ref;
+
+                                            Boolean found = false;
+
+                                            RefNum curRefNum = null;
+
+                                            for (int j = 0; j < refNums.size() && !found; j++) {
+                                                found = refNums.get(j).ref.equals(curRef);
+
+                                                if (found) {
+                                                    curRefNum = refNums.get(j);
+                                                }
+                                            }
+
+                                            if (curRefNum != null){
+
+                                                if (curRefNum.scanned == 0){
+                                                    sumRefScannedProducts = sumRefScannedProducts + 1;
+                                                }
+
+                                                curRefNum.scanned = curRefNum.scanned + productCell.productNumber;
+
+                                                sumRefScanned = sumRefScanned + productCell.productNumber;
+
+                                                tvInvented.setText(sumRefScanned + " товаров, " + sumRefScanned + " шт отсканировано");
+                                            }
+
+
+
+
                                             items.add(0, productCell);
 
                                         }
@@ -231,6 +272,36 @@ public class InventarizationProductFragment extends ScanListFragment<ProductCell
                                                             curPC.productNumber = arguments.getInt("quantity");
                                                             curPC.productUnitNumber = arguments.getInt("quantity");
                                                             adapter.notifyDataSetChanged();
+
+                                                            String curRef = curPC.product.ref;
+
+                                                            Boolean found1 = false;
+
+                                                            RefNum curRefNum = null;
+
+                                                            for (int j = 0; j < refNums.size() && !found1; j++) {
+                                                                found1 = refNums.get(j).ref.equals(curRef);
+
+                                                                if (found1) {
+                                                                    curRefNum = refNums.get(j);
+                                                                }
+                                                            }
+
+                                                            if (curRefNum != null){
+
+                                                                if (curRefNum.scanned == 0){
+                                                                    sumRefScannedProducts = sumRefScannedProducts + 1;
+                                                                }
+
+                                                                curRefNum.scanned = curRefNum.scanned + productCell.productNumber;
+
+                                                                sumRefScanned = sumRefScanned + productCell.productNumber;
+
+                                                                tvInvented.setText(sumRefScannedProducts + " товаров, " + sumRefScanned + " шт отсканировано");
+                                                            }
+
+
+
 
                                                         }
 
@@ -333,6 +404,8 @@ public class InventarizationProductFragment extends ScanListFragment<ProductCell
                 });
 
                 tvProduct = root.findViewById(R.id.tvProduct);
+                tvCell = root.findViewById(R.id.tvCell);
+                tvInvented = root.findViewById(R.id.tvInvented);
 
                 getAdapter().setInitViewsMaker(new DataAdapter.InitViewsMaker() {
                     @Override

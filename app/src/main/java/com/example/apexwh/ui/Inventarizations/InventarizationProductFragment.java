@@ -248,14 +248,34 @@ public class InventarizationProductFragment extends ScanListFragment<ProductCell
 
                                         Characteristic characteristic = Characteristic.FromJson(JsonProcs.getJsonObjectFromJsonObject(container, "characteristic"));
 
-                                        ProductCell productCell = new ProductCell(product, 0, 0, cell, new Container("", ""), 0, characteristic);
+                                        Boolean foundPC = false;
 
-                                        items.add(0, productCell);
+                                        ProductCell productCell = null;
 
-                                        adapter.notifyDataSetChanged();
+                                        for (int i = 0; i < items.size() && !foundPC; i++) {
+
+                                            ProductCell curPC = ((ProductCell) items.get(i));
+
+                                            foundPC = curPC.product.ref.equals(product.ref) && curPC.characteristic.ref.equals(characteristic.ref);
+
+                                            if (foundPC) {
+                                                productCell = curPC;
+                                            }
+                                        }
+
+                                        if (!foundPC){
+
+                                            productCell = new ProductCell(product, 0, 0, cell, new Container("", ""), 0, characteristic);
+
+                                            items.add(0, productCell);
+
+                                            adapter.notifyDataSetChanged();
+
+                                        }
 
                                         args.putString("productRef", product.ref);
                                         args.putString("characteristicRef", characteristic.ref);
+                                        args.putInt("productNumber", productCell.productNumber);
 
                                         Dialogs.showInputQuantity(getContext(), null, getActivity(), arguments -> {
 
@@ -269,8 +289,8 @@ public class InventarizationProductFragment extends ScanListFragment<ProductCell
 
                                                         if (found){
 
-                                                            curPC.productNumber = arguments.getInt("quantity");
-                                                            curPC.productUnitNumber = arguments.getInt("quantity");
+                                                            curPC.productNumber = curPC.productNumber + arguments.getInt("quantity");
+                                                            curPC.productUnitNumber = curPC.productNumber + arguments.getInt("quantity");
 
                                                             String curRef = curPC.product.ref;
 
@@ -292,11 +312,11 @@ public class InventarizationProductFragment extends ScanListFragment<ProductCell
                                                                     sumRefScannedProducts = sumRefScannedProducts + 1;
                                                                 }
 
-                                                                curRefNum.scanned = curRefNum.scanned + productCell.productNumber;
+                                                                curRefNum.scanned = curRefNum.scanned + arguments.getInt("productNumber");
 
                                                                 curPC.scanned = curRefNum.number;
 
-                                                                sumRefScanned = sumRefScanned + productCell.productNumber;
+                                                                sumRefScanned = sumRefScanned + arguments.getInt("productNumber");
 
                                                                 tvInvented.setText(sumRefScannedProducts + " товаров, " + sumRefScanned + " шт отсканировано");
                                                             }
@@ -433,7 +453,27 @@ public class InventarizationProductFragment extends ScanListFragment<ProductCell
 
                 getAdapter().setOnClickListener(document -> {});
 
-                getAdapter().setOnLongClickListener(document -> {});
+                getAdapter().setOnLongClickListener(document -> {
+
+                    Bundle bundle = new Bundle();
+                    bundle.putString("productRef", ((ProductCell) document).product.ref);
+                    bundle.putString("productName", ((ProductCell) document).product.name);
+                    bundle.putString("characteristicRef", ((ProductCell) document).characteristic.ref);
+                    bundle.putString("characteristicName", ((ProductCell) document).characteristic.description);
+                    bundle.putInt("index", items.indexOf(document));
+                    Dialogs.showQuestionYesNoCancel(getContext(), getActivity(), new BundleMethodInterface() {
+                        @Override
+                        public void callMethod(Bundle arguments) {
+
+                            items.remove(arguments.getInt("index"));
+
+                            adapter.notifyDataSetChanged();
+
+                        }
+                    }, bundle, "Удалить", "Удалить " + ((ProductCell) document).product.name
+                        + ", " + ((ProductCell) document).characteristic.description);
+
+                });
 
 
 

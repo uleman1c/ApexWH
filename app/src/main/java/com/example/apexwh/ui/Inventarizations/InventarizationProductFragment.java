@@ -60,7 +60,7 @@ public class InventarizationProductFragment extends ScanListFragment<ProductCell
 
     public InventarizationProductFragment() {
 
-        super(R.layout.fragment_scan_invent_list, R.layout.product_cell_list_item);
+        super(R.layout.fragment_scan_invent_list, R.layout.product_cell_scanned_list_item);
 
         accProductCells = new ArrayList<>();
 
@@ -271,7 +271,6 @@ public class InventarizationProductFragment extends ScanListFragment<ProductCell
 
                                                             curPC.productNumber = arguments.getInt("quantity");
                                                             curPC.productUnitNumber = arguments.getInt("quantity");
-                                                            adapter.notifyDataSetChanged();
 
                                                             String curRef = curPC.product.ref;
 
@@ -295,11 +294,14 @@ public class InventarizationProductFragment extends ScanListFragment<ProductCell
 
                                                                 curRefNum.scanned = curRefNum.scanned + productCell.productNumber;
 
+                                                                curPC.scanned = curRefNum.number;
+
                                                                 sumRefScanned = sumRefScanned + productCell.productNumber;
 
                                                                 tvInvented.setText(sumRefScannedProducts + " товаров, " + sumRefScanned + " шт отсканировано");
                                                             }
 
+                                                            adapter.notifyDataSetChanged();
 
 
 
@@ -414,6 +416,7 @@ public class InventarizationProductFragment extends ScanListFragment<ProductCell
                         textViews.add(itemView.findViewById(R.id.tvNumberDate));
                         textViews.add(itemView.findViewById(R.id.tvDescription));
                         textViews.add(itemView.findViewById(R.id.tvStatus));
+                        textViews.add(itemView.findViewById(R.id.tvNumber));
                     }
                 });
 
@@ -424,6 +427,7 @@ public class InventarizationProductFragment extends ScanListFragment<ProductCell
                         ((TextView) holder.getTextViews().get(0)).setText(item.product.artikul + " " + item.product.name);
                         ((TextView) holder.getTextViews().get(1)).setText(item.container.name + " " + item.containerNumber + " шт");
                         ((TextView) holder.getTextViews().get(2)).setText(item.productNumber + " шт (" + item.productUnitNumber + " упак)");
+                        ((TextView) holder.getTextViews().get(3)).setText("по учету " + item.scanned + " шт");
                     }
                 });
 

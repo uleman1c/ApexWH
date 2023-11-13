@@ -12,7 +12,7 @@ public class ProductCell {
     public int productUnitNumber;
     public Cell cell;
     public Container container;
-    public int containerNumber;
+    public int containerNumber, scanned;
 
     public Characteristic characteristic;
 
@@ -23,6 +23,7 @@ public class ProductCell {
         this.cell = cell;
         this.container = container;
         this.containerNumber = containerNumber;
+        this.scanned = 0;
     }
 
     public ProductCell(Product product, int productNumber, int productUnitNumber, Cell cell, Container container, int containerNumber, Characteristic characteristic) {
@@ -33,6 +34,7 @@ public class ProductCell {
         this.container = container;
         this.containerNumber = containerNumber;
         this.characteristic = characteristic;
+        this.scanned = 0;
     }
 
     public static ProductCell FromJson(JSONObject task_item) {

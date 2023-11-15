@@ -6,9 +6,9 @@ import org.json.JSONObject;
 
 public class Ttn {
 
-    public String ref, name, description, number, date, car, attach, comment;
+    public String ref, name, description, number, date, car, attach, comment, status;
 
-    public Ttn(String ref, String name, String description, String number, String date, String car, String attach, String comment) {
+    public Ttn(String ref, String name, String description, String number, String date, String car, String attach, String comment, String status) {
         this.ref = ref;
         this.name = name;
         this.description = description;
@@ -17,6 +17,7 @@ public class Ttn {
         this.car = car;
         this.attach = attach;
         this.comment = comment;
+        this.status = status;
     }
 
     public static Ttn FromJson(JSONObject task_item) {
@@ -29,8 +30,9 @@ public class Ttn {
         String car = JsonProcs.getStringFromJSON(task_item, "car");
         String attach = JsonProcs.getStringFromJSON(task_item, "attach");
         String comment = JsonProcs.getStringFromJSON(task_item, "comment");
+        String status = JsonProcs.getStringFromJSON(task_item, "status");
 
-        return new Ttn(ref, name, description, number, date, car, attach, comment);
+        return new Ttn(ref, name, description, number, date, car, attach, comment, status);
 
 
     }

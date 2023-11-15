@@ -2,6 +2,7 @@ package com.example.apexwh.ui.car;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -126,44 +127,6 @@ public class CarFragment extends ListFragment<Ttn> {
                             });
                 }
 
-
-
-
-//                HttpClient httpClient = new HttpClient(getContext());
-//
-//                httpClient.request_get("/hs/dta/obj?request=getIncomeUpr&warehouse=" + getWarehouseId() + "&filter=" + filter, new HttpRequestJsonObjectInterface() {
-//                    @Override
-//                    public void setProgressVisibility(int visibility) {
-//
-//                        progressBar.setVisibility(visibility);
-//
-//                    }
-//
-//                    @Override
-//                    public void processResponse(JSONObject jsonObjectResponse) {
-//
-//                        JSONArray jsonArrayResponses = JsonProcs.getJsonArrayFromJsonObject(jsonObjectResponse, "responses");
-//
-//                        JSONObject jsonObjectItem = JsonProcs.getItemJSONArray(jsonArrayResponses, 0);
-//
-//                        JSONArray jsonArrayObjects = JsonProcs.getJsonArrayFromJsonObject(jsonObjectItem, "IncomeUpr");
-//
-//                        for (int j = 0; j < jsonArrayObjects.length(); j++) {
-//
-//                            JSONObject objectItem = JsonProcs.getItemJSONArray(jsonArrayObjects, j);
-//
-//                            items.add(Ttn.FromJson(objectItem));
-//
-//                        }
-//
-//                        adapter.notifyDataSetChanged();
-//
-//                    }
-//
-//                });
-
-
-
             }
         });
 
@@ -189,8 +152,21 @@ public class CarFragment extends ListFragment<Ttn> {
 
                         ((TextView) holder.getTextViews().get(0)).setText(SpanText.GetFilteredString(document.description, filterString));
                         ((TextView) holder.getTextViews().get(1)).setText(SpanText.GetFilteredString(document.car
-                                + (document.attach.isEmpty() ? "" : " прицеп " + document.attach), filterString));
-                        ((TextView) holder.getTextViews().get(2)).setText(SpanText.GetFilteredString(document.comment, filterString));
+                                + (document.attach.isEmpty() ? "" : " прицеп " + document.attach)
+                                + (document.comment.isEmpty() ? "" : ", " + document.comment), filterString));
+                        TextView tvStatus = ((TextView) holder.getTextViews().get(2));
+
+                        tvStatus.setText(document.status);
+
+                        if (document.status.equals("В процессе приемки")){
+                            tvStatus.setBackgroundColor(Color.parseColor("#FFEB3B"));
+                        }
+                        else if (document.status.equals("Принято")){
+                            tvStatus.setBackgroundColor(Color.parseColor("#8BC34A"));
+                        }
+
+
+
                     }
                 });
 
@@ -208,8 +184,21 @@ public class CarFragment extends ListFragment<Ttn> {
                         @Override
                         public void callMethod(Bundle arguments) {
 
-                            Navigation.findNavController(getActivity(), R.id.nav_host_fragment_content_main)
-                                    .navigate(R.id.nav_acceptmentProductsFragment, arguments);
+                            progressBar.setVisibility(View.VISIBLE);
+
+                            RequestToServer.executeRequestUW(getContext(), Request.Method.GET, "setErpSkladIncomeTtnAccepting",
+                                    "ref=" + arguments.getString("ref")
+                                    + "&status=accepting", new JSONObject(), 1,
+                                    new RequestToServer.ResponseResultInterface() {
+                                        @Override
+                                        public void onResponse(JSONObject response) {
+
+                                            progressBar.setVisibility(View.GONE);
+
+                                            Navigation.findNavController(getActivity(), R.id.nav_host_fragment_content_main)
+                                                    .navigate(R.id.nav_acceptmentProductsFragment, arguments);
+                                        }
+                                    });
 
                         }
                     }, bundle, "Начать приемку " + curOutcome.car + "?", "Начать приемку");
@@ -219,6 +208,40 @@ public class CarFragment extends ListFragment<Ttn> {
                 getAdapter().setOnLongClickListener(new DataAdapter.OnLongClickListener<Ttn>() {
                     @Override
                     public void onLongItemClick(Ttn document) {
+
+                        if (document.status.equals("В процессе приемки")){
+
+                            Bundle bundle = new Bundle();
+                            bundle.putString("name", document.name);
+                            bundle.putString("ref", document.ref);
+                            bundle.putString("mode", "ttn");
+                            bundle.putString("order", "");
+
+                            Dialogs.showQuestionYesNoCancel(getContext(), getActivity(), new BundleMethodInterface() {
+                                @Override
+                                public void callMethod(Bundle arguments) {
+
+                                    progressBar.setVisibility(View.VISIBLE);
+
+                                    RequestToServer.executeRequestUW(getContext(), Request.Method.GET, "setErpSkladIncomeTtnAccepting",
+                                            "ref=" + arguments.getString("ref")
+                                                    + "&status=accepted", new JSONObject(), 1,
+                                            new RequestToServer.ResponseResultInterface() {
+                                                @Override
+                                                public void onResponse(JSONObject response) {
+
+                                                    progressBar.setVisibility(View.GONE);
+
+                                                    updateList("");
+                                                }
+                                            });
+
+                                }
+                            }, bundle, "Завершить приемку " + document.car + "?", "Завершить приемку");
+
+
+
+                        };
 
                     }
                 });

@@ -134,44 +134,6 @@ public class AcceptmentFragment extends ListFragment<Acceptment> {
                             });
                 }
 
-
-
-
-//                HttpClient httpClient = new HttpClient(getContext());
-//
-//                httpClient.request_get("/hs/dta/obj?request=getIncomeUpr&warehouse=" + getWarehouseId() + "&filter=" + filter, new HttpRequestJsonObjectInterface() {
-//                    @Override
-//                    public void setProgressVisibility(int visibility) {
-//
-//                        progressBar.setVisibility(visibility);
-//
-//                    }
-//
-//                    @Override
-//                    public void processResponse(JSONObject jsonObjectResponse) {
-//
-//                        JSONArray jsonArrayResponses = JsonProcs.getJsonArrayFromJsonObject(jsonObjectResponse, "responses");
-//
-//                        JSONObject jsonObjectItem = JsonProcs.getItemJSONArray(jsonArrayResponses, 0);
-//
-//                        JSONArray jsonArrayObjects = JsonProcs.getJsonArrayFromJsonObject(jsonObjectItem, "IncomeUpr");
-//
-//                        for (int j = 0; j < jsonArrayObjects.length(); j++) {
-//
-//                            JSONObject objectItem = JsonProcs.getItemJSONArray(jsonArrayObjects, j);
-//
-//                            items.add(Acceptment.FromJson(objectItem));
-//
-//                        }
-//
-//                        adapter.notifyDataSetChanged();
-//
-//                    }
-//
-//                });
-
-
-
             }
         });
 

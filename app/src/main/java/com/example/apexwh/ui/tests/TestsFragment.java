@@ -183,6 +183,7 @@ public class TestsFragment extends ListFragment<Outcome>{
 
                         Bundle bundle = new Bundle();
                         bundle.putString("name", curOutcome.orderType);
+                        bundle.putString("type", curOutcome.orderType);
                         bundle.putString("ref", curOutcome.order);
                         bundle.putString("order", "");
 

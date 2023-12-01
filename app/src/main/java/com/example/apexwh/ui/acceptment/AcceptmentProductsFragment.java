@@ -448,7 +448,9 @@ public class AcceptmentProductsFragment extends ScanListFragment<ProductCellCont
                 doAccept(arguments);
 
             }
-        }, bundle, "Введите количество " + foundProduct.product.artikul + " " + foundProduct.product.name, "Ввод количества");
+        }, bundle, "Введите количество " + foundProduct.product.artikul + " " + foundProduct.product.name
+                + (foundProduct.characteristic.description.isEmpty() || foundProduct.characteristic.description.equals("Основная характеристика") ? ""
+                    : ", " + foundProduct.characteristic.description) , "Ввод количества");
     }
 
     void doAccept(Bundle bundle) {

@@ -165,4 +165,14 @@ public class JsonProcs {
         }
 
     }
+
+    public static void putToJsonObject(JSONObject jsonObject, String key, Boolean value) {
+
+        try {
+            jsonObject.put(key, value);
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
+        }
+
+    }
 }

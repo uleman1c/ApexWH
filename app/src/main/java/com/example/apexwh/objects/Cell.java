@@ -48,4 +48,25 @@ public class Cell {
 
 
     }
+
+    public static JSONObject toJson(Cell cell) {
+
+        JSONObject jsonObject = new JSONObject();
+
+        JsonProcs.putToJsonObject(jsonObject,"ref", cell.ref);
+        JsonProcs.putToJsonObject(jsonObject,"name", cell.name);
+        JsonProcs.putToJsonObject(jsonObject,"line", cell.line);
+        JsonProcs.putToJsonObject(jsonObject,"section", cell.section);
+        JsonProcs.putToJsonObject(jsonObject,"rack", cell.rack);
+        JsonProcs.putToJsonObject(jsonObject,"level", cell.level);
+        JsonProcs.putToJsonObject(jsonObject,"position", cell.position);
+        JsonProcs.putToJsonObject(jsonObject,"order", cell.order);
+        JsonProcs.putToJsonObject(jsonObject,"main", cell.main);
+
+        return jsonObject;
+    }
+
+
+
+
 }

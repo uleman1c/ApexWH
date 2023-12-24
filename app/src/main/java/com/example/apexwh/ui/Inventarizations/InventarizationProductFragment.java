@@ -15,6 +15,7 @@ import com.example.apexwh.RequestToServer;
 import com.example.apexwh.objects.Cell;
 import com.example.apexwh.objects.Characteristic;
 import com.example.apexwh.objects.Container;
+import com.example.apexwh.objects.InventTask;
 import com.example.apexwh.objects.Product;
 import com.example.apexwh.objects.ProductCell;
 import com.example.apexwh.ui.BundleMethodInterface;
@@ -57,6 +58,8 @@ public class InventarizationProductFragment extends ScanListFragment<ProductCell
     String modRefNums;
 
     int productNumber, productUnitNumber, containerNumber;
+
+    InventTask inventTask;
 
     public InventarizationProductFragment() {
 
@@ -351,6 +354,14 @@ public class InventarizationProductFragment extends ScanListFragment<ProductCell
             @Override
             public void execute(View root, NavController navController) {
 
+                if (arguments != null){
+
+                    JSONObject jsonObject = JsonProcs.getJSONObjectFromString(arguments.getString("inventTask"));
+
+                    inventTask = InventTask.FromJsonObject(jsonObject);
+
+                }
+
                 root.findViewById(R.id.btnSaveInvent).setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -376,6 +387,9 @@ public class InventarizationProductFragment extends ScanListFragment<ProductCell
                                 JSONObject jsonObject = new JSONObject();
                                 JsonProcs.putToJsonObject(jsonObject,"ref", UUID.randomUUID().toString());
                                 JsonProcs.putToJsonObject(jsonObject,"cellRef", cell.ref);
+                                if (inventTask != null){
+                                    JsonProcs.putToJsonObject(jsonObject,"inventTaskRef", inventTask.document.ref);
+                                }
                                 JsonProcs.putToJsonObject(jsonObject, "items", jsonArray.toString());
 
 

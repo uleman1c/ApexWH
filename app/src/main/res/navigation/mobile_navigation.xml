@@ -242,5 +242,9 @@
         android:id="@+id/nav_inventarizationProductFragment"
         android:name="com.example.apexwh.ui.Inventarizations.InventarizationProductFragment"
         android:label="Инвентаризация ячейки" />
+    <fragment
+        android:id="@+id/inventTasksFragment"
+        android:name="com.example.apexwh.ui.invent_tasks.InventTasksFragment"
+        android:label="Задания на пересчет ячеек" />
 
 </navigation>

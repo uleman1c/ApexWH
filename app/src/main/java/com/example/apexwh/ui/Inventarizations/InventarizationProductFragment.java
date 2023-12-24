@@ -61,6 +61,8 @@ public class InventarizationProductFragment extends ScanListFragment<ProductCell
 
     InventTask inventTask;
 
+
+
     public InventarizationProductFragment() {
 
         super(R.layout.fragment_scan_invent_list, R.layout.product_cell_scanned_list_item);
@@ -73,107 +75,7 @@ public class InventarizationProductFragment extends ScanListFragment<ProductCell
 
                 if (cell == null) {
 
-                    items.clear();
-
-                    RequestToServer.executeRequestUW(getContext(), Request.Method.GET, "getErpSkladCellContent", "filter=" + filter, new JSONObject(), 1,
-                            new RequestToServer.ResponseResultInterface() {
-                                @Override
-                                public void onResponse(JSONObject response) {
-
-                                    progressBar.setVisibility(View.GONE);
-
-                                    JSONArray responseItems = JsonProcs.getJsonArrayFromJsonObject(response, "ErpSkladCellContent");
-
-                                    tvProduct.setText(filter + " не найден");
-
-                                    for (int j = 0; j < responseItems.length(); j++) {
-
-                                        JSONObject objectItem = JsonProcs.getItemJSONArray(responseItems, j);
-
-                                        cell = Cell.FromJson(JsonProcs.getJsonObjectFromJsonObject(objectItem, "cell"));
-
-                                        productNumber = JsonProcs.getIntegerFromJSON(objectItem, "productNumber");
-                                        productUnitNumber = JsonProcs.getIntegerFromJSON(objectItem, "productUnitNumber");
-                                        containerNumber = JsonProcs.getIntegerFromJSON(objectItem, "containerNumber");
-
-                                        JSONArray products = JsonProcs.getJsonArrayFromJsonObject(objectItem, "products");
-
-                                        accProductCells.clear();
-
-                                        for (int k = 0; k < products.length(); k++) {
-
-                                            ProductCell productCell = ProductCell.FromJson(JsonProcs.getItemJSONArray(products, k));
-
-                                            accProductCells.add(productCell);
-                                        }
-
-
-                                    }
-
-                                    refNums = new ArrayList<>();
-
-                                    for (ProductCell productCell:accProductCells) {
-
-                                        if (productCell.productNumber > 0) {
-
-                                            String curRef = productCell.product.ref;
-
-                                            Boolean found = false;
-
-                                            RefNum curRefNum = null;
-
-                                            for (int i = 0; i < refNums.size() && !found; i++) {
-                                                found = refNums.get(i).ref.equals(curRef);
-
-                                                if (found) {
-                                                    curRefNum = refNums.get(i);
-                                                }
-                                            }
-
-                                            if (curRefNum == null){
-
-                                                curRefNum = new RefNum(curRef);
-
-                                                refNums.add(curRefNum);
-
-                                            }
-
-                                            curRefNum.number = curRefNum.number + productCell.productNumber;
-
-                                        }
-
-                                    }
-
-                                    adapter.notifyDataSetChanged();
-
-                                    if (cell != null) {
-
-                                        int curDecMod = refNums.size() % 100;
-                                        int curMod = refNums.size() % 10;
-
-                                        modRefNums = "";
-
-                                        if (curDecMod > 20 || curDecMod < 10) {
-                                            modRefNums = curMod == 1 ? "" : (curMod > 5 ? "а" : "ов");
-                                        } else {
-                                            modRefNums = "ов";
-                                        }
-
-                                        sumRefNums = 0;
-                                        for (RefNum refNum: refNums) {
-                                            sumRefNums = sumRefNums + refNum.number;
-                                        }
-
-                                        tvCell.setText(cell.name);
-
-                                        sumRefScanned = 0;
-                                        sumRefScannedProducts = 0;
-
-                                        tvProduct.setText(String.valueOf(refNums.size()) + " товар" + modRefNums + ", " + sumRefNums + " шт");
-                                        tvInvented.setText(sumRefScanned + " товаров, " + sumRefScanned + " шт отсканировано");
-                                    }
-                                }
-                            });
+                    updateCell(items, progressBar, adapter, filter);
                 } else {
 
                     RequestToServer.executeRequestUW(getContext(), Request.Method.GET, "getErpSkladContainersProducts", "filter=" + filter, new JSONObject(),
@@ -354,13 +256,6 @@ public class InventarizationProductFragment extends ScanListFragment<ProductCell
             @Override
             public void execute(View root, NavController navController) {
 
-                if (arguments != null){
-
-                    JSONObject jsonObject = JsonProcs.getJSONObjectFromString(arguments.getString("inventTask"));
-
-                    inventTask = InventTask.FromJsonObject(jsonObject);
-
-                }
 
                 root.findViewById(R.id.btnSaveInvent).setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -489,12 +384,127 @@ public class InventarizationProductFragment extends ScanListFragment<ProductCell
 
                 });
 
+                if (arguments != null){
+
+                    JSONObject jsonObject = JsonProcs.getJSONObjectFromString(arguments.getString("inventTask"));
+
+                    inventTask = InventTask.FromJsonObject(jsonObject);
+
+                    cell = inventTask.cell;
+
+                    updateCell(items, progressBar, adapter, "");
+
+                }
 
 
             }
         });
 
 
+    }
+
+    private void updateCell(ArrayList items, ProgressBar progressBar, DataAdapter adapter, String filter) {
+        items.clear();
+
+        RequestToServer.executeRequestUW(getContext(), Request.Method.GET, "getErpSkladCellContent", "filter=" + filter, new JSONObject(), 1,
+                new RequestToServer.ResponseResultInterface() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+
+                        progressBar.setVisibility(View.GONE);
+
+                        JSONArray responseItems = JsonProcs.getJsonArrayFromJsonObject(response, "ErpSkladCellContent");
+
+                        tvProduct.setText(filter + " не найден");
+
+                        for (int j = 0; j < responseItems.length(); j++) {
+
+                            JSONObject objectItem = JsonProcs.getItemJSONArray(responseItems, j);
+
+                            cell = Cell.FromJson(JsonProcs.getJsonObjectFromJsonObject(objectItem, "cell"));
+
+                            productNumber = JsonProcs.getIntegerFromJSON(objectItem, "productNumber");
+                            productUnitNumber = JsonProcs.getIntegerFromJSON(objectItem, "productUnitNumber");
+                            containerNumber = JsonProcs.getIntegerFromJSON(objectItem, "containerNumber");
+
+                            JSONArray products = JsonProcs.getJsonArrayFromJsonObject(objectItem, "products");
+
+                            accProductCells.clear();
+
+                            for (int k = 0; k < products.length(); k++) {
+
+                                ProductCell productCell = ProductCell.FromJson(JsonProcs.getItemJSONArray(products, k));
+
+                                accProductCells.add(productCell);
+                            }
+
+
+                        }
+
+                        refNums = new ArrayList<>();
+
+                        for (ProductCell productCell:accProductCells) {
+
+                            if (productCell.productNumber > 0) {
+
+                                String curRef = productCell.product.ref;
+
+                                Boolean found = false;
+
+                                RefNum curRefNum = null;
+
+                                for (int i = 0; i < refNums.size() && !found; i++) {
+                                    found = refNums.get(i).ref.equals(curRef);
+
+                                    if (found) {
+                                        curRefNum = refNums.get(i);
+                                    }
+                                }
+
+                                if (curRefNum == null){
+
+                                    curRefNum = new RefNum(curRef);
+
+                                    refNums.add(curRefNum);
+
+                                }
+
+                                curRefNum.number = curRefNum.number + productCell.productNumber;
+
+                            }
+
+                        }
+
+                        adapter.notifyDataSetChanged();
+
+                        if (cell != null) {
+
+                            int curDecMod = refNums.size() % 100;
+                            int curMod = refNums.size() % 10;
+
+                            modRefNums = "";
+
+                            if (curDecMod > 20 || curDecMod < 10) {
+                                modRefNums = curMod == 1 ? "" : (curMod > 5 ? "а" : "ов");
+                            } else {
+                                modRefNums = "ов";
+                            }
+
+                            sumRefNums = 0;
+                            for (RefNum refNum: refNums) {
+                                sumRefNums = sumRefNums + refNum.number;
+                            }
+
+                            tvCell.setText(cell.name);
+
+                            sumRefScanned = 0;
+                            sumRefScannedProducts = 0;
+
+                            tvProduct.setText(String.valueOf(refNums.size()) + " товар" + modRefNums + ", " + sumRefNums + " шт");
+                            tvInvented.setText(sumRefScanned + " товаров, " + sumRefScanned + " шт отсканировано");
+                        }
+                    }
+                });
     }
 
 

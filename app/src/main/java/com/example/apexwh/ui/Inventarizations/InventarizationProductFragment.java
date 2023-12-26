@@ -388,14 +388,18 @@ public class InventarizationProductFragment extends ScanListFragment<ProductCell
 
                 if (arguments != null){
 
-                    JSONObject jsonObject = JsonProcs.getJSONObjectFromString(arguments.getString("inventTask"));
+                    String jo = arguments.getString("inventTask");
 
-                    inventTask = InventTask.FromJsonObject(jsonObject);
+                    if (jo != null && !jo.isEmpty()) {
 
-                    cell = inventTask.cell;
+                        JSONObject jsonObject = JsonProcs.getJSONObjectFromString(jo);
 
-                    updateCell(items, progressBar, adapter, "");
+                        inventTask = InventTask.FromJsonObject(jsonObject);
 
+                        cell = inventTask.cell;
+
+                        updateCell(items, progressBar, adapter, "");
+                    }
                 }
 
 

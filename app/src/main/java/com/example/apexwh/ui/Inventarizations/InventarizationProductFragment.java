@@ -76,6 +76,7 @@ public class InventarizationProductFragment extends ScanListFragment<ProductCell
                 if (cell == null) {
 
                     updateCell(items, progressBar, adapter, filter);
+
                 } else {
 
                     RequestToServer.executeRequestUW(getContext(), Request.Method.GET, "getErpSkladContainersProducts", "filter=" + filter, new JSONObject(),
@@ -94,58 +95,59 @@ public class InventarizationProductFragment extends ScanListFragment<ProductCell
 
                                     if (type.equals("Контейнер")){
 
-                                        Container sourceContainer = Container.FromJson(container);
+                                        if (inventTask == null) {
 
-                                        JSONArray products = JsonProcs.getJsonArrayFromJsonObject(container, "products");
+                                            Container sourceContainer = Container.FromJson(container);
 
-                                        for (int i = 0; i < products.length(); i++) {
+                                            JSONArray products = JsonProcs.getJsonArrayFromJsonObject(container, "products");
 
-                                            JSONObject jProduct = JsonProcs.getItemJSONArray(products, i);
+                                            for (int i = 0; i < products.length(); i++) {
 
-                                            Product product = Product.FromJson(JsonProcs.getJsonObjectFromJsonObject(jProduct, "product"));
+                                                JSONObject jProduct = JsonProcs.getItemJSONArray(products, i);
 
-                                            Characteristic characteristic = Characteristic.FromJson(JsonProcs.getJsonObjectFromJsonObject(jProduct, "characteristic"));
+                                                Product product = Product.FromJson(JsonProcs.getJsonObjectFromJsonObject(jProduct, "product"));
 
-                                            int productNumber = JsonProcs.getIntegerFromJSON(jProduct, "quantity");
-                                            int productUnitNumber = JsonProcs.getIntegerFromJSON(jProduct, "unitQuantity");
+                                                Characteristic characteristic = Characteristic.FromJson(JsonProcs.getJsonObjectFromJsonObject(jProduct, "characteristic"));
 
-                                            ProductCell productCell = new ProductCell(product, productNumber, productUnitNumber, cell, sourceContainer, 0, characteristic);
+                                                int productNumber = JsonProcs.getIntegerFromJSON(jProduct, "quantity");
+                                                int productUnitNumber = JsonProcs.getIntegerFromJSON(jProduct, "unitQuantity");
 
-                                            String curRef = productCell.product.ref;
+                                                ProductCell productCell = new ProductCell(product, productNumber, productUnitNumber, cell, sourceContainer, 0, characteristic);
 
-                                            Boolean found = false;
+                                                String curRef = productCell.product.ref;
 
-                                            RefNum curRefNum = null;
+                                                Boolean found = false;
 
-                                            for (int j = 0; j < refNums.size() && !found; j++) {
-                                                found = refNums.get(j).ref.equals(curRef);
+                                                RefNum curRefNum = null;
 
-                                                if (found) {
-                                                    curRefNum = refNums.get(j);
-                                                }
-                                            }
+                                                for (int j = 0; j < refNums.size() && !found; j++) {
+                                                    found = refNums.get(j).ref.equals(curRef);
 
-                                            if (curRefNum != null){
-
-                                                if (curRefNum.scanned == 0){
-                                                    sumRefScannedProducts = sumRefScannedProducts + 1;
+                                                    if (found) {
+                                                        curRefNum = refNums.get(j);
+                                                    }
                                                 }
 
-                                                curRefNum.scanned = curRefNum.scanned + productCell.productNumber;
+                                                if (curRefNum != null) {
 
-                                                sumRefScanned = sumRefScanned + productCell.productNumber;
+                                                    if (curRefNum.scanned == 0) {
+                                                        sumRefScannedProducts = sumRefScannedProducts + 1;
+                                                    }
 
-                                                tvInvented.setText(sumRefScanned + " товаров, " + sumRefScanned + " шт отсканировано");
+                                                    curRefNum.scanned = curRefNum.scanned + productCell.productNumber;
+
+                                                    sumRefScanned = sumRefScanned + productCell.productNumber;
+
+                                                    tvInvented.setText(sumRefScanned + " товаров, " + sumRefScanned + " шт отсканировано");
+                                                }
+
+
+                                                items.add(0, productCell);
+
                                             }
 
-
-
-
-                                            items.add(0, productCell);
-
+                                            adapter.notifyDataSetChanged();
                                         }
-
-                                        adapter.notifyDataSetChanged();
 
                                     } else {
 

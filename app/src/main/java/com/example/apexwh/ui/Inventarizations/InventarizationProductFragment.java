@@ -398,7 +398,7 @@ public class InventarizationProductFragment extends ScanListFragment<ProductCell
 
                         cell = inventTask.cell;
 
-                        updateCell(items, progressBar, adapter, "");
+                        updateCell(items, progressBar, adapter, cell.name);
                     }
                 }
 

@@ -99,7 +99,7 @@ public class InventTasksFragment extends ListFragment<InventTask> {
 
                         ((TextView) holder.getTextViews().get(0)).setText(SpanText.GetFilteredString("№ " + inventTask.document.number
                                 + " от " + DateStr.FromYmdhmsToDmyhms(inventTask.document.date), filterString));
-                        ((TextView) holder.getTextViews().get(1)).setText(SpanText.GetFilteredString(inventTask.cell.name, filterString));
+                        ((TextView) holder.getTextViews().get(1)).setText(SpanText.GetFilteredString(inventTask.cell.name, filterString.toUpperCase()));
                     }
                 });
 

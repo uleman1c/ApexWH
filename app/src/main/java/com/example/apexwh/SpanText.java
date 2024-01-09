@@ -77,13 +77,17 @@ public class SpanText {
 
         String[] spl = pattern.split(text);
 
-        for (int i = 0; i < spl.length - 1; i++) {
+        if (text.toUpperCase().equals(filter.toUpperCase())){
+            spanText.AppendColor(text, Color.RED);
+        } else {
 
-            spanText.Append(spl[i]);
-            spanText.AppendColor(filter, Color.RED);
+            for (int i = 0; i < spl.length - 1; i++) {
+
+                spanText.Append(spl[i]);
+                spanText.AppendColor(filter, Color.RED);
+            }
+            spanText.Append(spl[spl.length - 1]);
         }
-        spanText.Append(spl[spl.length - 1]);
-
         return spanText.GetSpannableString();
 
 

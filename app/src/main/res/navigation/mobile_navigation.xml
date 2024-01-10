@@ -203,12 +203,14 @@
         tools:layout="@layout/fragment_sub_menu" />
     <navigation android:id="@+id/navigation"
         app:startDestination="@id/nav_BuierOrdersFragment">
-        <fragment
-            android:id="@+id/nav_BuierOrdersFragment"
-            android:name="com.example.apexwh.ui.buier_orders.BuierOrdersFragment"
-            android:label="Отгрузка"
-            tools:layout="@layout/fragment_buier_orders" />
     </navigation>
+
+    <fragment
+        android:id="@+id/nav_BuierOrdersFragment"
+        android:name="com.example.apexwh.ui.buier_orders.BuierOrdersFragment"
+        android:label="Отгрузка"
+        tools:layout="@layout/fragment_buier_orders" />
+
     <fragment
         android:id="@+id/nav_receiversListFragment"
         android:name="com.example.apexwh.ui.receivers.ReceiversListFragment"
@@ -246,5 +248,9 @@
         android:id="@+id/inventTasksFragment"
         android:name="com.example.apexwh.ui.invent_tasks.InventTasksFragment"
         android:label="Задания на пересчет ячеек" />
+    <fragment
+        android:id="@+id/shipmentFragment"
+        android:name="com.example.apexwh.ui.shipment.ShipmentFragment"
+        android:label="Отгрузка" />
 
 </navigation>

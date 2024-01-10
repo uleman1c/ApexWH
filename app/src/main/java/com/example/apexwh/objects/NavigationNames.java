@@ -11,7 +11,7 @@ public class NavigationNames {
         switch (name){
 
             case "Acceptment": result = R.id.nav_acceptmentFragment; break;
-            case "Shipment": result = R.id.nav_BuierOrdersFragment; break;
+            case "Shipment": result = R.id.shipmentFragment; break;
             case "Returns": result = R.id.nav_returns; break;
             case "Tests": result = R.id.nav_tests; break;
             case "ReturnsOfProducts": result = R.id.nav_returnsOfProductsFragment; break;

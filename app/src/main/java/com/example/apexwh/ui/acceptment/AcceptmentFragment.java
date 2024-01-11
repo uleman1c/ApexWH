@@ -253,7 +253,9 @@ public class AcceptmentFragment extends ListFragment<Acceptment> {
 
                     case R.id.miByCar:
 
-                        Navigation.findNavController(getActivity(), R.id.nav_host_fragment_content_main).navigate(R.id.nav_carFragment);
+                        Bundle bundle = new Bundle();
+                        bundle.putString("mode", "income");
+                        Navigation.findNavController(getActivity(), R.id.nav_host_fragment_content_main).navigate(R.id.nav_carFragment, bundle);
 
                         res = true;
 

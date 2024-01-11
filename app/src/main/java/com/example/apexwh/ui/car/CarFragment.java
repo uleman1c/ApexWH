@@ -43,6 +43,8 @@ public class CarFragment extends ListFragment<Ttn> {
 
     Button btnUpdate;
 
+    String mode;
+
     public CarFragment() {
 
         super(R.layout.fragment_filter_list, R.layout.movers_service_list_item);
@@ -50,6 +52,8 @@ public class CarFragment extends ListFragment<Ttn> {
         setListUpdater(new ListUpdater() {
             @Override
             public void update(ArrayList items, ProgressBar progressBar, DataAdapter adapter, String filter) {
+
+                mode = arguments.getString("mode");
 
                 int removed = items.size();
 
@@ -100,7 +104,7 @@ public class CarFragment extends ListFragment<Ttn> {
                 }
                 else {
 
-                    RequestToServer.executeRequestUW(getContext(), Request.Method.GET, "getErpSkladIncomeTtn",
+                    RequestToServer.executeRequestUW(getContext(), Request.Method.GET, mode.equals("income") ? "getErpSkladIncomeTtn" : "getErpSkladOutcomeTtn",
                             "status=collect&filter=" + filter, new JSONObject(), 1,
                             new RequestToServer.ResponseResultInterface() {
                                 @Override
@@ -108,7 +112,7 @@ public class CarFragment extends ListFragment<Ttn> {
 
                                     progressBar.setVisibility(View.GONE);
 
-                                    JSONArray responseItems = JsonProcs.getJsonArrayFromJsonObject(response, "ErpSkladIncomeTtn");
+                                    JSONArray responseItems = JsonProcs.getJsonArrayFromJsonObject(response, mode.equals("income") ? "ErpSkladIncomeTtn" : "ErpSkladOutcomeTtn");
 
                                     for (int j = 0; j < responseItems.length(); j++) {
 
@@ -158,10 +162,10 @@ public class CarFragment extends ListFragment<Ttn> {
 
                         tvStatus.setText(document.status);
 
-                        if (document.status.equals("В процессе приемки")){
+                        if (document.status.equals("В процессе " + (mode.equals("income") ? "приемки" : "отгрузки"))){
                             tvStatus.setBackgroundColor(Color.parseColor("#FFEB3B"));
                         }
-                        else if (document.status.equals("Принято")){
+                        else if (document.status.equals(mode.equals("income") ? "Принято" : "Отгружено")){
                             tvStatus.setBackgroundColor(Color.parseColor("#8BC34A"));
                         }
 
@@ -172,44 +176,46 @@ public class CarFragment extends ListFragment<Ttn> {
 
                 getAdapter().setOnClickListener(document -> {
 
-                    Ttn curOutcome = ((Ttn) document);
+                    if (mode.equals("income")) {
 
-                    Bundle bundle = new Bundle();
-                    bundle.putString("name", curOutcome.name);
-                    bundle.putString("ref", curOutcome.ref);
-                    bundle.putString("mode", "ttn");
-                    bundle.putString("order", "");
+                        Ttn curOutcome = ((Ttn) document);
 
-                    Dialogs.showQuestionYesNoCancel(getContext(), getActivity(), new BundleMethodInterface() {
-                        @Override
-                        public void callMethod(Bundle arguments) {
+                        Bundle bundle = new Bundle();
+                        bundle.putString("name", curOutcome.name);
+                        bundle.putString("ref", curOutcome.ref);
+                        bundle.putString("mode", "ttn");
+                        bundle.putString("order", "");
 
-                            progressBar.setVisibility(View.VISIBLE);
+                        Dialogs.showQuestionYesNoCancel(getContext(), getActivity(), new BundleMethodInterface() {
+                            @Override
+                            public void callMethod(Bundle arguments) {
 
-                            RequestToServer.executeRequestUW(getContext(), Request.Method.GET, "setErpSkladIncomeTtnAccepting",
-                                    "ref=" + arguments.getString("ref")
-                                    + "&status=accepting", new JSONObject(), 1,
-                                    new RequestToServer.ResponseResultInterface() {
-                                        @Override
-                                        public void onResponse(JSONObject response) {
+                                progressBar.setVisibility(View.VISIBLE);
 
-                                            progressBar.setVisibility(View.GONE);
+                                RequestToServer.executeRequestUW(getContext(), Request.Method.GET, "setErpSkladIncomeTtnAccepting",
+                                        "ref=" + arguments.getString("ref")
+                                                + "&status=accepting", new JSONObject(), 1,
+                                        new RequestToServer.ResponseResultInterface() {
+                                            @Override
+                                            public void onResponse(JSONObject response) {
 
-                                            Navigation.findNavController(getActivity(), R.id.nav_host_fragment_content_main)
-                                                    .navigate(R.id.nav_acceptmentProductsFragment, arguments);
-                                        }
-                                    });
+                                                progressBar.setVisibility(View.GONE);
 
-                        }
-                    }, bundle, "Начать приемку " + curOutcome.car + "?", "Начать приемку");
+                                                Navigation.findNavController(getActivity(), R.id.nav_host_fragment_content_main)
+                                                        .navigate(R.id.nav_acceptmentProductsFragment, arguments);
+                                            }
+                                        });
 
+                            }
+                        }, bundle, "Начать приемку " + curOutcome.car + "?", "Начать приемку");
+                    }
                 });
 
                 getAdapter().setOnLongClickListener(new DataAdapter.OnLongClickListener<Ttn>() {
                     @Override
                     public void onLongItemClick(Ttn document) {
 
-                        if (document.status.equals("В процессе приемки")){
+                        if (document.status.equals("В процессе " + (mode.equals("income") ? "приемки" : "отгрузки"))){
 
                             Bundle bundle = new Bundle();
                             bundle.putString("name", document.name);
@@ -223,7 +229,7 @@ public class CarFragment extends ListFragment<Ttn> {
 
                                     progressBar.setVisibility(View.VISIBLE);
 
-                                    RequestToServer.executeRequestUW(getContext(), Request.Method.GET, "setErpSkladIncomeTtnAccepting",
+                                    RequestToServer.executeRequestUW(getContext(), Request.Method.GET, mode.equals("income") ? "setErpSkladIncomeTtnAccepting" : "setErpSkladOutcomeTtnShiped",
                                             "ref=" + arguments.getString("ref")
                                                     + "&status=accepted", new JSONObject(), 1,
                                             new RequestToServer.ResponseResultInterface() {
@@ -237,7 +243,7 @@ public class CarFragment extends ListFragment<Ttn> {
                                             });
 
                                 }
-                            }, bundle, "Завершить приемку " + document.car + "?", "Завершить приемку");
+                            }, bundle, (mode.equals("income") ? "Завершить приемку " : "Отгрузить ") + document.car + "?", mode.equals("income") ? "Завершить приемку" : "отгрузить");
 
 
 
@@ -405,5 +411,6 @@ public class CarFragment extends ListFragment<Ttn> {
 
 
     }
+
 
 }

@@ -231,7 +231,7 @@ public class CarFragment extends ListFragment<Ttn> {
 
                                     RequestToServer.executeRequestUW(getContext(), Request.Method.GET, mode.equals("income") ? "setErpSkladIncomeTtnAccepting" : "setErpSkladOutcomeTtnShiped",
                                             "ref=" + arguments.getString("ref")
-                                                    + "&status=accepted", new JSONObject(), 1,
+                                                    + "&status=shiped", new JSONObject(), 1,
                                             new RequestToServer.ResponseResultInterface() {
                                                 @Override
                                                 public void onResponse(JSONObject response) {

@@ -49,6 +49,8 @@ public class ShipmentFragment extends ListFragment<BuierOrder> {
             @Override
             public void update(ArrayList items, ProgressBar progressBar, DataAdapter adapter, String filter) {
 
+                progressBar.setVisibility(View.VISIBLE);
+
                 int removed = items.size();
 
                 items.clear();
@@ -162,8 +164,6 @@ public class ShipmentFragment extends ListFragment<BuierOrder> {
                     @Override
                     public void onLongItemClick(BuierOrder document) {
 
-                        progressBar.setVisibility(View.VISIBLE);
-
                         BuierOrder curOutcome = ((BuierOrder) document);
 
                         Bundle bundle = new Bundle();
@@ -174,6 +174,8 @@ public class ShipmentFragment extends ListFragment<BuierOrder> {
                         Dialogs.showQuestionYesNoCancel(getContext(), getActivity(), new BundleMethodInterface() {
                             @Override
                             public void callMethod(Bundle arguments) {
+
+                                progressBar.setVisibility(View.VISIBLE);
 
                                 RequestToServer.executeRequestUW(getContext(), Request.Method.GET, "setErpSkladDocumentStatus",
                                         "name=" + arguments.get("name")

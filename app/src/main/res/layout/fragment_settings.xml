@@ -75,7 +75,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Сортировать по прочности"
+                android:text="Сортировать по прочности и весу"
                 android:textSize="20sp" />
 
             <Switch

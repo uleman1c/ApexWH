@@ -10,7 +10,7 @@ import java.util.ArrayList;
 
 public class Product {
 
-    public String ref, name, artikul;
+    public String ref, name, artikul, weight;
     public int strong;
 
     public ArrayList<String> shtrihCodes;
@@ -21,27 +21,30 @@ public class Product {
         this.name = name;
         this.artikul = artikul;
         this.strong = 0;
+        this.weight = "000000";
 
         this.shtrihCodes = new ArrayList<>();
 
     }
 
-    public Product(String ref, String name, String artikul, int strong) {
+    public Product(String ref, String name, String artikul, int strong, String weight) {
 
         this.ref = ref;
         this.name = name;
         this.artikul = artikul;
         this.strong = strong;
+        this.weight = weight;
 
         this.shtrihCodes = new ArrayList<>();
 
     }
-    public Product(String ref, String name, String artikul, int strong, ArrayList shtrihCodes) {
+    public Product(String ref, String name, String artikul, int strong, String weight, ArrayList shtrihCodes) {
 
         this.ref = ref;
         this.name = name;
         this.artikul = artikul;
         this.strong = strong;
+        this.weight = weight;
         this.shtrihCodes = shtrihCodes;
 
     }
@@ -52,8 +55,9 @@ public class Product {
         String name = JsonProcs.getStringFromJSON(task_item, "name");
         String artikul = JsonProcs.getStringFromJSON(task_item, "artikul");
         int strong = JsonProcs.getIntegerFromJSON(task_item, "strong");
+        String weight = JsonProcs.getStringFromJSON(task_item, "weight");
 
-        return new Product(ref, name, artikul, strong);
+        return new Product(ref, name, artikul, strong, weight);
 
 
     }
@@ -64,6 +68,7 @@ public class Product {
         String name = JsonProcs.getStringFromJSON(task_item, "name");
         String artikul = JsonProcs.getStringFromJSON(task_item, "artikul");
         int strong = JsonProcs.getIntegerFromJSON(task_item, "strong");
+        String weight = JsonProcs.getStringFromJSON(task_item, "weight");
 
         ArrayList<String> shtrihCodes = new ArrayList<>();
 
@@ -79,7 +84,7 @@ public class Product {
 
         }
 
-        return new Product(ref, name, artikul, strong, shtrihCodes);
+        return new Product(ref, name, artikul, strong, weight, shtrihCodes);
 
 
     }

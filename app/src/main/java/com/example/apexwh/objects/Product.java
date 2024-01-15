@@ -11,6 +11,7 @@ import java.util.ArrayList;
 public class Product {
 
     public String ref, name, artikul;
+    public int strong;
 
     public ArrayList<String> shtrihCodes;
 
@@ -19,15 +20,28 @@ public class Product {
         this.ref = ref;
         this.name = name;
         this.artikul = artikul;
+        this.strong = 0;
+
         this.shtrihCodes = new ArrayList<>();
 
     }
 
-    public Product(String ref, String name, String artikul, ArrayList shtrihCodes) {
+    public Product(String ref, String name, String artikul, int strong) {
 
         this.ref = ref;
         this.name = name;
         this.artikul = artikul;
+        this.strong = strong;
+
+        this.shtrihCodes = new ArrayList<>();
+
+    }
+    public Product(String ref, String name, String artikul, int strong, ArrayList shtrihCodes) {
+
+        this.ref = ref;
+        this.name = name;
+        this.artikul = artikul;
+        this.strong = strong;
         this.shtrihCodes = shtrihCodes;
 
     }
@@ -37,8 +51,9 @@ public class Product {
         String ref = JsonProcs.getStringFromJSON(task_item, "ref");
         String name = JsonProcs.getStringFromJSON(task_item, "name");
         String artikul = JsonProcs.getStringFromJSON(task_item, "artikul");
+        int strong = JsonProcs.getIntegerFromJSON(task_item, "strong");
 
-        return new Product(ref, name, artikul);
+        return new Product(ref, name, artikul, strong);
 
 
     }
@@ -48,6 +63,7 @@ public class Product {
         String ref = JsonProcs.getStringFromJSON(task_item, "ref");
         String name = JsonProcs.getStringFromJSON(task_item, "name");
         String artikul = JsonProcs.getStringFromJSON(task_item, "artikul");
+        int strong = JsonProcs.getIntegerFromJSON(task_item, "strong");
 
         ArrayList<String> shtrihCodes = new ArrayList<>();
 
@@ -63,7 +79,7 @@ public class Product {
 
         }
 
-        return new Product(ref, name, artikul, shtrihCodes);
+        return new Product(ref, name, artikul, strong, shtrihCodes);
 
 
     }

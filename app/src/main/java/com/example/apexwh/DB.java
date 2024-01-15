@@ -642,6 +642,10 @@ public class DB {
             db.updateConstant("barсodeEqualsCharacteristic", "0");
         }
 
+        if (db.getConstant("sortByStrong") == null){
+            db.updateConstant("sortByStrong", "0");
+        }
+
         db.close();
 
     }
@@ -675,6 +679,7 @@ public class DB {
         result.putString("askQuantityAfterProductScan", db.getConstant("askQuantityAfterProductScan"));
         result.putString("showScannedProducts", db.getConstant("showScannedProducts"));
         result.putString("barсodeEqualsCharacteristic", db.getConstant("barсodeEqualsCharacteristic"));
+        result.putString("sortByStrong", db.getConstant("sortByStrong"));
 
         db.close();
 

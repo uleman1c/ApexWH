@@ -22,6 +22,7 @@ import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
 import com.android.volley.Request;
+import com.example.apexwh.DB;
 import com.example.apexwh.JsonProcs;
 import com.example.apexwh.R;
 import com.example.apexwh.RequestToServer;
@@ -485,6 +486,8 @@ public class CollectProductsFragment extends ScanListFragment<ProductCellContain
                             }, new Bundle(), "Завершить документ?", "Завершить");
                         } else {
 
+                            Bundle bundle = DB.getSettings(getContext());
+                            Boolean sortByStrong = bundle.getString("sortByStrong").equals("1");
 
                             items.sort(new Comparator() {
                                 @Override
@@ -495,8 +498,10 @@ public class CollectProductsFragment extends ScanListFragment<ProductCellContain
                                     ProductCellContainerOutcome pcco1 = ((ProductCellContainerOutcome) o);
                                     ProductCellContainerOutcome pcco2 = ((ProductCellContainerOutcome) t1);
 
-                                    String l1 = pcco1.cell.level;
-                                    String l2 = pcco2.cell.level;
+
+
+                                    String l1 = (sortByStrong ? String.valueOf(pcco1.product.strong) : "0") + pcco1.cell.level;
+                                    String l2 = (sortByStrong ? String.valueOf(pcco2.product.strong) : "0") + pcco2.cell.level;
                                     String cl1 = pcco1.cell.order + l1 + pcco1.cell.name;
                                     String cl2 = pcco2.cell.order + l2 + pcco2.cell.name;
 

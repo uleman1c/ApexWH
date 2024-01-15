@@ -83,6 +83,20 @@ public class SettingsFragment extends Fragment {
             }
         });
 
+        Switch sortByStrong = root.findViewById(R.id.sortByStrong);
+        sortByStrong.setChecked(settings.getString("sortByStrong").equals("1"));
+        sortByStrong.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                DB db = new DB(getContext());
+                db.open();
+                db.updateConstant("sortByStrong", sortByStrong.isChecked() ? "1" : "0");
+                db.close();
+
+            }
+        });
+
         root.findViewById(R.id.btnSelectWarehouse).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

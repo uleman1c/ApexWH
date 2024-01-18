@@ -13,7 +13,7 @@ public class Connections {
     public static String password = "123456";
 
 
-    public static String fileAddr = "https://transtechn.ru:8001";
+    public static String fileAddr = "https://ow.apx-service.ru/apos/upload/uploadmp";
 
     public static String fileAccessKey = "6a64edd9-56f8-11ed-8a49-bc305bf806da";
 

@@ -1,12 +1,24 @@
 package com.example.apexwh.ui.returns;
 
+import static android.app.Activity.RESULT_OK;
+
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,6 +36,8 @@ import com.example.apexwh.HttpRequestInterface;
 import com.example.apexwh.HttpRequestJsonObjectInterface;
 import com.example.apexwh.JsonProcs;
 import com.example.apexwh.R;
+import com.example.apexwh.RequestToServer;
+import com.example.apexwh.VolleyMultipartRequest;
 import com.example.apexwh.objects.Acceptment;
 import com.example.apexwh.objects.Document;
 import com.example.apexwh.objects.Return;
@@ -37,7 +51,13 @@ import com.example.apexwh.ui.adapters.ListFragment;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.io.BufferedInputStream;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 import cz.msebera.android.httpclient.HttpEntity;
@@ -56,6 +76,41 @@ public class ReturnsOfProductsFragment extends ListFragment<ReturnOfProducts> {
     GetFoto getFoto;
     private String name = "";
     private String ref = "";
+
+    ActivityResultLauncher<Intent> startCamera = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            new ActivityResultCallback<ActivityResult>() {
+                @Override
+                public void onActivityResult(ActivityResult result) {
+                    if (result.getResultCode() == RESULT_OK) {
+
+                        sendPhoto();
+
+
+                    }
+                }
+            }
+    );
+
+    private ActivityResultLauncher<String[]> activityResultLauncher = registerForActivityResult(
+            new ActivityResultContracts.RequestMultiplePermissions(), new ActivityResultCallback<Map<String, Boolean>>() {
+        @Override
+        public void onActivityResult(Map<String, Boolean> result) {
+            Log.e("activityResultLauncher", "" + result.toString());
+            Boolean areAllGranted = true;
+            for (String perm : result.keySet()) {
+                areAllGranted = ActivityCompat.checkSelfPermission(getContext(), perm) == PackageManager.PERMISSION_GRANTED && areAllGranted;
+            }
+
+            //startLocationManager();
+
+            if (areAllGranted) {
+
+
+            }
+        }
+    });
+
 
     public ReturnsOfProductsFragment() {
 
@@ -212,7 +267,8 @@ public class ReturnsOfProductsFragment extends ListFragment<ReturnOfProducts> {
 
                                 if (getFoto.intent != null){
 
-                                    startActivityForResult(getFoto.intent, CAMERA_REQUEST_FOTO);
+//                                    startActivityForResult(getFoto.intent, CAMERA_REQUEST_FOTO);
+                                    startCamera.launch(getFoto.intent); // VERY NEW WAY
 
                                 }
 
@@ -244,62 +300,65 @@ public class ReturnsOfProductsFragment extends ListFragment<ReturnOfProducts> {
 
     }
 
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
+    public void sendPhoto() {
 
-        if (requestCode == CAMERA_REQUEST_FOTO) {
+        String arFileNameWithExt = getFoto.file.getName();
+        String arFileName = UUID.randomUUID().toString();
 
-            String arFileNameWithExt = getFoto.file.getName();
-            String arFileName = UUID.randomUUID().toString();
+        HashMap headers = new HashMap<String, String>();
+        headers.put("Content-Type", "application/octet-stream");
+        headers.put("type1c", "doc");
+        headers.put("name1c", Uri.encode(name));
+        headers.put("id1c", ref);
+        headers.put("owner_name", Uri.encode(name));
+        headers.put("owner_id", ref);
+        headers.put("user", "mihail.u");
+        headers.put("id", arFileName);
+        headers.put("part", "1");
+        headers.put("filename", Uri.encode(arFileNameWithExt));
+        headers.put("size", String.valueOf(getFoto.file.length()));
 
-            MultipartEntityBuilder builder = MultipartEntityBuilder.create();
+        int size = (int) getFoto.file.length();
+        byte[] bytes = new byte[size];
+        BufferedInputStream buf = null;
+        try {
+            buf = new BufferedInputStream(new FileInputStream(getFoto.file));
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+        try {
+            buf.read(bytes, 0, bytes.length);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        try {
+            buf.close();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
 
-            /* example for setting a HttpMultipartMode */
-            builder.setMode(HttpMultipartMode.BROWSER_COMPATIBLE);
+        RequestToServer.uploadByteArrayMultiPart(getContext(), Connections.fileAddr, headers, bytes, response -> {
 
-            /* example for adding an image part */
-            FileBody fileBody = new FileBody(getFoto.file); //image should be a String
-            builder.addPart("icon", fileBody);
-
-            HttpEntity httpEntity = new FileEntity(getFoto.file, ContentType.IMAGE_JPEG);
-
-            HttpClient httpClient = new HttpClient(getActivity(), Connections.fileAddr, "", "");
-
-            httpClient.addHeader("type1c", "doc");
-            httpClient.addHeader("name1c", Uri.encode(name));
-            httpClient.addHeader("id1c", ref);
-            httpClient.addHeader("id", arFileName);
-            httpClient.addHeader("part", "1");
-            httpClient.addHeader("filename", Uri.encode(arFileNameWithExt));
-            httpClient.addHeader("size", String.valueOf(getFoto.file.length()));
-
-            httpClient.postBinary("/upfa/?ak=" + Connections.fileAccessKey, httpEntity, new HttpRequestInterface() {
-                @Override
-                public void setProgressVisibility(int visibility) {
-
-                    //progressBar.setVisibility(visibility);
-
-                }
-
-                @Override
-                public void processResponse(String response) {
-
-                    JSONObject jsonObjectResponse = JsonProcs.getJSONObjectFromString(response);
-
-                    if(JsonProcs.getBooleanFromJSON(jsonObjectResponse, "success")){
-
-                        Toast.makeText(getContext(), "Фото сохранено", Toast.LENGTH_SHORT).show();
-
-                    }
+        });
 
 
-                }
-            });
 
         }
 
-    }
 
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        String[] appPerms;
+        appPerms = new String[] {
+                Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA,
+                Manifest.permission.INTERNET
+        };
+
+        this.activityResultLauncher.launch(appPerms);
+
+    }
 
 
 

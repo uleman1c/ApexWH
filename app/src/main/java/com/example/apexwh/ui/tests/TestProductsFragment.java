@@ -272,7 +272,7 @@ public class TestProductsFragment extends ScanListFragment<ProductCellContainerO
     protected void setDocumentStatus(String newStatus) {
 
         RequestToServer.executeRequestUW(getContext(), Request.Method.GET, "setErpSkladDocumentStatus",
-                "type1c=ref&name=" + type + "&ref=" + ref + "&status=" + newStatus, new JSONObject(), 1, new RequestToServer.ResponseResultInterface() {
+                "type1c=doc&name=" + type + "&ref=" + ref + "&status=" + newStatus, new JSONObject(), 1, new RequestToServer.ResponseResultInterface() {
                     @Override
                     public void onResponse(JSONObject response) {
 

@@ -73,6 +73,7 @@ public class TestsFragment extends ListFragment<Outcome>{
 
                                         Bundle bundle = new Bundle();
                                         bundle.putString("name", JsonProcs.getStringFromJSON(responseItem, "Имя"));
+                                        bundle.putString("type", JsonProcs.getStringFromJSON(responseItem, "Имя"));
                                         bundle.putString("ref", JsonProcs.getStringFromJSON(responseItem, "Ссылка"));
                                         bundle.putString("order", order);
 

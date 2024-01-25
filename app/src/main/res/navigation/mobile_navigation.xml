@@ -252,5 +252,9 @@
         android:id="@+id/shipmentFragment"
         android:name="com.example.apexwh.ui.shipment.ShipmentFragment"
         android:label="Отгрузка" />
+    <fragment
+        android:id="@+id/refillTasksFragment"
+        android:name="com.example.apexwh.ui.refill_tasks.RefillTasksFragment"
+        android:label="@string/refill_tasks" />
 
 </navigation>

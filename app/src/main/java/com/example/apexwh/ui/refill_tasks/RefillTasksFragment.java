@@ -22,6 +22,7 @@ import com.example.apexwh.R;
 import com.example.apexwh.RequestToServer;
 import com.example.apexwh.SpanText;
 import com.example.apexwh.objects.InventTask;
+import com.example.apexwh.objects.RefillTask;
 import com.example.apexwh.ui.adapters.DataAdapter;
 import com.example.apexwh.ui.adapters.ListFragment;
 
@@ -30,7 +31,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-public class RefillTasksFragment extends ListFragment<InventTask> {
+public class RefillTasksFragment extends ListFragment<RefillTask> {
 
     public RefillTasksFragment() {
         super(R.layout.fragment_filter_list, R.layout.inventarization_list_item);
@@ -45,7 +46,7 @@ public class RefillTasksFragment extends ListFragment<InventTask> {
 
                 items.clear();
 
-                RequestToServer.executeRequestUW(getContext(), Request.Method.GET, "getErpSkladInventTasks",
+                RequestToServer.executeRequestUW(getContext(), Request.Method.GET, "getErpSkladRefillTasks",
                         "filter=" + filter, new JSONObject(), 1,
                         new RequestToServer.ResponseResultInterface() {
                             @Override
@@ -53,13 +54,13 @@ public class RefillTasksFragment extends ListFragment<InventTask> {
 
                                 progressBar.setVisibility(View.GONE);
 
-                                JSONArray responseItems = JsonProcs.getJsonArrayFromJsonObject(response, "ErpSkladInventTasks");
+                                JSONArray responseItems = JsonProcs.getJsonArrayFromJsonObject(response, "ErpSkladRefillTasks");
 
                                 for (int j = 0; j < responseItems.length(); j++) {
 
                                     JSONObject objectItem = JsonProcs.getItemJSONArray(responseItems, j);
 
-                                    items.add(InventTask.FromJson(objectItem));
+                                    items.add(RefillTask.FromJson(objectItem));
 
                                 }
 
@@ -89,9 +90,9 @@ public class RefillTasksFragment extends ListFragment<InventTask> {
                     }
                 });
 
-                getAdapter().setDrawViewHolder(new DataAdapter.DrawViewHolder<InventTask>() {
+                getAdapter().setDrawViewHolder(new DataAdapter.DrawViewHolder<RefillTask>() {
                     @Override
-                    public void draw(DataAdapter.ItemViewHolder holder, InventTask inventTask) {
+                    public void draw(DataAdapter.ItemViewHolder holder, RefillTask inventTask) {
 
                         String filterString = etFilter.getText().toString();
 
@@ -104,7 +105,7 @@ public class RefillTasksFragment extends ListFragment<InventTask> {
                 getAdapter().setOnClickListener(inventTask -> {
 
                     Bundle bundle = new Bundle();
-                    bundle.putString("inventTask", InventTask.toJson((InventTask) inventTask).toString());
+                    bundle.putString("inventTask", RefillTask.toJson((RefillTask) inventTask).toString());
 
                     navController.navigate(R.id.nav_inventarizationProductFragment, bundle);
 

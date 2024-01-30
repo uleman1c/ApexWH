@@ -27,6 +27,7 @@ public class NavigationNames {
             case "Invents": result = R.id.nav_inventarizations; break;
             case "InventTasks": result = R.id.inventTasksFragment; break;
             case "RefillTasks": result = R.id.refillTasksFragment; break;
+            case "ProductionDateAssignings": result = R.id.productionDateAssigningsFragment; break;
             case "ShtrihcodeProduct": result = R.id.nav_shtrihcodeProductFragment; break;
             case "ShtrihcodeContainer": result = R.id.nav_shtrihcodeContainerFragment; break;
 

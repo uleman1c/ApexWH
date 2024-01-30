@@ -256,5 +256,9 @@
         android:id="@+id/refillTasksFragment"
         android:name="com.example.apexwh.ui.refill_tasks.RefillTasksFragment"
         android:label="@string/refill_tasks" />
+    <fragment
+        android:id="@+id/productionDateAssigningsFragment"
+        android:name="com.example.apexwh.ui.production_date_assignings.ProductionDateAssigningsFragment"
+        android:label="Установки даты производства" />
 
 </navigation>

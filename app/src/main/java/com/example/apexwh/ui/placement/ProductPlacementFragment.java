@@ -53,35 +53,64 @@ public class ProductPlacementFragment extends ScanListFragment<ProductCell> {
 
                                     progressBar.setVisibility(View.GONE);
 
-                                    JSONArray responseItems = JsonProcs.getJsonArrayFromJsonObject(response, "ErpSkladCellContent");
-
                                     tvProduct.setText(filter + " не найден");
 
-                                    for (int j = 0; j < responseItems.length(); j++) {
+                                    JSONArray responseItems = JsonProcs.getJsonArrayFromJsonObject(response, "ErpSkladCellContent");
 
-                                        JSONObject objectItem = JsonProcs.getItemJSONArray(responseItems, j);
+                                    if (responseItems.length() == 0) {
 
-                                        cell = Cell.FromJson(JsonProcs.getJsonObjectFromJsonObject(objectItem, "cell"));
+                                        RequestToServer.executeRequestUW(getContext(), Request.Method.GET, "getErpSkladCells", "filter=" + filter, new JSONObject(), 1,
+                                                new RequestToServer.ResponseResultInterface() {
+                                                    @Override
+                                                    public void onResponse(JSONObject response) {
 
-                                        productNumber = JsonProcs.getIntegerFromJSON(objectItem, "productNumber");
-                                        productUnitNumber = JsonProcs.getIntegerFromJSON(objectItem, "productUnitNumber");
-                                        containerNumber = JsonProcs.getIntegerFromJSON(objectItem, "containerNumber");
+                                                        JSONArray responseItems2 = JsonProcs.getJsonArrayFromJsonObject(response, "ErpSkladCells");
 
-                                        tvProduct.setText(cell.name + " " + productNumber + " шт (" + productUnitNumber + " упак) " + containerNumber + " конт");
+                                                        if (responseItems2.length() > 0) {
 
-                                        JSONArray products = JsonProcs.getJsonArrayFromJsonObject(objectItem, "products");
+                                                            JSONObject objectItem = JsonProcs.getItemJSONArray(responseItems2, 0);
 
-                                        for (int k = 0; k < products.length(); k++) {
+                                                            cell = Cell.FromJson(objectItem);
 
-                                            ProductCell productCell = ProductCell.FromJson(JsonProcs.getItemJSONArray(products, k));
+                                                            productNumber = 0;
+                                                            productUnitNumber = 0;
+                                                            containerNumber = 0;
 
-                                            items.add(productCell);
+                                                            tvProduct.setText(cell.name + " " + productNumber + " шт (" + productUnitNumber + " упак) " + containerNumber + " конт");
+
+                                                        }
+                                                    }
+
+                                                });
+
+                                    } else {
+
+                                        for (int j = 0; j < responseItems.length(); j++) {
+
+                                            JSONObject objectItem = JsonProcs.getItemJSONArray(responseItems, j);
+
+                                            cell = Cell.FromJson(JsonProcs.getJsonObjectFromJsonObject(objectItem, "cell"));
+
+                                            productNumber = JsonProcs.getIntegerFromJSON(objectItem, "productNumber");
+                                            productUnitNumber = JsonProcs.getIntegerFromJSON(objectItem, "productUnitNumber");
+                                            containerNumber = JsonProcs.getIntegerFromJSON(objectItem, "containerNumber");
+
+                                            tvProduct.setText(cell.name + " " + productNumber + " шт (" + productUnitNumber + " упак) " + containerNumber + " конт");
+
+                                            JSONArray products = JsonProcs.getJsonArrayFromJsonObject(objectItem, "products");
+
+                                            for (int k = 0; k < products.length(); k++) {
+
+                                                ProductCell productCell = ProductCell.FromJson(JsonProcs.getItemJSONArray(products, k));
+
+                                                items.add(productCell);
+                                            }
+
+
                                         }
 
-
+                                        adapter.notifyDataSetChanged();
                                     }
-
-                                    adapter.notifyDataSetChanged();
                                 }
                             });
                 } else {

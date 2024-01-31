@@ -260,5 +260,9 @@
         android:id="@+id/productionDateAssigningsFragment"
         android:name="com.example.apexwh.ui.production_date_assignings.ProductionDateAssigningsFragment"
         android:label="Установки даты производства" />
+    <fragment
+        android:id="@+id/productionDateAssigningFragment"
+        android:name="com.example.apexwh.ui.production_date_assignings.ProductionDateAssigningFragment"
+        android:label="Установка даты производства" />
 
 </navigation>

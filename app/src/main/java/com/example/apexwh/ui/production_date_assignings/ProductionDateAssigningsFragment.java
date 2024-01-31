@@ -33,7 +33,7 @@ import java.util.ArrayList;
 public class ProductionDateAssigningsFragment extends ListFragment<ProductionDateAssigning> {
 
     public ProductionDateAssigningsFragment() {
-        super(R.layout.fragment_filter_list, R.layout.inventarization_list_item);
+        super(R.layout.fragment_filter_add_list, R.layout.inventarization_list_item);
 
         setListUpdater(new ListUpdater() {
             @Override
@@ -45,7 +45,7 @@ public class ProductionDateAssigningsFragment extends ListFragment<ProductionDat
 
                 items.clear();
 
-                RequestToServer.executeRequestUW(getContext(), Request.Method.GET, "getErpSkladRefillTasks",
+                RequestToServer.executeRequestUW(getContext(), Request.Method.GET, "getErpSkladProductionDateAssignings",
                         "filter=" + filter, new JSONObject(), 1,
                         new RequestToServer.ResponseResultInterface() {
                             @Override
@@ -53,7 +53,7 @@ public class ProductionDateAssigningsFragment extends ListFragment<ProductionDat
 
                                 progressBar.setVisibility(View.GONE);
 
-                                JSONArray responseItems = JsonProcs.getJsonArrayFromJsonObject(response, "ErpSkladRefillTasks");
+                                JSONArray responseItems = JsonProcs.getJsonArrayFromJsonObject(response, "ErpSkladProductionDateAssignings");
 
                                 for (int j = 0; j < responseItems.length(); j++) {
 
@@ -80,6 +80,14 @@ public class ProductionDateAssigningsFragment extends ListFragment<ProductionDat
             @Override
             public void execute(View root, NavController navController) {
 
+                root.findViewById(R.id.btnAdd).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+
+                        navController.navigate(R.id.productionDateAssigningFragment, new Bundle());
+
+                    }
+                });
                 getAdapter().setInitViewsMaker(new DataAdapter.InitViewsMaker() {
                     @Override
                     public void init(View itemView, ArrayList<TextView> textViews) {

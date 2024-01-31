@@ -8,20 +8,30 @@ import java.util.ArrayList;
 
 public class Container {
 
-    public String ref, name;
+    public String ref, name, productionDate;
 
 
     public Container(String ref, String name) {
         this.ref = ref;
         this.name = name;
+        this.productionDate = "";
+    }
+
+    public Container(String ref, String name, String productionDate) {
+
+        this.ref = ref;
+        this.name = name;
+
+        this.productionDate = productionDate;
     }
 
     public static Container FromJson(JSONObject task_item) {
 
         String ref = JsonProcs.getStringFromJSON(task_item, "ref");
         String name = JsonProcs.getStringFromJSON(task_item, "name");
+        String productionDate = JsonProcs.getStringFromJSON(task_item, "productionDate");
 
-        return new Container(ref, name);
+        return new Container(ref, name, productionDate);
 
 
     }

@@ -14,6 +14,7 @@ import com.example.apexwh.RequestToServer;
 import com.example.apexwh.objects.Cell;
 import com.example.apexwh.objects.Characteristic;
 import com.example.apexwh.objects.Container;
+import com.example.apexwh.objects.ContainerWithContent;
 import com.example.apexwh.objects.InventTask;
 import com.example.apexwh.objects.Product;
 import com.example.apexwh.objects.ProductCell;
@@ -48,6 +49,8 @@ public class ProductionDateAssigningFragment extends ScanListFragment<Production
 
     Cell cell;
 
+    ArrayList<ContainerWithContent> containersWithContents = new ArrayList<>();
+
     ArrayList<ProductCell> accProductCells;
 
     ArrayList<RefNum> refNums;
@@ -63,7 +66,7 @@ public class ProductionDateAssigningFragment extends ScanListFragment<Production
 
     public ProductionDateAssigningFragment() {
 
-        super(R.layout.fragment_scan_invent_list, R.layout.product_cell_scanned_list_item);
+        super(R.layout.fragment_scan_cell_container_list, R.layout.product_cell_scanned_list_item);
 
         accProductCells = new ArrayList<>();
 
@@ -410,14 +413,14 @@ public class ProductionDateAssigningFragment extends ScanListFragment<Production
     private void updateCell(ArrayList items, ProgressBar progressBar, DataAdapter adapter, String filter) {
         items.clear();
 
-        RequestToServer.executeRequestUW(getContext(), Request.Method.GET, "getErpSkladCellContent", "filter=" + filter, new JSONObject(), 1,
+        RequestToServer.executeRequestUW(getContext(), Request.Method.GET, "getErpSkladCellContentByContainers", "filter=" + filter, new JSONObject(), 1,
                 new RequestToServer.ResponseResultInterface() {
                     @Override
                     public void onResponse(JSONObject response) {
 
                         progressBar.setVisibility(View.GONE);
 
-                        JSONArray responseItems = JsonProcs.getJsonArrayFromJsonObject(response, "ErpSkladCellContent");
+                        JSONArray responseItems = JsonProcs.getJsonArrayFromJsonObject(response, "ErpSkladCellContentByContainers");
 
                         tvProduct.setText(filter + " не найден");
 
@@ -427,21 +430,13 @@ public class ProductionDateAssigningFragment extends ScanListFragment<Production
 
                             cell = Cell.FromJson(JsonProcs.getJsonObjectFromJsonObject(objectItem, "cell"));
 
-                            productNumber = JsonProcs.getIntegerFromJSON(objectItem, "productNumber");
-                            productUnitNumber = JsonProcs.getIntegerFromJSON(objectItem, "productUnitNumber");
-                            containerNumber = JsonProcs.getIntegerFromJSON(objectItem, "containerNumber");
+                            JSONArray containers = JsonProcs.getJsonArrayFromJsonObject(objectItem, "containers");
+                            for (int k = 0; k < containers.length(); k++) {
 
-                            JSONArray products = JsonProcs.getJsonArrayFromJsonObject(objectItem, "products");
+                                JSONObject cwc = JsonProcs.getItemJSONArray(containers, k);
 
-                            accProductCells.clear();
-
-                            for (int k = 0; k < products.length(); k++) {
-
-                                ProductCell productCell = ProductCell.FromJson(JsonProcs.getItemJSONArray(products, k));
-
-                                accProductCells.add(productCell);
+                                containersWithContents.add(ContainerWithContent.FromJson(cwc));
                             }
-
 
                         }
 

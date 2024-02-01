@@ -1,13 +1,16 @@
 package com.example.apexwh.ui.production_date_assignings;
 
+import android.app.DatePickerDialog;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.DatePicker;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.navigation.NavController;
 
 import com.android.volley.Request;
+import com.example.apexwh.DateStr;
 import com.example.apexwh.JsonProcs;
 import com.example.apexwh.R;
 import com.example.apexwh.RequestToServer;
@@ -18,6 +21,7 @@ import com.example.apexwh.objects.ContainerWithContent;
 import com.example.apexwh.objects.InventTask;
 import com.example.apexwh.objects.Product;
 import com.example.apexwh.objects.ProductCell;
+import com.example.apexwh.objects.ProductWithQuantity;
 import com.example.apexwh.objects.ProductionDateAssigning;
 import com.example.apexwh.ui.BundleMethodInterface;
 import com.example.apexwh.ui.Dialogs;
@@ -29,7 +33,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.UUID;
+import java.util.logging.SimpleFormatter;
 
 public class ProductionDateAssigningFragment extends ScanListFragment<ProductionDateAssigning> {
 
@@ -317,21 +323,6 @@ public class ProductionDateAssigningFragment extends ScanListFragment<Production
                     @Override
                     public boolean onLongClick(View view) {
 
-                        if (cell != null) {
-
-                            Dialogs.showQuestionYesNoCancel(getContext(), getActivity(), new BundleMethodInterface() {
-                                @Override
-                                public void callMethod(Bundle arguments) {
-
-                                    items.clear();
-
-                                    adapter.notifyDataSetChanged();
-
-                                    tvProduct.setText(cell.name);
-
-                                }
-                            }, new Bundle(), "Очистить ячейку ?", "Очистить");
-                        }
 
                         return false;
                     }
@@ -352,38 +343,69 @@ public class ProductionDateAssigningFragment extends ScanListFragment<Production
                     }
                 });
 
-                getAdapter().setDrawViewHolder(new DataAdapter.DrawViewHolder<ProductCell>() {
+                getAdapter().setDrawViewHolder(new DataAdapter.DrawViewHolder<ContainerWithContent>() {
                     @Override
-                    public void draw(DataAdapter.ItemViewHolder holder, ProductCell item) {
+                    public void draw(DataAdapter.ItemViewHolder holder, ContainerWithContent item) {
 
-                        ((TextView) holder.getTextViews().get(0)).setText(item.product.artikul + " " + item.product.name);
-                        ((TextView) holder.getTextViews().get(1)).setText(item.container.name + " " + item.containerNumber + " шт");
-                        ((TextView) holder.getTextViews().get(2)).setText(item.productNumber + " шт (" + item.productUnitNumber + " упак)");
-                        ((TextView) holder.getTextViews().get(3)).setText("по учету " + item.scanned + " шт");
+                        ProductWithQuantity pwq = item.productWithQuantities.size() > 0
+                                ? item.productWithQuantities.get(0) : null;
+
+                        ((TextView) holder.getTextViews().get(0)).setText(pwq == null ? "" : (pwq.product.artikul + " " + pwq.product.name));
+                        ((TextView) holder.getTextViews().get(1)).setText(item.container.name);
+                        ((TextView) holder.getTextViews().get(2)).setText(pwq == null ? "" : pwq.quantity + " шт (" + pwq.unitQuantity + " упак)");
+                        ((TextView) holder.getTextViews().get(3)).setText("дата: " + DateStr.FromYmdhmsToDmy(item.container.productionDate));
                     }
                 });
 
-                getAdapter().setOnClickListener(document -> {});
+                getAdapter().setOnClickListener(document -> {
+
+                    Calendar dateAndTime = Calendar.getInstance();
+
+                    new DatePickerDialog(getContext(), new DatePickerDialog.OnDateSetListener() {
+                        @Override
+                        public void onDateSet(DatePicker datePicker, int year, int monthOfYear, int dayOfMonth) {
+
+                            dateAndTime.set(Calendar.YEAR, year);
+                            dateAndTime.set(Calendar.MONTH, monthOfYear);
+                            dateAndTime.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+
+                            JSONObject jsonObject = new JSONObject();
+                            JsonProcs.putToJsonObject(jsonObject,"ref", UUID.randomUUID().toString());
+                            JsonProcs.putToJsonObject(jsonObject,"containerRef", ((ContainerWithContent) document).container.ref);
+                            JsonProcs.putToJsonObject(jsonObject, "date", DateStr.CalendarToYmd(dateAndTime));
+
+                            RequestToServer.executeRequestBodyUW(getContext(), Request.Method.POST, "setErpSkladProductionDateAssigning", jsonObject,
+                                    RequestToServer.TypeOfResponse.JsonObject, response1 -> {
+
+                                        if (true || !JsonProcs.getStringFromJSON(response1, "ref").isEmpty()){
+
+                                            navController.popBackStack();
+
+//                                                cell = null;
+//
+//                                                updateList("");
+
+                                        }
+
+
+
+                                    });
+
+
+
+
+
+                        }
+                    },
+                            dateAndTime.get(Calendar.YEAR),
+                            dateAndTime.get(Calendar.MONTH),
+                            dateAndTime.get(Calendar.DAY_OF_MONTH))
+                            .show();
+
+                });
 
                 getAdapter().setOnLongClickListener(document -> {
 
-                    Bundle bundle = new Bundle();
-                    bundle.putString("productRef", ((ProductCell) document).product.ref);
-                    bundle.putString("productName", ((ProductCell) document).product.name);
-                    bundle.putString("characteristicRef", ((ProductCell) document).characteristic.ref);
-                    bundle.putString("characteristicName", ((ProductCell) document).characteristic.description);
-                    bundle.putInt("index", items.indexOf(document));
-                    Dialogs.showQuestionYesNoCancel(getContext(), getActivity(), new BundleMethodInterface() {
-                        @Override
-                        public void callMethod(Bundle arguments) {
-
-                            items.remove(arguments.getInt("index"));
-
-                            adapter.notifyDataSetChanged();
-
-                        }
-                    }, bundle, "Удалить", "Удалить " + ((ProductCell) document).product.name
-                        + ", " + ((ProductCell) document).characteristic.description);
 
                 });
 
@@ -435,7 +457,12 @@ public class ProductionDateAssigningFragment extends ScanListFragment<Production
 
                                 JSONObject cwc = JsonProcs.getItemJSONArray(containers, k);
 
-                                containersWithContents.add(ContainerWithContent.FromJson(cwc));
+                                ContainerWithContent containerWithContent = ContainerWithContent.FromJson(cwc);
+
+                                containersWithContents.add(containerWithContent);
+
+                                items.add(containerWithContent);
+
                             }
 
                         }

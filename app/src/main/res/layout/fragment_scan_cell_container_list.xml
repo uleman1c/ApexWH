@@ -166,7 +166,8 @@ tools:context=".ui.products.ProductsFragment">
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/back_green"
-            android:text="Сохранить" />
+            android:text="Сохранить"
+            android:visibility="gone" />
 
 
     </LinearLayout>

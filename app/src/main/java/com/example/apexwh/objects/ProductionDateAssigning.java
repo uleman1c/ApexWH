@@ -7,23 +7,19 @@ import org.json.JSONObject;
 public class ProductionDateAssigning {
 
     public SDocument document;
-    public Cell cell;
-    public int order;
+    public Container container;
 
-    public ProductionDateAssigning(SDocument document, Cell cell, int order) {
+    public ProductionDateAssigning(SDocument document, Container container) {
         this.document = document;
-        this.cell = cell;
-        this.order = order;
+        this.container = container;
     }
 
     public static ProductionDateAssigning FromJson(JSONObject task_item) {
 
         SDocument document = SDocument.FromJson(task_item);
-        Cell cell = Cell.FromJson(JsonProcs.getJsonObjectFromJsonObject(task_item, "cell"));
+        Container container = Container.FromJson(JsonProcs.getJsonObjectFromJsonObject(task_item, "container"));
 
-        int order = JsonProcs.getIntegerFromJSON(task_item, "order");
-
-        return new ProductionDateAssigning(document, cell, order);
+        return new ProductionDateAssigning(document, container);
 
 
     }
@@ -31,11 +27,9 @@ public class ProductionDateAssigning {
     public static ProductionDateAssigning FromJsonObject(JSONObject task_item) {
 
         SDocument document = SDocument.FromJson(JsonProcs.getJsonObjectFromJsonObject(task_item, "document"));
-        Cell cell = Cell.FromJson(JsonProcs.getJsonObjectFromJsonObject(task_item, "cell"));
+        Container container = Container.FromJson(JsonProcs.getJsonObjectFromJsonObject(task_item, "container"));
 
-        int order = JsonProcs.getIntegerFromJSON(task_item, "order");
-
-        return new ProductionDateAssigning(document, cell, order);
+        return new ProductionDateAssigning(document, container);
 
 
     }
@@ -45,8 +39,7 @@ public class ProductionDateAssigning {
         JSONObject jsonObject = new JSONObject();
 
         JsonProcs.putToJsonObject(jsonObject,"document", SDocument.toJson(inventTask.document));
-        JsonProcs.putToJsonObject(jsonObject,"cell", Cell.toJson(inventTask.cell));
-        JsonProcs.putToJsonObject(jsonObject,"order", inventTask.order);
+        JsonProcs.putToJsonObject(jsonObject,"container", Container.toJson(inventTask.container));
 
         return jsonObject;
     }

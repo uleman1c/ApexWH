@@ -105,7 +105,7 @@ public class ProductionDateAssigningsFragment extends ListFragment<ProductionDat
 
                         ((TextView) holder.getTextViews().get(0)).setText(SpanText.GetFilteredString("№ " + inventTask.document.number
                                 + " от " + DateStr.FromYmdhmsToDmyhms(inventTask.document.date), filterString));
-                        ((TextView) holder.getTextViews().get(1)).setText(SpanText.GetFilteredString(inventTask.cell.name, filterString.toUpperCase()));
+                        ((TextView) holder.getTextViews().get(1)).setText(SpanText.GetFilteredString(inventTask.container.name + " " + DateStr.FromYmdhmsToDmy(inventTask.container.productionDate), filterString.toUpperCase()));
                     }
                 });
 

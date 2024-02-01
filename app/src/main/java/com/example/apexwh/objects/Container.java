@@ -36,6 +36,18 @@ public class Container {
 
     }
 
+    public static JSONObject toJson(Container container) {
+
+        JSONObject jsonObject = new JSONObject();
+
+        JsonProcs.putToJsonObject(jsonObject,"ref", container.ref);
+        JsonProcs.putToJsonObject(jsonObject,"name", container.name);
+        JsonProcs.putToJsonObject(jsonObject,"productionDate", container.productionDate);
+
+        return jsonObject;
+    }
+
+
     public static ArrayList<Container> getTestArray(){
 
         ArrayList<Container> containers = new ArrayList<>();

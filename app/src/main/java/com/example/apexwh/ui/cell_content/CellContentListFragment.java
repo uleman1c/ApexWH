@@ -62,30 +62,59 @@ public class CellContentListFragment extends ScanListFragment<ProductCell> {
 
                                 tvProduct.setText(filter + " не найден");
 
-                                for (int j = 0; j < responseItems.length(); j++) {
+                                if (responseItems.length() == 0) {
 
-                                    JSONObject objectItem = JsonProcs.getItemJSONArray(responseItems, j);
+                                    RequestToServer.executeRequestUW(getContext(), Request.Method.GET, "getErpSkladCells", "filter=" + filter, new JSONObject(), 1,
+                                            new RequestToServer.ResponseResultInterface() {
+                                                @Override
+                                                public void onResponse(JSONObject response) {
 
-                                    cell = Cell.FromJson(JsonProcs.getJsonObjectFromJsonObject(objectItem, "cell"));
+                                                    JSONArray responseItems2 = JsonProcs.getJsonArrayFromJsonObject(response, "ErpSkladCells");
 
-                                    int productNumber = JsonProcs.getIntegerFromJSON(objectItem, "productNumber");
-                                    int productUnitNumber = JsonProcs.getIntegerFromJSON(objectItem, "productUnitNumber");
-                                    int containerNumber = JsonProcs.getIntegerFromJSON(objectItem, "containerNumber");
+                                                    if (responseItems2.length() > 0) {
 
-                                    tvProduct.setText(cell.name + " " + productNumber + " шт (" + productUnitNumber + " упак) " + containerNumber + " конт");
+                                                        JSONObject objectItem = JsonProcs.getItemJSONArray(responseItems2, 0);
 
-                                    JSONArray products = JsonProcs.getJsonArrayFromJsonObject(objectItem, "products");
+                                                        cell = Cell.FromJson(objectItem);
 
-                                    for (int k = 0; k < products.length(); k++) {
+                                                        int productNumber = 0;
+                                                        int productUnitNumber = 0;
+                                                        int containerNumber = 0;
 
-                                        ProductCell productCell = ProductCell.FromJson(JsonProcs.getItemJSONArray(products, k));
+                                                        tvProduct.setText(cell.name + " " + productNumber + " шт (" + productUnitNumber + " упак) " + containerNumber + " конт");
 
-                                        items.add(productCell);
+                                                    }
+                                                }
+
+                                            });
+
+                                } else {
+
+                                    for (int j = 0; j < responseItems.length(); j++) {
+
+                                        JSONObject objectItem = JsonProcs.getItemJSONArray(responseItems, j);
+
+                                        cell = Cell.FromJson(JsonProcs.getJsonObjectFromJsonObject(objectItem, "cell"));
+
+                                        int productNumber = JsonProcs.getIntegerFromJSON(objectItem, "productNumber");
+                                        int productUnitNumber = JsonProcs.getIntegerFromJSON(objectItem, "productUnitNumber");
+                                        int containerNumber = JsonProcs.getIntegerFromJSON(objectItem, "containerNumber");
+
+                                        tvProduct.setText(cell.name + " " + productNumber + " шт (" + productUnitNumber + " упак) " + containerNumber + " конт");
+
+                                        JSONArray products = JsonProcs.getJsonArrayFromJsonObject(objectItem, "products");
+
+                                        for (int k = 0; k < products.length(); k++) {
+
+                                            ProductCell productCell = ProductCell.FromJson(JsonProcs.getItemJSONArray(products, k));
+
+                                            items.add(productCell);
+                                        }
+
+
                                     }
 
-
                                 }
-
                                 adapter.notifyDataSetChanged();
                             }
                         });

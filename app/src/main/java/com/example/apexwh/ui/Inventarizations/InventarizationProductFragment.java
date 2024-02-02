@@ -423,28 +423,58 @@ public class InventarizationProductFragment extends ScanListFragment<ProductCell
 
                         tvProduct.setText(filter + " не найден");
 
-                        for (int j = 0; j < responseItems.length(); j++) {
+                        if (responseItems.length() == 0) {
 
-                            JSONObject objectItem = JsonProcs.getItemJSONArray(responseItems, j);
+                            RequestToServer.executeRequestUW(getContext(), Request.Method.GET, "getErpSkladCells", "filter=" + filter, new JSONObject(), 1,
+                                    new RequestToServer.ResponseResultInterface() {
+                                        @Override
+                                        public void onResponse(JSONObject response) {
 
-                            cell = Cell.FromJson(JsonProcs.getJsonObjectFromJsonObject(objectItem, "cell"));
+                                            JSONArray responseItems2 = JsonProcs.getJsonArrayFromJsonObject(response, "ErpSkladCells");
 
-                            productNumber = JsonProcs.getIntegerFromJSON(objectItem, "productNumber");
-                            productUnitNumber = JsonProcs.getIntegerFromJSON(objectItem, "productUnitNumber");
-                            containerNumber = JsonProcs.getIntegerFromJSON(objectItem, "containerNumber");
+                                            if (responseItems2.length() > 0) {
 
-                            JSONArray products = JsonProcs.getJsonArrayFromJsonObject(objectItem, "products");
+                                                JSONObject objectItem = JsonProcs.getItemJSONArray(responseItems2, 0);
 
-                            accProductCells.clear();
+                                                cell = Cell.FromJson(objectItem);
 
-                            for (int k = 0; k < products.length(); k++) {
+                                                productNumber = 0;
+                                                productUnitNumber = 0;
+                                                containerNumber = 0;
 
-                                ProductCell productCell = ProductCell.FromJson(JsonProcs.getItemJSONArray(products, k));
+                                                tvProduct.setText(cell.name + " " + productNumber + " шт (" + productUnitNumber + " упак) " + containerNumber + " конт");
 
-                                accProductCells.add(productCell);
+                                                accProductCells.clear();
+
+                                            }
+                                        }
+
+                                    });
+
+                        } else {
+
+                            for (int j = 0; j < responseItems.length(); j++) {
+
+                                JSONObject objectItem = JsonProcs.getItemJSONArray(responseItems, j);
+
+                                cell = Cell.FromJson(JsonProcs.getJsonObjectFromJsonObject(objectItem, "cell"));
+
+                                productNumber = JsonProcs.getIntegerFromJSON(objectItem, "productNumber");
+                                productUnitNumber = JsonProcs.getIntegerFromJSON(objectItem, "productUnitNumber");
+                                containerNumber = JsonProcs.getIntegerFromJSON(objectItem, "containerNumber");
+
+                                JSONArray products = JsonProcs.getJsonArrayFromJsonObject(objectItem, "products");
+
+                                accProductCells.clear();
+
+                                for (int k = 0; k < products.length(); k++) {
+
+                                    ProductCell productCell = ProductCell.FromJson(JsonProcs.getItemJSONArray(products, k));
+
+                                    accProductCells.add(productCell);
+                                }
+
                             }
-
-
                         }
 
                         refNums = new ArrayList<>();

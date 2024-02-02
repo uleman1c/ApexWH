@@ -446,25 +446,57 @@ public class ProductionDateAssigningFragment extends ScanListFragment<Production
 
                         tvProduct.setText(filter + " не найден");
 
-                        for (int j = 0; j < responseItems.length(); j++) {
+                        if (responseItems.length() == 0) {
 
-                            JSONObject objectItem = JsonProcs.getItemJSONArray(responseItems, j);
+                            RequestToServer.executeRequestUW(getContext(), Request.Method.GET, "getErpSkladCells", "filter=" + filter, new JSONObject(), 1,
+                                    new RequestToServer.ResponseResultInterface() {
+                                        @Override
+                                        public void onResponse(JSONObject response) {
 
-                            cell = Cell.FromJson(JsonProcs.getJsonObjectFromJsonObject(objectItem, "cell"));
+                                            JSONArray responseItems2 = JsonProcs.getJsonArrayFromJsonObject(response, "ErpSkladCells");
 
-                            JSONArray containers = JsonProcs.getJsonArrayFromJsonObject(objectItem, "containers");
-                            for (int k = 0; k < containers.length(); k++) {
+                                            if (responseItems2.length() > 0) {
 
-                                JSONObject cwc = JsonProcs.getItemJSONArray(containers, k);
+                                                JSONObject objectItem = JsonProcs.getItemJSONArray(responseItems2, 0);
 
-                                ContainerWithContent containerWithContent = ContainerWithContent.FromJson(cwc);
+                                                cell = Cell.FromJson(objectItem);
 
-                                containersWithContents.add(containerWithContent);
+                                                productNumber = 0;
+                                                productUnitNumber = 0;
+                                                containerNumber = 0;
 
-                                items.add(containerWithContent);
+                                                tvProduct.setText(cell.name + " " + productNumber + " шт (" + productUnitNumber + " упак) " + containerNumber + " конт");
 
+                                                containersWithContents.clear();
+
+                                            }
+                                        }
+
+                                    });
+
+                        } else {
+
+                            for (int j = 0; j < responseItems.length(); j++) {
+
+                                JSONObject objectItem = JsonProcs.getItemJSONArray(responseItems, j);
+
+                                cell = Cell.FromJson(JsonProcs.getJsonObjectFromJsonObject(objectItem, "cell"));
+
+                                containersWithContents.clear();
+
+                                JSONArray containers = JsonProcs.getJsonArrayFromJsonObject(objectItem, "containers");
+                                for (int k = 0; k < containers.length(); k++) {
+
+                                    JSONObject cwc = JsonProcs.getItemJSONArray(containers, k);
+
+                                    ContainerWithContent containerWithContent = ContainerWithContent.FromJson(cwc);
+
+                                    containersWithContents.add(containerWithContent);
+
+                                    items.add(containerWithContent);
+
+                                }
                             }
-
                         }
 
                         refNums = new ArrayList<>();

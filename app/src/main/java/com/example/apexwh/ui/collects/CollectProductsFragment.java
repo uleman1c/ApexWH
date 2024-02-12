@@ -500,10 +500,12 @@ public class CollectProductsFragment extends ScanListFragment<ProductCellContain
 
 
 
-                                    String l1 = (sortByStrong ? (String.valueOf(pcco1.product.strong) + (pcco1.product.strong < 5 ? "000000" : pcco1.product.weight)) : "0") + pcco1.cell.level;
-                                    String l2 = (sortByStrong ? (String.valueOf(pcco2.product.strong) + (pcco2.product.strong < 5 ? "000000" : pcco2.product.weight)) : "0") + pcco2.cell.level;
-                                    String cl1 = (sortByStrong ? "" : pcco1.cell.order) + l1 + pcco1.cell.name;
-                                    String cl2 = (sortByStrong ? "" : pcco2.cell.order) + l2 + pcco2.cell.name;
+                                    String l1 = (sortByStrong ? (String.valueOf(pcco1.product.strong) + (pcco1.product.strong < 5 ? "000000" : pcco1.product.weight)) : "0")
+                                            + (pcco1.cell.level.equals("1") ? "1" : "9");
+                                    String l2 = (sortByStrong ? (String.valueOf(pcco2.product.strong) + (pcco2.product.strong < 5 ? "000000" : pcco2.product.weight)) : "0") +
+                                            (pcco2.cell.level.equals("1") ? "1" : "9");
+                                    String cl1 = (sortByStrong ? "" : pcco1.cell.order) + l1 + pcco1.container.productionDate + pcco1.cell.name;
+                                    String cl2 = (sortByStrong ? "" : pcco2.cell.order) + l2 + pcco2.container.productionDate + pcco2.cell.name;
 
                                     return cl1.compareTo(cl2);
                                 }

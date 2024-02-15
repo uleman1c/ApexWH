@@ -181,6 +181,8 @@ public class RefillTaskFragment extends ScanListFragment<ProductCell> {
                     @Override
                     public boolean onLongClick(View view) {
 
+
+
                         return false;
                     }
                 });
@@ -196,6 +198,27 @@ public class RefillTaskFragment extends ScanListFragment<ProductCell> {
 
                     }
                 });
+
+                root.findViewById(R.id.llCell).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+
+                        if (!refillTask.takement.ref.equals(DB.nil)){
+
+                            Bundle bundle = new Bundle();
+                            bundle.putString("refillTask", RefillTask.toJson(refillTask).toString());
+
+                            Navigation.findNavController(getActivity(), R.id.nav_host_fragment_content_main).navigate(R.id.nav_placementFragment, bundle);
+
+
+
+                        }
+
+                    }
+                });
+
+
+
 
                 tvProduct = root.findViewById(R.id.tvProduct);
                 tvCell = root.findViewById(R.id.tvCell);

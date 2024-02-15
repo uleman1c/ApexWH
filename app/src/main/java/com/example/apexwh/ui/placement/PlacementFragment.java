@@ -18,6 +18,7 @@ import com.example.apexwh.JsonProcs;
 import com.example.apexwh.R;
 import com.example.apexwh.RequestToServer;
 import com.example.apexwh.objects.History;
+import com.example.apexwh.objects.RefillTask;
 import com.example.apexwh.ui.BundleMethodInterface;
 import com.example.apexwh.ui.Dialogs;
 import com.example.apexwh.ui.ScanShtrihcodeFragment;
@@ -30,6 +31,8 @@ import java.util.UUID;
 
 public class PlacementFragment extends ScanShtrihcodeFragment {
 
+
+    private RefillTask refillTask;
 
     public PlacementFragment() {
         super(R.layout.fragment_scan_cell_container);
@@ -60,6 +63,19 @@ public class PlacementFragment extends ScanShtrihcodeFragment {
 
                 RecyclerView rvHistory = root.findViewById(R.id.rvHistory);
                 rvHistory.setAdapter(history.getAdapter());
+
+                if (arguments != null){
+
+                    String jo = arguments.getString("refillTask");
+
+                    if (jo != null && !jo.isEmpty()) {
+
+                        JSONObject jsonObject = JsonProcs.getJSONObjectFromString(jo);
+
+                        refillTask = RefillTask.FromJsonObject(jsonObject);
+
+                    }
+                }
 
 
 
@@ -219,6 +235,8 @@ public class PlacementFragment extends ScanShtrihcodeFragment {
             JsonProcs.putToJsonObject(jsonObject,"cellRef", arguments.getString("cellRef"));
             JsonProcs.putToJsonObject(jsonObject,"containerRef", arguments.getString("containerRef"));
             JsonProcs.putToJsonObject(jsonObject,"containerName", arguments.getString("containerName"));
+
+            JsonProcs.putToJsonObject(jsonObject, "refillTask", refillTask != null ? refillTask.document.ref : DB.nil);
 
             RequestToServer.executeRequestBodyUW(getContext(), Request.Method.POST, "setErpSkladPlacement", jsonObject,
                     RequestToServer.TypeOfResponse.JsonObject, response1 -> {

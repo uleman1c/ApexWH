@@ -34,7 +34,7 @@ import java.util.ArrayList;
 public class RefillTasksFragment extends ListFragment<RefillTask> {
 
     public RefillTasksFragment() {
-        super(R.layout.fragment_filter_list, R.layout.inventarization_list_item);
+        super(R.layout.fragment_filter_list, R.layout.refill_task_list_item);
 
         setListUpdater(new ListUpdater() {
             @Override
@@ -87,6 +87,8 @@ public class RefillTasksFragment extends ListFragment<RefillTask> {
 
                         textViews.add((TextView) itemView.findViewById(R.id.tvNumberDate));
                         textViews.add((TextView) itemView.findViewById(R.id.tvDescription));
+                        textViews.add((TextView) itemView.findViewById(R.id.tvTakement));
+                        textViews.add((TextView) itemView.findViewById(R.id.tvPlacement));
                     }
                 });
 
@@ -98,16 +100,19 @@ public class RefillTasksFragment extends ListFragment<RefillTask> {
 
                         ((TextView) holder.getTextViews().get(0)).setText(SpanText.GetFilteredString("№ " + inventTask.document.number
                                 + " от " + DateStr.FromYmdhmsToDmyhms(inventTask.document.date), filterString));
-                        ((TextView) holder.getTextViews().get(1)).setText(SpanText.GetFilteredString(inventTask.cell.name, filterString.toUpperCase()));
+                        ((TextView) holder.getTextViews().get(1)).setText(SpanText.GetFilteredString(inventTask.cell.name + " из " + inventTask.source.name, filterString.toUpperCase()));
+
+                        ((TextView) holder.getTextViews().get(2)).setText(SpanText.GetFilteredString("Взято: " + inventTask.takement.description, filterString));
+                        ((TextView) holder.getTextViews().get(3)).setText(SpanText.GetFilteredString("Размещено: " + inventTask.placement.description, filterString));
                     }
                 });
 
                 getAdapter().setOnClickListener(inventTask -> {
 
                     Bundle bundle = new Bundle();
-                    bundle.putString("inventTask", RefillTask.toJson((RefillTask) inventTask).toString());
+                    bundle.putString("refillTask", RefillTask.toJson((RefillTask) inventTask).toString());
 
-                    navController.navigate(R.id.nav_inventarizationProductFragment, bundle);
+                    navController.navigate(R.id.refillTaskFragment, bundle);
 
                 });
 

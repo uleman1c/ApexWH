@@ -24,6 +24,17 @@ public class Reference {
 
     }
 
+    public static JSONObject toJson(Reference document) {
+
+        JSONObject jsonObject = new JSONObject();
+
+        JsonProcs.putToJsonObject(jsonObject,"ref", document.ref);
+        JsonProcs.putToJsonObject(jsonObject,"name", document.description);
+
+        return jsonObject;
+    }
+
+
 
 
 }

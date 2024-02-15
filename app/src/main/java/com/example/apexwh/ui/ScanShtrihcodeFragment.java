@@ -45,6 +45,7 @@ public class ScanShtrihcodeFragment extends Fragment {
 
     private int fragmentLayout;
 
+    public Bundle arguments;
 
     public void setScanCodeSetter(ScanCodeSetter scanCodeSetter) {
         this.scanCodeSetter = scanCodeSetter;
@@ -209,6 +210,9 @@ public class ScanShtrihcodeFragment extends Fragment {
             onCreateViewElements.execute(root);
 
         }
+
+        arguments = getArguments();
+
 
         //updateList();
 

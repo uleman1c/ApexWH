@@ -1,5 +1,7 @@
 package com.example.apexwh.objects;
 
+import com.example.apexwh.JsonProcs;
+
 import org.json.JSONObject;
 
 public class Characteristic extends Reference {
@@ -32,6 +34,13 @@ public class Characteristic extends Reference {
         return characteristic.description.isEmpty() || characteristic.description.equals("Основная характеристика") ? "" : characteristic.description;
 
     }
+
+    public static JSONObject toJson(Characteristic characteristic) {
+
+        return Reference.toJson(characteristic);
+    }
+
+
 
 
 }

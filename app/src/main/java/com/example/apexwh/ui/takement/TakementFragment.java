@@ -13,6 +13,7 @@ import com.example.apexwh.JsonProcs;
 import com.example.apexwh.R;
 import com.example.apexwh.RequestToServer;
 import com.example.apexwh.objects.History;
+import com.example.apexwh.objects.RefillTask;
 import com.example.apexwh.ui.Dialogs;
 import com.example.apexwh.ui.ScanShtrihcodeFragment;
 import com.example.apexwh.ui.adapters.ScanCodeSetter;
@@ -34,6 +35,8 @@ public class TakementFragment extends ScanShtrihcodeFragment {
     private String cellRef, containerRef;
 
     private History history;
+
+    private RefillTask refillTask;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -66,6 +69,21 @@ public class TakementFragment extends ScanShtrihcodeFragment {
 
                 RecyclerView rvHistory = root.findViewById(R.id.rvHistory);
                 rvHistory.setAdapter(history.getAdapter());
+
+                if (arguments != null){
+
+                    String jo = arguments.getString("refillTask");
+
+                    if (jo != null && !jo.isEmpty()) {
+
+                        JSONObject jsonObject = JsonProcs.getJSONObjectFromString(jo);
+
+                        refillTask = RefillTask.FromJsonObject(jsonObject);
+
+                    }
+                }
+
+
 
             }
         });
@@ -180,6 +198,8 @@ public class TakementFragment extends ScanShtrihcodeFragment {
                                 JsonProcs.putToJsonObject(jsonObject, "cellRef", arguments.getString("cellRef"));
                                 JsonProcs.putToJsonObject(jsonObject, "containerRef", arguments.getString("containerRef"));
                                 JsonProcs.putToJsonObject(jsonObject, "containerName", arguments.getString("containerName"));
+
+                                JsonProcs.putToJsonObject(jsonObject, "refillTask", refillTask != null ? refillTask.document.ref : DB.nil);
 
                                 RequestToServer.executeRequestBodyUW(getContext(), Request.Method.POST, "setErpSkladTakement", jsonObject,
                                         RequestToServer.TypeOfResponse.JsonObject, response1 -> {

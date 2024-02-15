@@ -89,4 +89,17 @@ public class Product {
 
     }
 
+    public static JSONObject toJson(Product document) {
+
+        JSONObject jsonObject = new JSONObject();
+
+        JsonProcs.putToJsonObject(jsonObject,"ref", document.ref);
+        JsonProcs.putToJsonObject(jsonObject,"name", document.name);
+        JsonProcs.putToJsonObject(jsonObject,"artikul", document.artikul);
+
+        return jsonObject;
+    }
+
+
+
 }

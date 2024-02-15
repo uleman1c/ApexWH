@@ -43,7 +43,7 @@ public class RefillTask {
 
     public static RefillTask FromJsonObject(JSONObject task_item) {
 
-        SDocument document = SDocument.FromJson(JsonProcs.getJsonObjectFromJsonObject(task_item, "document"));
+        SDocument document = SDocument.FromJson(task_item);
         Cell cell = Cell.FromJson(JsonProcs.getJsonObjectFromJsonObject(task_item, "cell"));
         Cell source = Cell.FromJson(JsonProcs.getJsonObjectFromJsonObject(task_item, "source"));
         SDocument takement = SDocument.FromJson(JsonProcs.getJsonObjectFromJsonObject(task_item, "takement"));
@@ -60,7 +60,7 @@ public class RefillTask {
 
     public static JSONObject toJson(RefillTask inventTask) {
 
-        JSONObject jsonObject = new JSONObject();
+        JSONObject jsonObject = SDocument.toJson(inventTask.document);
 
         JsonProcs.putToJsonObject(jsonObject,"document", SDocument.toJson(inventTask.document));
         JsonProcs.putToJsonObject(jsonObject,"cell", Cell.toJson(inventTask.cell));

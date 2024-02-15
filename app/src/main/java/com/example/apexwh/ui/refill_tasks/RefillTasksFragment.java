@@ -16,6 +16,7 @@ import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
 import com.android.volley.Request;
+import com.example.apexwh.DB;
 import com.example.apexwh.DateStr;
 import com.example.apexwh.JsonProcs;
 import com.example.apexwh.R;
@@ -102,8 +103,10 @@ public class RefillTasksFragment extends ListFragment<RefillTask> {
                                 + " от " + DateStr.FromYmdhmsToDmyhms(inventTask.document.date), filterString));
                         ((TextView) holder.getTextViews().get(1)).setText(SpanText.GetFilteredString(inventTask.cell.name + " из " + inventTask.source.name, filterString.toUpperCase()));
 
-                        ((TextView) holder.getTextViews().get(2)).setText(SpanText.GetFilteredString("Взято: " + inventTask.takement.description, filterString));
-                        ((TextView) holder.getTextViews().get(3)).setText(SpanText.GetFilteredString("Размещено: " + inventTask.placement.description, filterString));
+                        ((TextView) holder.getTextViews().get(2)).setText(SpanText.GetFilteredString(
+                                inventTask.takement.ref.equals(DB.nil) ? "Ожидается взятие" : inventTask.takement.description, filterString));
+                        ((TextView) holder.getTextViews().get(3)).setText(SpanText.GetFilteredString(
+                                inventTask.placement.ref.equals(DB.nil) ? "Ожидается размещение" : inventTask.placement.description, filterString));
                     }
                 });
 

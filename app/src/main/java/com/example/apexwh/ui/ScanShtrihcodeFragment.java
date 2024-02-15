@@ -205,13 +205,13 @@ public class ScanShtrihcodeFragment extends Fragment {
         soundPlayer = new SoundPlayer(getContext(), R.raw.hrn05);
         getActivity().setVolumeControlStream(soundPlayer.streamType);
 
+        arguments = getArguments();
+
         if (onCreateViewElements != null) {
 
             onCreateViewElements.execute(root);
 
         }
-
-        arguments = getArguments();
 
 
         //updateList();

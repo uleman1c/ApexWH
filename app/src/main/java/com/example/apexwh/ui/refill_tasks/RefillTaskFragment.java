@@ -191,11 +191,13 @@ public class RefillTaskFragment extends ScanListFragment<ProductCell> {
                     @Override
                     public void onClick(View view) {
 
-                        Bundle bundle = new Bundle();
-                        bundle.putString("refillTask", RefillTask.toJson(refillTask).toString());
+                        if (refillTask.takement.ref.equals(DB.nil)) {
 
-                        Navigation.findNavController(getActivity(), R.id.nav_host_fragment_content_main).navigate(R.id.nav_takementFragment, bundle);
+                            Bundle bundle = new Bundle();
+                            bundle.putString("refillTask", RefillTask.toJson(refillTask).toString());
 
+                            Navigation.findNavController(getActivity(), R.id.nav_host_fragment_content_main).navigate(R.id.nav_takementFragment, bundle);
+                        }
                     }
                 });
 

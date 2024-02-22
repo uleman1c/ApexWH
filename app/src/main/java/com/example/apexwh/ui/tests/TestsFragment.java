@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
-import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -21,17 +20,11 @@ import androidx.navigation.Navigation;
 
 import com.android.volley.Request;
 import com.example.apexwh.DateStr;
-import com.example.apexwh.HttpClient;
-import com.example.apexwh.HttpRequestInterface;
-import com.example.apexwh.HttpRequestJsonObjectInterface;
 import com.example.apexwh.JsonProcs;
 import com.example.apexwh.R;
 import com.example.apexwh.RequestToServer;
-import com.example.apexwh.SoundPlayer;
 import com.example.apexwh.SpanText;
-import com.example.apexwh.objects.Cell;
 import com.example.apexwh.objects.Outcome;
-import com.example.apexwh.objects.Test;
 import com.example.apexwh.ui.BundleMethodInterface;
 import com.example.apexwh.ui.Dialogs;
 import com.example.apexwh.ui.adapters.DataAdapter;
@@ -41,8 +34,6 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 public class TestsFragment extends ListFragment<Outcome>{
 
@@ -201,7 +192,20 @@ public class TestsFragment extends ListFragment<Outcome>{
                     }
                 });
 
-                getAdapter().setOnLongClickListener(document -> {});
+                getAdapter().setOnLongClickListener(document -> {
+
+                    Dialogs.showQuestionYesNoCancel(getContext(), getActivity(), new BundleMethodInterface() {
+                        @Override
+                        public void callMethod(Bundle arguments) {
+
+                            setDocumentStatus((Outcome) document, "toShipping");
+
+                        }
+                    }, new Bundle(), "Завершить документ?", "Завершить");
+
+
+
+                });
 
 
 
@@ -225,6 +229,24 @@ public class TestsFragment extends ListFragment<Outcome>{
         });
 
     }
+
+    protected void setDocumentStatus(Outcome document, String newStatus) {
+
+        RequestToServer.executeRequestUW(getContext(), Request.Method.GET, "setErpSkladDocumentStatus",
+                "type1c=" + (document.orderType.equals("Партнеры") ? "ref" : "doc")
+                        + "&name=" + document.orderType + "&ref=" + document.order + "&status=" + newStatus, new JSONObject(), 1, new RequestToServer.ResponseResultInterface() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+
+                        listUpdater.update(items, progressBar, adapter, "");
+
+                        //Navigation.findNavController(getActivity(), R.id.nav_host_fragment_content_main).popBackStack();
+
+                    }
+                });
+    }
+
+
 
     @Override
     public void onResume() {

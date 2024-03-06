@@ -11,9 +11,13 @@ public class RefillTask {
     public Product product;
     public Characteristic characteristic;
     public int order;
+    public Unit unit;
+
+    public int quantity, unitQuantity;
+
 
     public RefillTask(SDocument document,Cell cell, Cell source,  SDocument takement, SDocument placement,
-                      Product product, Characteristic characteristic, int order) {
+                      Product product, Characteristic characteristic, int order, Unit unit, int quantity, int unitQuantity) {
         this.document = document;
         this.cell = cell;
         this.source = source;
@@ -22,6 +26,9 @@ public class RefillTask {
         this.product = product;
         this.characteristic = characteristic;
         this.order = order;
+        this.unit = unit;
+        this.quantity = quantity;
+        this.unitQuantity = unitQuantity;
     }
 
     public static RefillTask FromJson(JSONObject task_item) {
@@ -33,10 +40,13 @@ public class RefillTask {
         SDocument placement = SDocument.FromJson(JsonProcs.getJsonObjectFromJsonObject(task_item, "placement"));
         Product product = Product.FromJson(JsonProcs.getJsonObjectFromJsonObject(task_item, "product"));
         Characteristic characteristic = Characteristic.FromJson(JsonProcs.getJsonObjectFromJsonObject(task_item, "characteristic"));
+        Unit unit = Unit.FromJson(JsonProcs.getJsonObjectFromJsonObject(task_item, "unit"));
 
         int order = JsonProcs.getIntegerFromJSON(task_item, "order");
+        int quantity = JsonProcs.getIntegerFromJSON(task_item, "quantity");
+        int unitQuantity = JsonProcs.getIntegerFromJSON(task_item, "unitQuantity");
 
-        return new RefillTask(document, cell, source, takement, placement, product, characteristic, order);
+        return new RefillTask(document, cell, source, takement, placement, product, characteristic, order, unit, quantity, unitQuantity);
 
 
     }
@@ -51,9 +61,13 @@ public class RefillTask {
         Product product = Product.FromJson(JsonProcs.getJsonObjectFromJsonObject(task_item, "product"));
         Characteristic characteristic = Characteristic.FromJson(JsonProcs.getJsonObjectFromJsonObject(task_item, "characteristic"));
 
-        int order = JsonProcs.getIntegerFromJSON(task_item, "order");
+        Unit unit = Unit.FromJson(JsonProcs.getJsonObjectFromJsonObject(task_item, "unit"));
 
-        return new RefillTask(document, cell, source, takement, placement, product, characteristic, order);
+        int order = JsonProcs.getIntegerFromJSON(task_item, "order");
+        int quantity = JsonProcs.getIntegerFromJSON(task_item, "quantity");
+        int unitQuantity = JsonProcs.getIntegerFromJSON(task_item, "unitQuantity");
+
+        return new RefillTask(document, cell, source, takement, placement, product, characteristic, order, unit, quantity, unitQuantity);
 
 
     }
@@ -70,6 +84,9 @@ public class RefillTask {
         JsonProcs.putToJsonObject(jsonObject,"product", Product.toJson(inventTask.product));
         JsonProcs.putToJsonObject(jsonObject,"characteristic", Characteristic.toJson(inventTask.characteristic));
         JsonProcs.putToJsonObject(jsonObject,"order", inventTask.order);
+        JsonProcs.putToJsonObject(jsonObject,"unit", Unit.toJson(inventTask.unit));
+        JsonProcs.putToJsonObject(jsonObject,"quantity", inventTask.quantity);
+        JsonProcs.putToJsonObject(jsonObject,"unitQuantity", inventTask.unitQuantity);
 
         return jsonObject;
     }

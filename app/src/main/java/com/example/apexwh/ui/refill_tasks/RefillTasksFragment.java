@@ -101,7 +101,10 @@ public class RefillTasksFragment extends ListFragment<RefillTask> {
 
                         ((TextView) holder.getTextViews().get(0)).setText(SpanText.GetFilteredString("№ " + inventTask.document.number
                                 + " от " + DateStr.FromYmdhmsToDmyhms(inventTask.document.date), filterString));
-                        ((TextView) holder.getTextViews().get(1)).setText(SpanText.GetFilteredString(inventTask.cell.name + " из " + inventTask.source.name, filterString.toUpperCase()));
+                        ((TextView) holder.getTextViews().get(1)).setText(SpanText.GetFilteredString(inventTask.cell.name
+                            + (inventTask.unit.ref == DB.nil ? "" : ( inventTask.unit.name + " (" + String.valueOf(inventTask.unit.coefficient) + ") "
+                                + String.valueOf(inventTask.unitQuantity) + " = " + String.valueOf(inventTask.quantity)))
+                                + " из " + inventTask.source.name, filterString.toUpperCase()));
 
                         ((TextView) holder.getTextViews().get(2)).setText(SpanText.GetFilteredString(
                                 inventTask.takement.ref.equals(DB.nil) ? "Ожидается взятие" : inventTask.takement.description, filterString));

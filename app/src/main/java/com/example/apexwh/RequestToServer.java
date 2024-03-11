@@ -80,7 +80,14 @@ public class RequestToServer {
     }
     public static void executeRequest(Context context, int method, String request, String url, JSONObject params, ResponseResultInterface responseResultInterface){
 
-        execute(context, method, Connections.addrDta + "?request=" + request + "&" + url, params, new ResponseResultInterface() {
+        DB db = new DB(context);
+        db.open();
+        Boolean useLocalServer = db.getConstant("useLocalServer").equals("1");
+        db.close();
+
+        String serverUrl = useLocalServer ? Connections.addrDtaLoc : Connections.addrDta;
+
+        execute(context, method, serverUrl + "?request=" + request + "&" + url, params, new ResponseResultInterface() {
             @Override
             public void onResponse(JSONObject response) {
 

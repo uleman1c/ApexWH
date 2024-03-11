@@ -23,6 +23,7 @@ public class Connections {
 
     public static String addrMob = "https://ow.apx-service.ru/tech_man/hs/mob/";
     public static String addrDta = "https://ow.apx-service.ru/tech_man/hs/dta/obj/";
+    public static String addrDtaLoc = "http://192.168.182.238:8000/whdct";
     public static String addrFiles = "https://ow.apx-service.ru/tech_man/hs/dta/files/";
 
     public static Map<String, String> headers() {

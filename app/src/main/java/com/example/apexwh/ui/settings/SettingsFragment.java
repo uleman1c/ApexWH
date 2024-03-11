@@ -97,6 +97,20 @@ public class SettingsFragment extends Fragment {
             }
         });
 
+        Switch useLocalServer = root.findViewById(R.id.useLocalServer);
+        useLocalServer.setChecked(settings.getString("useLocalServer").equals("1"));
+        useLocalServer.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                DB db = new DB(getContext());
+                db.open();
+                db.updateConstant("useLocalServer", useLocalServer.isChecked() ? "1" : "0");
+                db.close();
+
+            }
+        });
+
         root.findViewById(R.id.btnSelectWarehouse).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

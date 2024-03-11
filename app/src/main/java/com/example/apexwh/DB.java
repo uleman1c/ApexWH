@@ -646,6 +646,10 @@ public class DB {
             db.updateConstant("sortByStrong", "0");
         }
 
+        if (db.getConstant("useLocalServer") == null){
+            db.updateConstant("useLocalServer", "0");
+        }
+
         db.close();
 
     }
@@ -680,6 +684,7 @@ public class DB {
         result.putString("showScannedProducts", db.getConstant("showScannedProducts"));
         result.putString("barсodeEqualsCharacteristic", db.getConstant("barсodeEqualsCharacteristic"));
         result.putString("sortByStrong", db.getConstant("sortByStrong"));
+        result.putString("useLocalServer", db.getConstant("useLocalServer"));
 
         db.close();
 

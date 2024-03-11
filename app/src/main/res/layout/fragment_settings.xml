@@ -79,6 +79,14 @@
                 android:textSize="20sp" />
 
             <Switch
+                android:id="@+id/useLocalServer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Использовать локальный сервер"
+                android:textSize="20sp" />
+
+            <Switch
                 android:id="@+id/showScannedProducts"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

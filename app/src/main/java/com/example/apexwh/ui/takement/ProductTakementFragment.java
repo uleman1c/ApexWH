@@ -8,6 +8,7 @@ import android.widget.TextView;
 import androidx.navigation.NavController;
 
 import com.android.volley.Request;
+import com.example.apexwh.DB;
 import com.example.apexwh.JsonProcs;
 import com.example.apexwh.R;
 import com.example.apexwh.RequestToServer;
@@ -16,6 +17,7 @@ import com.example.apexwh.objects.Characteristic;
 import com.example.apexwh.objects.Container;
 import com.example.apexwh.objects.Product;
 import com.example.apexwh.objects.ProductCell;
+import com.example.apexwh.objects.RefillTask;
 import com.example.apexwh.ui.Dialogs;
 import com.example.apexwh.ui.adapters.DataAdapter;
 import com.example.apexwh.ui.adapters.ScanListFragment;
@@ -32,6 +34,9 @@ public class ProductTakementFragment extends ScanListFragment<ProductCell> {
 
     Cell cell;
     int productNumber, productUnitNumber, containerNumber;
+
+    private RefillTask refillTask;
+
 
     public ProductTakementFragment() {
 
@@ -167,6 +172,9 @@ public class ProductTakementFragment extends ScanListFragment<ProductCell> {
                                                         if (type.equals("НоменклатураСХарактеристикой")) {
                                                             JsonProcs.putToJsonObject(jsonObject, "characterRef", arguments.getString("characterRef"));
                                                         }
+
+                                                        JsonProcs.putToJsonObject(jsonObject, "refillTask", refillTask != null ? refillTask.document.ref : DB.nil);
+
                                                         JsonProcs.putToJsonObject(jsonObject, "quantity", arguments.getInt("quantity"));
 
                                                         RequestToServer.executeRequestBodyUW(getContext(), Request.Method.POST, "setErpSkladTakement", jsonObject,
@@ -244,6 +252,19 @@ public class ProductTakementFragment extends ScanListFragment<ProductCell> {
 
                 getAdapter().setOnLongClickListener(document -> {});
 
+
+                if (arguments != null){
+
+                    String jo = arguments.getString("refillTask");
+
+                    if (jo != null && !jo.isEmpty()) {
+
+                        JSONObject jsonObject = JsonProcs.getJSONObjectFromString(jo);
+
+                        refillTask = RefillTask.FromJsonObject(jsonObject);
+
+                    }
+                }
 
 
             }

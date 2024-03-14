@@ -99,7 +99,7 @@ public class RefillTasksFragment extends ListFragment<RefillTask> {
 
                         String filterString = etFilter.getText().toString();
 
-                        ((TextView) holder.getTextViews().get(0)).setText(SpanText.GetFilteredString("№ " + inventTask.document.number
+                        ((TextView) holder.getTextViews().get(0)).setText(SpanText.GetFilteredString(inventTask.mode + " № " + inventTask.document.number
                                 + " от " + DateStr.FromYmdhmsToDmyhms(inventTask.document.date), filterString));
                         ((TextView) holder.getTextViews().get(1)).setText(SpanText.GetFilteredString(inventTask.cell.name
                                 + " из " + inventTask.source.name

@@ -15,9 +15,11 @@ public class RefillTask {
 
     public int quantity, unitQuantity;
 
+    public String mode;
+
 
     public RefillTask(SDocument document,Cell cell, Cell source,  SDocument takement, SDocument placement,
-                      Product product, Characteristic characteristic, int order, Unit unit, int quantity, int unitQuantity) {
+                      Product product, Characteristic characteristic, int order, Unit unit, int quantity, int unitQuantity, String mode) {
         this.document = document;
         this.cell = cell;
         this.source = source;
@@ -29,6 +31,7 @@ public class RefillTask {
         this.unit = unit;
         this.quantity = quantity;
         this.unitQuantity = unitQuantity;
+        this.mode = mode;
     }
 
     public static RefillTask FromJson(JSONObject task_item) {
@@ -46,7 +49,9 @@ public class RefillTask {
         int quantity = JsonProcs.getIntegerFromJSON(task_item, "quantity");
         int unitQuantity = JsonProcs.getIntegerFromJSON(task_item, "unitQuantity");
 
-        return new RefillTask(document, cell, source, takement, placement, product, characteristic, order, unit, quantity, unitQuantity);
+        String mode = JsonProcs.getStringFromJSON(task_item, "mode");
+
+        return new RefillTask(document, cell, source, takement, placement, product, characteristic, order, unit, quantity, unitQuantity, mode);
 
 
     }
@@ -67,7 +72,9 @@ public class RefillTask {
         int quantity = JsonProcs.getIntegerFromJSON(task_item, "quantity");
         int unitQuantity = JsonProcs.getIntegerFromJSON(task_item, "unitQuantity");
 
-        return new RefillTask(document, cell, source, takement, placement, product, characteristic, order, unit, quantity, unitQuantity);
+        String mode = JsonProcs.getStringFromJSON(task_item, "mode");
+
+        return new RefillTask(document, cell, source, takement, placement, product, characteristic, order, unit, quantity, unitQuantity, mode);
 
 
     }
@@ -87,6 +94,7 @@ public class RefillTask {
         JsonProcs.putToJsonObject(jsonObject,"unit", Unit.toJson(inventTask.unit));
         JsonProcs.putToJsonObject(jsonObject,"quantity", inventTask.quantity);
         JsonProcs.putToJsonObject(jsonObject,"unitQuantity", inventTask.unitQuantity);
+        JsonProcs.putToJsonObject(jsonObject,"mode", inventTask.mode);
 
         return jsonObject;
     }

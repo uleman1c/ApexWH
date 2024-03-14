@@ -196,7 +196,14 @@ public class RefillTaskFragment extends ScanListFragment<ProductCell> {
                             Bundle bundle = new Bundle();
                             bundle.putString("refillTask", RefillTask.toJson(refillTask).toString());
 
-                            Navigation.findNavController(getActivity(), R.id.nav_host_fragment_content_main).navigate(R.id.nav_takementFragment, bundle);
+                            if (refillTask.mode.equals("Номенклатура")){
+
+                                Navigation.findNavController(getActivity(), R.id.nav_host_fragment_content_main).navigate(R.id.nav_productTakementFragment, bundle);
+                            } else {
+
+                                Navigation.findNavController(getActivity(), R.id.nav_host_fragment_content_main).navigate(R.id.nav_takementFragment, bundle);
+                            }
+
                         }
                     }
                 });
@@ -210,9 +217,14 @@ public class RefillTaskFragment extends ScanListFragment<ProductCell> {
                             Bundle bundle = new Bundle();
                             bundle.putString("refillTask", RefillTask.toJson(refillTask).toString());
 
-                            Navigation.findNavController(getActivity(), R.id.nav_host_fragment_content_main).navigate(R.id.nav_placementFragment, bundle);
+                            if (refillTask.mode.equals("Номенклатура")){
 
+                                Navigation.findNavController(getActivity(), R.id.nav_host_fragment_content_main).navigate(R.id.nav_productPlacementFragment, bundle);
+                            } else {
 
+                                Navigation.findNavController(getActivity(), R.id.nav_host_fragment_content_main).navigate(R.id.nav_placementFragment, bundle);
+
+                            }
 
                         }
 

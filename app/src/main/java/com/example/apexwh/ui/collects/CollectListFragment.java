@@ -69,17 +69,32 @@ public class CollectListFragment extends ListFragment<Outcome> {
                                     JSONObject responseItem = JsonProcs.getJsonObjectFromJsonObject(response, "ErpSkladRefByNumberValue");
 
                                     String order = JsonProcs.getStringFromJSON(responseItem, "Ордер");
-
                                     if (!order.isEmpty()) {
 
-                                        Bundle bundle = new Bundle();
-                                        bundle.putString("name", JsonProcs.getStringFromJSON(responseItem, "Имя"));
-                                        bundle.putString("ref", JsonProcs.getStringFromJSON(responseItem, "Ссылка"));
-                                        bundle.putString("order", order);
+                                        String message = JsonProcs.getStringFromJSON(responseItem, "Сообщение");
 
-                                        Navigation.findNavController(getActivity(), R.id.nav_host_fragment_content_main)
-                                                .navigate(R.id.nav_collectProductsFragment, bundle);
+                                        if (!message.isEmpty()) {
 
+                                            AlertDialog.Builder builder=new AlertDialog.Builder(getActivity());
+                                            builder.setTitle("Внимание")
+                                                    .setMessage(message)
+                                                    .setPositiveButton("ОК", new DialogInterface.OnClickListener() {
+                                                        @Override
+                                                        public void onClick(DialogInterface dialog, int which) {
+
+                                                            goToProduts(responseItem, order);
+
+
+                                                            dialog.cancel();
+
+                                                        }
+                                                    }).create().show();
+
+
+                                        } else {
+
+                                            goToProduts(responseItem, order);
+                                        }
                                     } else {
 
                                         AlertDialog.Builder builder=new AlertDialog.Builder(getActivity());
@@ -191,6 +206,16 @@ public class CollectListFragment extends ListFragment<Outcome> {
         });
 
 
+    }
+
+    private void goToProduts(JSONObject responseItem, String order) {
+        Bundle bundle = new Bundle();
+        bundle.putString("name", JsonProcs.getStringFromJSON(responseItem, "Имя"));
+        bundle.putString("ref", JsonProcs.getStringFromJSON(responseItem, "Ссылка"));
+        bundle.putString("order", order);
+
+        Navigation.findNavController(getActivity(), R.id.nav_host_fragment_content_main)
+                .navigate(R.id.nav_collectProductsFragment, bundle);
     }
 
     @Override

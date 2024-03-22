@@ -23,6 +23,7 @@ import androidx.navigation.Navigation;
 
 import com.android.volley.Request;
 import com.example.apexwh.DB;
+import com.example.apexwh.DateStr;
 import com.example.apexwh.JsonProcs;
 import com.example.apexwh.R;
 import com.example.apexwh.RequestToServer;
@@ -227,7 +228,8 @@ public class CollectProductsFragment extends ScanListFragment<ProductCellContain
                             spanText.AppendColor(item.characteristic.description, Color.MAGENTA);
                         }
 
-                        ((TextView) holder.getTextViews().get(0)).setText("Ячейка: " + item.cell.name);
+                        ((TextView) holder.getTextViews().get(0)).setText("Ячейка: " + item.cell.name
+                                + (item.container.productionDate.isEmpty() ? "" : DateStr.FromYmdhmsToDmy(item.container.productionDate)));
                         ((TextView) holder.getTextViews().get(1)).setText(String.valueOf(item.number));
                         ((TextView) holder.getTextViews().get(2)).setText(item.product.artikul);
                         ((TextView) holder.getTextViews().get(3)).setText(item.product.name);

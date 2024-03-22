@@ -338,13 +338,47 @@ public class ShtrihcodeContainerFragment extends ScanListFragment<ProductWithQua
 
             progressBar.setVisibility(View.GONE);
 
-            if (!JsonProcs.getStringFromJSON(response, "ref").isEmpty()){
+            String containerRef = JsonProcs.getStringFromJSON(response, "containerRef");
+
+            if (!containerRef.isEmpty()){
 
                 items.clear();
 
                 adapter.notifyDataSetChanged();
 
                 tvProduct.setText(JsonProcs.getStringFromJSON(response, "container") + " создан");
+
+                TimeZone timeZone = TimeZone.getTimeZone("Europe/Moscow");
+
+                Calendar calendar = new GregorianCalendar();
+                calendar.roll(Calendar.HOUR_OF_DAY, timeZone.getRawOffset() / (3600 * 1000));
+
+                new DatePickerDialog(getContext(), new DatePickerDialog.OnDateSetListener() {
+                    @Override
+                    public void onDateSet(DatePicker datePicker, int year, int month, int day) {
+
+                        calendar.set(Calendar.YEAR, year);
+                        calendar.set(Calendar.MONTH, month);
+                        calendar.set(Calendar.DAY_OF_MONTH, day);
+
+                        JSONObject jsonObject = new JSONObject();
+                        JsonProcs.putToJsonObject(jsonObject,"ref", UUID.randomUUID().toString());
+                        JsonProcs.putToJsonObject(jsonObject,"containerRef", containerRef);
+                        JsonProcs.putToJsonObject(jsonObject, "date", DateStr.CalendarToYmd(calendar));
+
+                        RequestToServer.executeRequestBodyUW(getContext(), Request.Method.POST, "setErpSkladProductionDateAssigning", jsonObject,
+                                RequestToServer.TypeOfResponse.JsonObject, response1 -> {
+
+                                    //listUpdater.update(items, progressBar, adapter, container.name);
+
+                                });
+
+                    }
+                },
+                        calendar.get(Calendar.YEAR),
+                        calendar.get(Calendar.MONTH),
+                        calendar.get(Calendar.DAY_OF_MONTH))
+                        .show();
 
 
 

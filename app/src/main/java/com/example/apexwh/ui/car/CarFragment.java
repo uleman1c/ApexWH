@@ -243,7 +243,7 @@ public class CarFragment extends ListFragment<Ttn> {
                                             });
 
                                 }
-                            }, bundle, (mode.equals("income") ? "Завершить приемку " : "Отгрузить ") + document.car + "?", mode.equals("income") ? "Завершить приемку" : "отгрузить");
+                            }, bundle, (mode.equals("income") ? "Завершить приемку " : "Отгрузить ") + document.car + "?", mode.equals("income") ? "Завершить приемку" : "Отгрузить");
 
 
 

@@ -251,6 +251,7 @@ public class ShtrihcodeContainerFragment extends ScanListFragment<ProductWithQua
                                     RequestToServer.executeRequestBodyUW(getContext(), Request.Method.POST, "setErpSkladProductionDateAssigning", jsonObject,
                                             RequestToServer.TypeOfResponse.JsonObject, response1 -> {
 
+                                        listUpdater.update(items, progressBar, adapter, container.name);
 
                                             });
 

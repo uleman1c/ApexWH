@@ -1,11 +1,17 @@
 package com.example.apexwh.ui.shtrihcode_container;
 
+import android.app.DatePickerDialog;
+import android.app.TimePickerDialog;
+import android.graphics.Color;
+import android.icu.text.SimpleDateFormat;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.DatePicker;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.TimePicker;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -15,10 +21,12 @@ import androidx.navigation.Navigation;
 
 import com.android.volley.Request;
 import com.example.apexwh.DB;
+import com.example.apexwh.DateStr;
 import com.example.apexwh.JsonProcs;
 import com.example.apexwh.R;
 import com.example.apexwh.RequestToServer;
 import com.example.apexwh.objects.Container;
+import com.example.apexwh.objects.ContainerWithContent;
 import com.example.apexwh.objects.Product;
 import com.example.apexwh.objects.ProductWithQuantity;
 import com.example.apexwh.objects.Shtrihcode;
@@ -31,6 +39,9 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+import java.util.TimeZone;
 import java.util.UUID;
 
 public class ShtrihcodeContainerFragment extends ScanListFragment<ProductWithQuantity> {
@@ -127,7 +138,7 @@ public class ShtrihcodeContainerFragment extends ScanListFragment<ProductWithQua
 
                                         container = Container.FromJson(objectItem);
 
-                                        tvProduct.setText(container.name);
+                                        tvProduct.setText(container.name + ", дата: " + DateStr.FromYmdhmsToDmy(container.productionDate));
 
                                         JSONArray products = JsonProcs.getJsonArrayFromJsonObject(objectItem, "products");
 
@@ -202,6 +213,64 @@ public class ShtrihcodeContainerFragment extends ScanListFragment<ProductWithQua
                     }
                 });
 
+                root.findViewById(R.id.llProduct).setOnLongClickListener(new View.OnLongClickListener() {
+                    @Override
+                    public boolean onLongClick(View view) {
+
+                        if (container != null){
+
+                            TimeZone timeZone = TimeZone.getTimeZone("Europe/Moscow");
+
+                            Calendar calendar = new GregorianCalendar();
+                            calendar.roll(Calendar.HOUR_OF_DAY, timeZone.getRawOffset() / (3600 * 1000));
+
+//                            if (!value.isEmpty()){
+//
+//                                calendar.set(Calendar.YEAR, Integer.valueOf(value.substring(0, 4)));
+//                                calendar.set(Calendar.MONTH, Integer.valueOf(value.substring(4, 6)) - 1);
+//                                calendar.set(Calendar.DAY_OF_MONTH, Integer.valueOf(value.substring(6, 8)));
+//                                calendar.set(Calendar.HOUR_OF_DAY, Integer.valueOf(value.substring(8, 10)));
+//                                calendar.set(Calendar.MINUTE, Integer.valueOf(value.substring(10, 12)));
+//                                calendar.set(Calendar.SECOND, Integer.valueOf(value.substring(12, 14)));
+//
+//                            }
+
+                            new DatePickerDialog(getContext(), new DatePickerDialog.OnDateSetListener() {
+                                @Override
+                                public void onDateSet(DatePicker datePicker, int year, int month, int day) {
+
+                                    calendar.set(Calendar.YEAR, year);
+                                    calendar.set(Calendar.MONTH, month);
+                                    calendar.set(Calendar.DAY_OF_MONTH, day);
+
+                                    JSONObject jsonObject = new JSONObject();
+                                    JsonProcs.putToJsonObject(jsonObject,"ref", UUID.randomUUID().toString());
+                                    JsonProcs.putToJsonObject(jsonObject,"containerRef", container.ref);
+                                    JsonProcs.putToJsonObject(jsonObject, "date", DateStr.CalendarToYmd(calendar));
+
+                                    RequestToServer.executeRequestBodyUW(getContext(), Request.Method.POST, "setErpSkladProductionDateAssigning", jsonObject,
+                                            RequestToServer.TypeOfResponse.JsonObject, response1 -> {
+
+
+                                            });
+
+                                }
+                            },
+                                    calendar.get(Calendar.YEAR),
+                                    calendar.get(Calendar.MONTH),
+                                    calendar.get(Calendar.DAY_OF_MONTH))
+                                    .show();
+
+
+
+                        }
+
+
+                        return false;
+
+                    }
+                });
+
                 getAdapter().setInitViewsMaker(new DataAdapter.InitViewsMaker() {
                     @Override
                     public void init(View itemView, ArrayList<TextView> textViews) {
@@ -226,7 +295,11 @@ public class ShtrihcodeContainerFragment extends ScanListFragment<ProductWithQua
 
                 });
 
-                getAdapter().setOnLongClickListener(document -> {});
+                getAdapter().setOnLongClickListener(document -> {
+
+
+
+                });
 
 
 

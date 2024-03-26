@@ -93,7 +93,8 @@ public class RefillTaskFragment extends ScanListFragment<ProductCell> {
                                 }
                                 else {
 
-                                    tvSourceDescription.setText("Ожидается взятие");
+                                    tvSourceDescription.setText("Ожидается взятие " + refillTask.mode + " " +
+                                            (refillTask.mode.equals("Номенклатура") ? refillTask.quantity + " шт" : ""));
 
                                 }
 

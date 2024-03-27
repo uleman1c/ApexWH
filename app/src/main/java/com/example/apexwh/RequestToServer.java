@@ -118,11 +118,18 @@ public class RequestToServer {
         String appId = db.getConstant("appId");
         String userId = db.getConstant("userId");
         String warehouseId = db.getConstant("warehouseId");
+        Boolean useLocalServer = db.getConstant("useLocalServer").equals("1");
         db.close();
+
+        String serverUrl = useLocalServer ? Connections.addrDtaLoc : Connections.addrDta;
+
+
+
+
 
         String urlToSend = "?request=" + request + "&appId=" + appId + "&userId=" + userId + "&warehouseId=" + warehouseId + "&" + url;
 
-        execute(context, method, Connections.addrDta + urlToSend, params, new ResponseResultInterface() {
+        execute(context, method, serverUrl + urlToSend, params, new ResponseResultInterface() {
             @Override
             public void onResponse(JSONObject response) {
 
